@@ -1,0 +1,29 @@
+[
+  {
+    "slug": "elliott-reporting-colorado-springs",
+    "name": "Elliott Reporting",
+    "city": "colorado-springs",
+    "state": "CO",
+    "address": "",
+    "lat": 38.8339578,
+    "lng": -104.825348,
+    "phone": "",
+    "website": "https://elliottreporting.com",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Full-service reporting firm offering court reporter services, legal videography, and video conferencing in Colorado Springs.",
+    "certifications": [],
+    "services": [
+      "Legal Videography",
+      "Court Reporting",
+      "Video Conferencing"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:58:14",
+    "sentiment": null
+  }
+]

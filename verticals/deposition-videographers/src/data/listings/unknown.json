@@ -1,0 +1,109 @@
+[
+  {
+    "slug": "hudson-court-reporting-video-none",
+    "name": "Hudson Court Reporting & Video",
+    "city": null,
+    "state": "NJ",
+    "address": "",
+    "lat": 0,
+    "lng": 0,
+    "phone": "1-800-310-1769",
+    "website": "https://www.hudsonreporting.com",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting, legal videography, virtual litigation solutions serving NY, NJ nationwide since 1998.",
+    "certifications": [],
+    "services": [
+      "legal videography",
+      "videotaped depositions",
+      "video transcription"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:23:09",
+    "sentiment": {
+      "label": "positive",
+      "score": 0.75,
+      "keywords": [
+        "legal videography",
+        "videotaped depositions",
+        "video transcription"
+      ],
+      "highlights": [
+        {
+          "text": "I have used Hudson Reporting for my depositions for over 10 years and have always been extremely satisfied with their services.",
+          "sentiment": "positive"
+        },
+        {
+          "text": "They are quick, efficient, prompt, and never let us down. The company and the assigned reporters are excellent and pleasant.",
+          "sentiment": "positive"
+        },
+        {
+          "text": "Hudson has been my go-to court reporting service for many years. They are reliable, professional, accurate.",
+          "sentiment": "positive"
+        },
+        {
+          "text": "For depositions across the country as well as virtual, Hudson Reporting is always my first call. Geeta, Priya, and their team are exceptionally reliab",
+          "sentiment": "positive"
+        }
+      ],
+      "summary": "Court reporting, legal videography, virtual litigation solutions serving NY, NJ nationwide since 1998."
+    }
+  },
+  {
+    "slug": "planet-depos-none",
+    "name": "Planet Depos",
+    "city": null,
+    "state": "NJ",
+    "address": "",
+    "lat": 0,
+    "lng": 0,
+    "phone": "",
+    "website": "https://planetdepos.com/locations/new-jersey",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting and legal videography for depositions, arbitrations throughout New Jersey.",
+    "certifications": [],
+    "services": [
+      "legal videography",
+      "court reporting",
+      "litigation support"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:23:09",
+    "sentiment": null
+  },
+  {
+    "slug": "rizman-rappaport-none",
+    "name": "Rizman Rappaport",
+    "city": null,
+    "state": "NJ",
+    "address": "",
+    "lat": 0,
+    "lng": 0,
+    "phone": "",
+    "website": "https://rizmanrappaport.com",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Provides certified court reporters and legal videographers in New Jersey and tri-state area with over 50 years experience.",
+    "certifications": [],
+    "services": [
+      "legal videography",
+      "depositions"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:23:09",
+    "sentiment": null
+  }
+]

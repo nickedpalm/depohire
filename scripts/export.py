@@ -96,6 +96,18 @@ def export_listings(vertical: str):
 
         sentiment = get_sentiment(conn, row["id"])
 
+        def safe_float(val, default=0):
+            try:
+                return float(val) if val is not None else default
+            except (ValueError, TypeError):
+                return default
+
+        def safe_int(val, default=0):
+            try:
+                return int(float(val)) if val is not None else default
+            except (ValueError, TypeError):
+                return default
+
         listing = {
             "slug": slugify(f"{row['name']}-{row['city']}"),
             "name": row["name"],
@@ -107,13 +119,14 @@ def export_listings(vertical: str):
             "phone": row["phone"] or "",
             "website": row["website"] or "",
             "email": enrichments.get("email", raw.get("email", "")),
-            "rating": float(enrichments.get("rating", raw.get("rating", 0))),
-            "review_count": int(enrichments.get("review_count", raw.get("user_ratings_total", 0))),
+            "rating": safe_float(enrichments.get("rating", raw.get("rating"))),
+            "review_count": safe_int(enrichments.get("review_count", raw.get("review_count", raw.get("user_ratings_total")))),
             "description": raw.get("description", ""),
             "certifications": raw.get("certifications", []),
             "services": raw.get("services", []),
             "years_experience": raw.get("years_experience"),
             "claimed": False,
+            "featured": bool(raw.get("featured", False)),
             "source": row["source"],
             "scraped_at": row["scraped_at"],
             "sentiment": sentiment,

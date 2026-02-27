@@ -35,11 +35,13 @@ def load_config(config_path: str) -> dict:
 
 def yaml_to_vertical_json(config: dict) -> dict:
     """Convert YAML config to the vertical.json format expected by Astro."""
+    domain = config.get("domain", "example.com")
+    editorial = config.get("editorial_author", {})
     return {
         "name": config["name"],
         "slug": config["slug"],
-        "domain": config.get("domain", "example.com"),
-        "siteUrl": f"https://{config.get('domain', 'example.com')}",
+        "domain": domain,
+        "siteUrl": f"https://{domain}",
         "tagline": config.get("tagline", f"Find {config['name'].lower()} near you"),
         "description": config.get("description", f"A directory of {config['name'].lower()}"),
         "jobValue": config.get("job_value", ""),
@@ -49,6 +51,14 @@ def yaml_to_vertical_json(config: dict) -> dict:
         "certifications": config.get("certifications", []),
         "extraFields": config.get("extra_fields", []),
         "cityPagePromptContext": config.get("city_page_prompt_context", ""),
+        "contactEmail": config.get("contact_email", f"contact@{domain}"),
+        "editorialAuthor": {
+            "name": editorial.get("name", "Editorial Team"),
+            "title": editorial.get("title", "Directory Editor"),
+            "bio": editorial.get("bio", f"Expert contributor at {config['name']}."),
+            "linkedin": editorial.get("linkedin"),
+        },
+        "foundedYear": config.get("founded_year", 2026),
     }
 
 
@@ -65,16 +75,34 @@ def cmd_create(args):
 
     print(f"Creating vertical: {config['name']} ({slug})")
 
+    # Preserve pipeline.db if it exists
+    preserved_db = None
+    db_path = vertical_dir / "pipeline.db"
+    if db_path.exists():
+        preserved_db = db_path.read_bytes()
+
     # Copy template
     if vertical_dir.exists():
         shutil.rmtree(vertical_dir)
     shutil.copytree(TEMPLATE_DIR, vertical_dir, ignore=shutil.ignore_patterns("node_modules", ".astro", "dist"))
+
+    # Restore pipeline.db
+    if preserved_db:
+        db_path.write_bytes(preserved_db)
+        print(f"  Preserved pipeline.db")
 
     # Write vertical.json
     vertical_json = yaml_to_vertical_json(config)
     with open(vertical_dir / "vertical.json", "w") as f:
         json.dump(vertical_json, f, indent=2)
     print(f"  Wrote vertical.json")
+
+    # Patch robots.txt with actual site URL
+    robots_path = vertical_dir / "public" / "robots.txt"
+    if robots_path.exists():
+        site_url = f"https://{config.get('domain', 'example.com')}"
+        robots_path.write_text(robots_path.read_text().replace("SITE_URL", site_url))
+        print(f"  Patched robots.txt")
 
     # npm install
     print(f"  Running npm install...")
@@ -100,8 +128,12 @@ def cmd_scrape(args):
 
     subprocess.run(cmd)
 
-    # Auto-run enrich + export
+    # Auto-run clean + geocode + enrich + export
     if not args.no_enrich:
+        print("\n--- Cleaning city names ---")
+        subprocess.run([sys.executable, str(SCRIPTS_DIR / "clean_cities.py"), args.vertical])
+        print("\n--- Geocoding ---")
+        subprocess.run([sys.executable, str(SCRIPTS_DIR / "geocode.py"), "--vertical", args.vertical, "--missing-only"])
         print("\n--- Enriching ---")
         subprocess.run([sys.executable, str(SCRIPTS_DIR / "enrich.py"), "--vertical", args.vertical])
         print("\n--- Exporting ---")

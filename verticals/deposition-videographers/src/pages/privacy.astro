@@ -1,0 +1,64 @@
+---
+import PageLayout from '~/layouts/PageLayout.astro';
+import Breadcrumbs from '~/components/directory/Breadcrumbs.astro';
+import config from '~/config';
+
+const title = `Privacy Policy — ${config.name}`;
+const description = `Privacy policy for ${config.name}. How we collect, use, and protect your information.`;
+const metadata = { title, description };
+---
+<PageLayout metadata={metadata}>
+  <Fragment slot="announcement"><span></span></Fragment>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <Breadcrumbs crumbs={[{ label: 'Privacy Policy' }]} />
+
+    <h1 class="text-3xl font-bold text-default mb-6">Privacy Policy</h1>
+
+    <div class="prose prose-lg max-w-none">
+      <p class="text-sm text-muted">Effective: {config.foundedYear}</p>
+
+      <h2>Information We Collect</h2>
+      <p>
+        {config.name} is a static directory website. We collect minimal information:
+      </p>
+      <ul>
+        <li><strong>Contact form submissions</strong> — When you submit a "Request a Quote" form, we collect your name, email, and message. This information is sent directly to the listed business via email.</li>
+        <li><strong>Listing claim requests</strong> — When business owners claim a listing, we collect their name, email, and proof of business ownership.</li>
+        <li><strong>Analytics data</strong> — We may use privacy-respecting analytics to understand how visitors use the site. This data is aggregated and does not identify individual users.</li>
+      </ul>
+
+      <h2>How We Use Your Information</h2>
+      <ul>
+        <li>To facilitate connections between users and listed {config.primaryKeyword}s</li>
+        <li>To process listing claims and corrections</li>
+        <li>To improve the directory's content and user experience</li>
+      </ul>
+
+      <h2>Information We Do Not Collect</h2>
+      <ul>
+        <li>We do not use tracking cookies for advertising</li>
+        <li>We do not sell personal information to third parties</li>
+        <li>We do not create user profiles or require account registration</li>
+      </ul>
+
+      <h2>Business Listing Data</h2>
+      <p>
+        All business listing information displayed on this site is sourced from publicly available data including
+        business directories, review platforms, and professional registries. Business owners may request corrections
+        or removal by contacting <a href={`mailto:corrections@${config.domain}`}>corrections@{config.domain}</a>.
+      </p>
+
+      <h2>Third-Party Services</h2>
+      <p>This site may use the following third-party services:</p>
+      <ul>
+        <li><strong>OpenStreetMap / Leaflet</strong> — For displaying maps. Subject to OpenStreetMap's privacy policy.</li>
+        <li><strong>Cloudflare</strong> — For hosting and CDN services. Subject to Cloudflare's privacy policy.</li>
+      </ul>
+
+      <h2>Contact</h2>
+      <p>
+        For privacy-related inquiries, contact us at <a href={`mailto:${config.contactEmail}`}>{config.contactEmail}</a>.
+      </p>
+    </div>
+  </div>
+</PageLayout>
