@@ -1,0 +1,90 @@
+---
+import CityPage from '@/layouts/CityPage.astro';
+import ListingCard from '@/components/ListingCard.astro';
+import LeafletMap from '@/components/LeafletMap.astro';
+import config from '@/config';
+import citiesData from '@/data/cities.json';
+import { getListingsForCity } from '@/lib/listings';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const cityContent = await getCollection('cities');
+  return citiesData.map(city => {
+    const content = cityContent.find(c => c.data.slug === city.slug);
+    return {
+      params: { city: city.slug },
+      props: { cityInfo: city, content },
+    };
+  });
+}
+
+const { cityInfo, content } = Astro.props;
+const listings = getListingsForCity(cityInfo.slug);
+const { Content } = content ? await render(content) : { Content: null };
+
+const pins = listings.map(l => ({ lat: l.lat, lng: l.lng, name: l.name, slug: l.slug }));
+
+const title = `${config.name} in ${cityInfo.city}, ${cityInfo.state}`;
+const metaDescription = `Find the best ${config.primaryKeyword}s in ${cityInfo.city}, ${cityInfo.state}. Compare ${listings.length} professionals, read reviews, and request quotes.`;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: title,
+  description: metaDescription,
+  numberOfItems: listings.length,
+  itemListElement: listings.map((l, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    item: {
+      '@type': 'LocalBusiness',
+      name: l.name,
+      address: l.address,
+      telephone: l.phone,
+      url: `${config.siteUrl}/listing/${l.slug}/`,
+      aggregateRating: l.review_count > 0 ? {
+        '@type': 'AggregateRating',
+        ratingValue: l.rating,
+        reviewCount: l.review_count,
+      } : undefined,
+    },
+  })),
+};
+---
+<CityPage
+  title={title}
+  city={cityInfo.city}
+  state={cityInfo.state}
+  stateSlug={cityInfo.stateSlug}
+  stateName={cityInfo.stateName}
+  metaDescription={metaDescription}
+  schema={schema}
+>
+  <h1 class="text-3xl font-bold text-gray-900 mb-2">{title}</h1>
+  <p class="text-gray-500 mb-8">{listings.length} {config.primaryKeyword}{listings.length !== 1 ? 's' : ''} found in {cityInfo.city}</p>
+
+  {listings.length > 0 && pins.length > 0 && (
+    <div class="mb-8">
+      <LeafletMap pins={pins} centerLat={cityInfo.lat} centerLng={cityInfo.lng} />
+    </div>
+  )}
+
+  {listings.length > 0 ? (
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8" data-pagefind-body>
+      {listings.map(listing => (
+        <ListingCard {...listing} />
+      ))}
+    </div>
+  ) : (
+    <div class="text-center py-12 text-gray-500">
+      <p>No {config.primaryKeyword}s listed in {cityInfo.city} yet.</p>
+      <p class="mt-2 text-sm">Know a {config.primaryKeyword} here? <a href="mailto:submit@example.com">Submit a listing</a></p>
+    </div>
+  )}
+
+  {Content && (
+    <div class="prose prose-lg max-w-none mt-8">
+      <Content />
+    </div>
+  )}
+</CityPage>

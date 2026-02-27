@@ -1,0 +1,96 @@
+[
+  {
+    "slug": "elite-legal-video-nyc",
+    "name": "Elite Legal Video",
+    "city": "new-york",
+    "state": "NY",
+    "address": "123 Broadway, Suite 400, New York, NY 10001",
+    "lat": 40.7128,
+    "lng": -74.006,
+    "phone": "(212) 555-1234",
+    "website": "https://elitelegalvideo.com",
+    "email": "info@elitelegalvideo.com",
+    "rating": 4.8,
+    "review_count": 23,
+    "description": "Full-service deposition videography firm serving the greater New York metropolitan area. Specializing in multi-camera depositions, real-time streaming, and synchronized video transcripts for litigation teams.",
+    "certifications": ["CLVS"],
+    "services": ["video sync", "streaming", "day-in-the-life", "multi-camera"],
+    "years_experience": 15,
+    "claimed": false,
+    "source": "sample",
+    "scraped_at": "2026-02-26",
+    "sentiment": {
+      "label": "positive",
+      "score": 0.92,
+      "keywords": ["professional", "reliable", "excellent quality", "on-time", "responsive"],
+      "highlights": [
+        {"text": "Best legal videographer we've worked with. Always on time and footage quality is impeccable.", "sentiment": "positive"},
+        {"text": "Handled a complex multi-camera deposition flawlessly. Highly recommend.", "sentiment": "positive"},
+        {"text": "Real-time streaming worked perfectly for our out-of-state counsel.", "sentiment": "positive"}
+      ],
+      "summary": "Consistently praised for professionalism, reliability, and high-quality video production."
+    }
+  },
+  {
+    "slug": "manhattan-deposition-services",
+    "name": "Manhattan Deposition Services",
+    "city": "new-york",
+    "state": "NY",
+    "address": "456 Park Avenue, Floor 12, New York, NY 10022",
+    "lat": 40.7580,
+    "lng": -73.9716,
+    "phone": "(212) 555-5678",
+    "website": "https://manhattandepo.com",
+    "email": "schedule@manhattandepo.com",
+    "rating": 4.6,
+    "review_count": 18,
+    "description": "Premier deposition videography and court reporting services in Manhattan. Offering 4K recording, real-time feeds, and same-day delivery for high-stakes litigation.",
+    "certifications": ["CLVS"],
+    "services": ["video sync", "4K recording", "same-day delivery", "streaming"],
+    "years_experience": 10,
+    "claimed": false,
+    "source": "sample",
+    "scraped_at": "2026-02-26",
+    "sentiment": {
+      "label": "positive",
+      "score": 0.85,
+      "keywords": ["4K quality", "fast turnaround", "professional", "same-day delivery"],
+      "highlights": [
+        {"text": "Same-day delivery saved our trial prep. Outstanding service.", "sentiment": "positive"},
+        {"text": "4K footage looked incredible during trial presentation.", "sentiment": "positive"}
+      ],
+      "summary": "Known for fast turnaround and premium recording quality."
+    }
+  },
+  {
+    "slug": "tristate-legal-video",
+    "name": "Tri-State Legal Video",
+    "city": "new-york",
+    "state": "NY",
+    "address": "789 Lexington Ave, New York, NY 10065",
+    "lat": 40.7648,
+    "lng": -73.9653,
+    "phone": "(212) 555-9012",
+    "website": "https://tristatelegalvideo.com",
+    "email": "contact@tristatelegalvideo.com",
+    "rating": 4.5,
+    "review_count": 12,
+    "description": "Serving New York, New Jersey, and Connecticut with professional deposition videography. Over 20 years of experience in federal and state court proceedings.",
+    "certifications": ["CLVS"],
+    "services": ["video sync", "streaming", "settlement documentaries"],
+    "years_experience": 22,
+    "claimed": false,
+    "source": "sample",
+    "scraped_at": "2026-02-26",
+    "sentiment": {
+      "label": "positive",
+      "score": 0.80,
+      "keywords": ["experienced", "tri-state coverage", "federal courts", "reliable"],
+      "highlights": [
+        {"text": "20+ years of experience shows. They know every courthouse in the tri-state area.", "sentiment": "positive"},
+        {"text": "Scheduling could be more flexible during peak season.", "sentiment": "negative"}
+      ],
+      "summary": "Highly experienced with broad coverage area; minor scheduling flexibility concerns."
+    }
+  }
+]

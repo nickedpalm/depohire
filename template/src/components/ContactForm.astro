@@ -1,0 +1,31 @@
+---
+interface Props {
+  listingName: string;
+  listingEmail?: string;
+}
+
+const { listingName, listingEmail } = Astro.props;
+---
+<div class="card p-6">
+  <h3 class="text-lg font-semibold text-gray-900 mb-4">Request a Quote from {listingName}</h3>
+  <form
+    action={listingEmail ? `mailto:${listingEmail}` : '#'}
+    method={listingEmail ? 'post' : 'get'}
+    enctype={listingEmail ? 'text/plain' : undefined}
+    class="space-y-4"
+  >
+    <div>
+      <label for="name" class="block text-sm font-medium text-gray-700">Your Name</label>
+      <input type="text" id="name" name="name" required class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-3 py-2 border" />
+    </div>
+    <div>
+      <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+      <input type="email" id="email" name="email" required class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-3 py-2 border" />
+    </div>
+    <div>
+      <label for="message" class="block text-sm font-medium text-gray-700">Details</label>
+      <textarea id="message" name="message" rows="3" placeholder="Date, location, type of proceeding..." class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-3 py-2 border"></textarea>
+    </div>
+    <button type="submit" class="btn-primary w-full justify-center">Send Request</button>
+  </form>
+</div>

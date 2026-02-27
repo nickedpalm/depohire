@@ -1,0 +1,45 @@
+name: Deposition Videographers
+slug: deposition-videographers
+domain: depositionvideographers.com
+tagline: "Find certified deposition videographers near you"
+description: "The most comprehensive directory of deposition videographers in the United States"
+
+# Business context
+job_value: "$500-2,000+ per session"
+industry: legal
+certifications:
+  - "CLVS (Certified Legal Video Specialist)"
+
+# Scraping targets
+scrape_sources:
+  - type: google_maps
+    query: "deposition videographer"
+  - type: yelp
+    query: "deposition videographer"
+  - type: custom
+    url: "https://www.ncra.org/home/professionals-resources"
+    note: "NCRA directory"
+
+# Content config
+city_page_prompt_context: |
+  Deposition videographers record legal depositions on video for use
+  as evidence in court proceedings. They operate specialized equipment,
+  ensure proper legal formatting, and often provide real-time streaming
+  and expedited delivery. Attorneys hire them for civil litigation,
+  personal injury cases, and corporate disputes.
+
+# SEO
+primary_keyword: "deposition videographer"
+secondary_keywords:
+  - "legal videographer"
+  - "deposition video services"
+  - "certified legal video specialist"
+  - "litigation videographer"
+
+# Listing schema fields (beyond standard name/address/phone)
+extra_fields:
+  - certifications
+  - years_experience
+  - services
+  - coverage_area
+  - equipment

@@ -1,0 +1,64 @@
+---
+import Base from '@/layouts/Base.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import ListingDetail from '@/components/ListingDetail.astro';
+import ContactForm from '@/components/ContactForm.astro';
+import config from '@/config';
+import citiesData from '@/data/cities.json';
+import { getAllListings } from '@/lib/listings';
+
+export async function getStaticPaths() {
+  const listings = getAllListings();
+  return listings.map(listing => ({
+    params: { slug: listing.slug },
+    props: { listing },
+  }));
+}
+
+const { listing } = Astro.props;
+const cityInfo = citiesData.find(c => c.slug === listing.city);
+const title = `${listing.name} — ${config.primaryKeyword} in ${cityInfo?.city || listing.city}, ${listing.state}`;
+const description = listing.description || `${listing.name} is a ${config.primaryKeyword} in ${cityInfo?.city || listing.city}, ${listing.state}.`;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  name: listing.name,
+  description: listing.description,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: listing.address,
+    addressLocality: cityInfo?.city,
+    addressRegion: listing.state,
+  },
+  telephone: listing.phone,
+  url: listing.website,
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: listing.lat,
+    longitude: listing.lng,
+  },
+  ...(listing.review_count > 0 ? {
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: listing.rating,
+      reviewCount: listing.review_count,
+    },
+  } : {}),
+};
+---
+<Base title={title} description={description} schema={schema}>
+  <div class="container-narrow py-8" data-pagefind-body>
+    <Breadcrumbs crumbs={[
+      { label: cityInfo?.stateName || listing.state, href: `/states/${cityInfo?.stateSlug || 'all'}/` },
+      { label: cityInfo?.city || listing.city, href: `/${listing.city}/` },
+      { label: listing.name },
+    ]} />
+
+    <ListingDetail listing={listing} />
+
+    <div class="mt-8">
+      <ContactForm listingName={listing.name} listingEmail={listing.email} />
+    </div>
+  </div>
+</Base>
