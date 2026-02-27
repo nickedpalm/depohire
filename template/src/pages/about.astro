@@ -1,0 +1,94 @@
+---
+import PageLayout from '~/layouts/PageLayout.astro';
+import Breadcrumbs from '~/components/directory/Breadcrumbs.astro';
+import config from '~/config';
+
+const title = `About ${config.name}`;
+const description = `Learn about ${config.name} — our mission, how we curate listings, and the team behind the directory.`;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  name: title,
+  description,
+  mainEntity: {
+    '@type': 'Organization',
+    name: config.name,
+    url: config.siteUrl,
+    foundingDate: `${config.foundedYear}`,
+    description: config.description,
+    contactPoint: {
+      '@type': 'ContactPoint',
+      email: config.contactEmail,
+      contactType: 'customer service',
+    },
+    publishingPrinciples: `${config.siteUrl}/editorial-guidelines/`,
+  },
+};
+
+const metadata = { title, description };
+---
+<PageLayout metadata={metadata}>
+  <Fragment slot="announcement"><span></span></Fragment>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <Breadcrumbs crumbs={[{ label: 'About' }]} />
+
+    <h1 class="text-3xl font-bold text-default mb-6">{title}</h1>
+
+    <div class="prose prose-lg max-w-none">
+      <h2>Our Mission</h2>
+      <p>
+        {config.name} exists because finding a qualified {config.primaryKeyword} shouldn't require cold-calling
+        a dozen firms or relying on outdated word-of-mouth referrals. We built this directory to give you a
+        single, comprehensive resource — one that's actually maintained, actually vetted, and actually useful.
+      </p>
+
+      <h2>How We Curate Listings</h2>
+      <p>
+        Every listing in our directory is sourced from public business records, industry databases, and verified
+        professional profiles. We cross-reference multiple data sources and update our database regularly. Here's
+        what we check:
+      </p>
+      <ul>
+        <li><strong>Business verification</strong> — We confirm the business exists and is currently operating</li>
+        <li><strong>Contact accuracy</strong> — Phone numbers, websites, and addresses are validated</li>
+        <li><strong>Review aggregation</strong> — We pull ratings and review data from multiple platforms</li>
+        <li><strong>Geographic coverage</strong> — We cover {config.primaryKeyword}s across all 50 US states</li>
+        {config.certifications.length > 0 && (
+          <li><strong>Credentials</strong> — We flag professionals with certifications like {config.certifications.join(', ')}</li>
+        )}
+      </ul>
+
+      <p>
+        Read our full <a href="/editorial-guidelines/">Editorial Guidelines</a> for details on our methodology.
+      </p>
+
+      <h2>The Team</h2>
+      <div class="not-prose bg-white rounded-xl border border-gray-200 shadow-sm p-6 flex items-start gap-4">
+        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-primary font-bold text-lg flex-shrink-0">
+          {config.editorialAuthor.name.charAt(0)}
+        </div>
+        <div>
+          <p class="font-semibold text-default">{config.editorialAuthor.name}</p>
+          <p class="text-sm text-muted">{config.editorialAuthor.title}</p>
+          <p class="text-sm text-default mt-2">{config.editorialAuthor.bio}</p>
+          {config.editorialAuthor.linkedin && (
+            <a href={config.editorialAuthor.linkedin} class="text-sm text-primary hover:underline mt-1 inline-block" target="_blank" rel="noopener noreferrer">LinkedIn Profile</a>
+          )}
+        </div>
+      </div>
+
+      <h2>Contact Us</h2>
+      <p>
+        Have a question, correction, or want to claim your listing?
+        Email us at <a href={`mailto:${config.contactEmail}`}>{config.contactEmail}</a>.
+      </p>
+      <ul>
+        <li><strong>Listing corrections:</strong> <a href={`mailto:corrections@${config.domain}`}>corrections@{config.domain}</a></li>
+        <li><strong>Claim your listing:</strong> <a href={`mailto:claims@${config.domain}`}>claims@{config.domain}</a></li>
+        <li><strong>Advertising inquiries:</strong> <a href={`mailto:advertise@${config.domain}`}>advertise@{config.domain}</a></li>
+      </ul>
+    </div>
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+</PageLayout>

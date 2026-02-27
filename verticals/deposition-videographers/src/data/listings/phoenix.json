@@ -1,0 +1,210 @@
+[
+  {
+    "slug": "caption-legal-phoenix",
+    "name": "Caption Legal",
+    "city": "phoenix",
+    "state": "AZ",
+    "address": "",
+    "lat": 33.4484367,
+    "lng": -112.074141,
+    "phone": "805.885.7742",
+    "website": "https://captionlegal.com/phoenix-az",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Provides onsite, remote, and hybrid deposition videography services for Arizona attorneys.",
+    "certifications": [],
+    "services": [
+      "onsite videography",
+      "remote depositions",
+      "hybrid services"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:58:19",
+    "sentiment": null
+  },
+  {
+    "slug": "coash-court-reporting-video-phoenix",
+    "name": "Coash Court Reporting & Video",
+    "city": "phoenix",
+    "state": "AZ",
+    "address": "",
+    "lat": 33.4484367,
+    "lng": -112.074141,
+    "phone": "",
+    "website": "https://coashcourtreportingandvideo.com",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Trendsetter in court reporting, virtual video depositions, real-time transcription, and litigation support services for over 40 years.",
+    "certifications": [],
+    "services": [
+      "video depositions",
+      "virtual depositions",
+      "real-time transcription"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:58:19",
+    "sentiment": {
+      "label": "positive",
+      "score": 0.75,
+      "keywords": [
+        "video depositions",
+        "virtual depositions",
+        "real-time transcription"
+      ],
+      "highlights": [
+        {
+          "text": "Excellent at communicating and super helpful with scheduling",
+          "sentiment": "positive"
+        },
+        {
+          "text": "Professional, trustworthy, and cannot be beat. Very highly recommended!",
+          "sentiment": "positive"
+        }
+      ],
+      "summary": "Trendsetter in court reporting, virtual video depositions, real-time transcription, and litigation support services for over 40 years."
+    }
+  },
+  {
+    "slug": "esquire-deposition-solutions-phoenix",
+    "name": "Esquire Deposition Solutions",
+    "city": "phoenix",
+    "state": "AZ",
+    "address": "",
+    "lat": 33.4484367,
+    "lng": -112.074141,
+    "phone": "",
+    "website": "https://www.esquiresolutions.com/offices/phoenix-az/",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "National provider of court reporting and deposition services with complete video capabilities, broadcast-ready video depositions, and remote solutions.",
+    "certifications": [],
+    "services": [
+      "video depositions",
+      "remote streaming",
+      "post-production"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:58:19",
+    "sentiment": null
+  },
+  {
+    "slug": "lexhd-phoenix",
+    "name": "LexHD",
+    "city": "phoenix",
+    "state": "AZ",
+    "address": "",
+    "lat": 33.4484367,
+    "lng": -112.074141,
+    "phone": "",
+    "website": "https://lexhd.com/chandler,-az",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Specializes in in-person, remote, and hybrid deposition videography services throughout Chandler and East Valley.",
+    "certifications": [],
+    "services": [
+      "deposition videography",
+      "remote videography",
+      "hybrid videography"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:58:19",
+    "sentiment": null
+  },
+  {
+    "slug": "naegeli-deposition-trial-phoenix",
+    "name": "NAEGELI Deposition & Trial",
+    "city": "phoenix",
+    "state": "AZ",
+    "address": "",
+    "lat": 33.4484367,
+    "lng": -112.074141,
+    "phone": "(800) 528-3335",
+    "website": "https://www.naegeliusa.com/locations/phoenix-arizona",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Provider of court reporting, videography, remote depositions, and trial presentation services with over 45 years experience.",
+    "certifications": [],
+    "services": [
+      "videography",
+      "remote depositions",
+      "trial presentation"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:58:19",
+    "sentiment": null
+  },
+  {
+    "slug": "phoenix-deposition-services-phoenix",
+    "name": "Phoenix Deposition Services",
+    "city": "phoenix",
+    "state": "AZ",
+    "address": "",
+    "lat": 33.4484367,
+    "lng": -112.074141,
+    "phone": "",
+    "website": "https://phoenixdepositionservices.com",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Full-service court reporting firm with over 40 years experience offering video depositions, video conferencing, and litigation support.",
+    "certifications": [],
+    "services": [
+      "video depositions",
+      "video conferencing",
+      "editing services"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:58:19",
+    "sentiment": null
+  },
+  {
+    "slug": "south-mountain-films-phoenix",
+    "name": "South Mountain Films",
+    "city": "phoenix",
+    "state": "AZ",
+    "address": "9830 S 51st St, Suite B-101, Phoenix, AZ 85044",
+    "lat": 33.4484367,
+    "lng": -112.074141,
+    "phone": "(480) 482-1945",
+    "website": "https://southmountainfilms.com/legal-video/",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Certified Legal Video Specialist (CLVS) offering legal videography for depositions, will executions, and other proceedings.",
+    "certifications": [],
+    "services": [
+      "deposition videography",
+      "accident reconstruction",
+      "video analysis"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:58:19",
+    "sentiment": null
+  }
+]

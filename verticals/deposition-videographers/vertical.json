@@ -1,0 +1,36 @@
+{
+  "name": "Deposition Videographers",
+  "slug": "deposition-videographers",
+  "domain": "depositionvideographers.com",
+  "siteUrl": "https://depositionvideographers.com",
+  "tagline": "Find certified deposition videographers near you",
+  "description": "The most comprehensive directory of deposition videographers in the United States",
+  "jobValue": "$500-2,000+ per session",
+  "industry": "legal",
+  "primaryKeyword": "deposition videographer",
+  "secondaryKeywords": [
+    "legal videographer",
+    "deposition video services",
+    "certified legal video specialist",
+    "litigation videographer"
+  ],
+  "certifications": [
+    "CLVS (Certified Legal Video Specialist)"
+  ],
+  "extraFields": [
+    "certifications",
+    "years_experience",
+    "services",
+    "coverage_area",
+    "equipment"
+  ],
+  "cityPagePromptContext": "Deposition videographers record legal depositions on video for use\nas evidence in court proceedings. They operate specialized equipment,\nensure proper legal formatting, and often provide real-time streaming\nand expedited delivery. Attorneys hire them for civil litigation,\npersonal injury cases, and corporate disputes.\n",
+  "contactEmail": "contact@depositionvideographers.com",
+  "editorialAuthor": {
+    "name": "Nick Palmer",
+    "title": "Founder & Lead Researcher",
+    "bio": "After years working in the legal services industry, Nick built this directory to help attorneys find qualified deposition videographers without the guesswork.",
+    "linkedin": "https://linkedin.com/in/nickedpalmer"
+  },
+  "foundedYear": 2026
+}

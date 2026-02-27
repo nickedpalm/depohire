@@ -1,0 +1,18 @@
+{
+  "cities": {
+    "new-york": {
+      "url": "https://images.unsplash.com/photo-1570304816841-906a17d7b067?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxOZXclMjBZb3JrJTIwc2t5bGluZXxlbnwwfDB8fHwxNzcyMjE4NzY2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Mark Boss",
+      "photographer_url": "https://unsplash.com/@vork",
+      "unsplash_url": "https://unsplash.com/photos/chrysler-building-new-york-aTWNx7yoJWo"
+    }
+  },
+  "articles": {
+    "what-does-a-deposition-videographer-do": {
+      "url": "https://images.unsplash.com/photo-1768796370611-d891bfc91f3b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxkZXBvc2l0aW9uJTIwdmlkZW9ncmFwaGVyJTIwYmVoaW5kJTIwc2NlbmVzfGVufDB8MHx8fDE3NzIyMTg3NzN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Hoi An and Da Nang Photographer",
+      "photographer_url": "https://unsplash.com/@hoianphotographer",
+      "unsplash_url": "https://unsplash.com/photos/filmmaker-with-camera-and-microphone-records-content-8y_LBy_ls84"
+    }
+  }
+}

@@ -1,0 +1,76 @@
+[
+  {
+    "slug": "depositions-inc-raleigh",
+    "name": "Depositions, Inc.",
+    "city": "raleigh",
+    "state": "NC",
+    "address": "",
+    "lat": 35.7803977,
+    "lng": -78.6390989,
+    "phone": "",
+    "website": "https://www.ncdepo.com",
+    "email": "",
+    "rating": 0.0,
+    "review_count": 0,
+    "description": "Provides legal video services including high-resolution digital video depositions and video/transcript synchronization nationwide, with focus on North Carolina.",
+    "certifications": [],
+    "services": [
+      "videotaped depositions",
+      "video synchronization",
+      "video conferencing"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:23:23",
+    "sentiment": {
+      "label": "negative",
+      "score": 0.0,
+      "keywords": [
+        "videotaped depositions",
+        "video synchronization",
+        "video conferencing"
+      ],
+      "highlights": [],
+      "summary": "Provides legal video services including high-resolution digital video depositions and video/transcript synchronization nationwide, with focus on North Carolina."
+    }
+  },
+  {
+    "slug": "overby-court-reporting-raleigh",
+    "name": "Overby Court Reporting",
+    "city": "raleigh",
+    "state": "NC",
+    "address": "",
+    "lat": 35.7803977,
+    "lng": -78.6390989,
+    "phone": "",
+    "website": "https://www.overbycourtreporting.com",
+    "email": "",
+    "rating": 0.0,
+    "review_count": 0,
+    "description": "Court reporting service with video conferencing and other advanced methods across NC, including Raleigh and Charlotte.",
+    "certifications": [],
+    "services": [
+      "court reporting",
+      "video conferencing",
+      "depositions"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:23:23",
+    "sentiment": {
+      "label": "negative",
+      "score": 0.0,
+      "keywords": [
+        "court reporting",
+        "video conferencing",
+        "depositions"
+      ],
+      "highlights": [],
+      "summary": "Court reporting service with video conferencing and other advanced methods across NC, including Raleigh and Charlotte."
+    }
+  }
+]

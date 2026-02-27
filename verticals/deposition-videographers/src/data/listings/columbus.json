@@ -1,0 +1,187 @@
+[
+  {
+    "slug": "anderson-reporting-columbus",
+    "name": "Anderson Reporting",
+    "city": "columbus",
+    "state": "OH",
+    "address": "",
+    "lat": 39.9622601,
+    "lng": -83.0007065,
+    "phone": "",
+    "website": "https://andersonreporting.com",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Offers legal videography, remote and in-person depositions, court reporting, realtime reporting, videoconferencing, and trial presentation services.",
+    "certifications": [],
+    "services": [
+      "legal videography",
+      "remote depositions",
+      "trial presentation"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:22:56",
+    "sentiment": {
+      "label": "positive",
+      "score": 0.75,
+      "keywords": [
+        "legal videography",
+        "remote depositions",
+        "trial presentation"
+      ],
+      "highlights": [
+        {
+          "text": "ARS provides top notch court reporting and legal videography around Central Ohio and beyond!",
+          "sentiment": "positive"
+        },
+        {
+          "text": "Unbelievable handling of a last-minute video deposition. The great team at Anderson Reporting pulled a videographer and reporter out their hats and we",
+          "sentiment": "positive"
+        },
+        {
+          "text": "Great place to stage a video conference.",
+          "sentiment": "positive"
+        }
+      ],
+      "summary": "Offers legal videography, remote and in-person depositions, court reporting, realtime reporting, videoconferencing, and trial presentation services."
+    }
+  },
+  {
+    "slug": "higgins-court-reporting-columbus",
+    "name": "Higgins Court Reporting",
+    "city": "columbus",
+    "state": "OH",
+    "address": "",
+    "lat": 39.9622601,
+    "lng": -83.0007065,
+    "phone": "614-985-3376",
+    "website": "https://higginscourtreporting.com",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "State-of-the-art legal video services including video depositions, editing, courtroom playback, evidence videos, day-in-the-life videos, two-camera capability, transcript sync, internet streaming, and nationwide scheduling.",
+    "certifications": [],
+    "services": [
+      "video depositions",
+      "video editing",
+      "streaming",
+      "syncing"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:22:56",
+    "sentiment": null
+  },
+  {
+    "slug": "kentuckiana-reporters-columbus",
+    "name": "Kentuckiana Reporters",
+    "city": "columbus",
+    "state": "OH",
+    "address": "",
+    "lat": 39.9622601,
+    "lng": -83.0007065,
+    "phone": "877-808-5856",
+    "website": "https://kentuckianareporters.com",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Provides court reporting and legal video deposition services with real-time reporting, daily transcripts, secure delivery, videography, and trial presentation; services Dayton and nationwide.",
+    "certifications": [],
+    "services": [
+      "legal videography",
+      "real-time reporting",
+      "trial presentation"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:22:56",
+    "sentiment": null
+  },
+  {
+    "slug": "naegeli-deposition-trial-columbus",
+    "name": "NAEGELI Deposition & Trial",
+    "city": "columbus",
+    "state": "OH",
+    "address": "",
+    "lat": 39.9622601,
+    "lng": -83.0007065,
+    "phone": "",
+    "website": "https://www.naegeliusa.com",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Offers certified videographers for high-quality video recordings of depositions, hearings, and legal proceedings, along with court reporting, remote depositions, transcription, interpreting, and trial presentation.",
+    "certifications": [],
+    "services": [
+      "videography",
+      "remote depositions",
+      "video recordings"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:22:56",
+    "sentiment": null
+  },
+  {
+    "slug": "tackla-court-reporting-columbus",
+    "name": "Tackla Court Reporting",
+    "city": "columbus",
+    "state": "OH",
+    "address": "",
+    "lat": 39.9622601,
+    "lng": -83.0007065,
+    "phone": "",
+    "website": "http://www.tacklacourtreporting.com",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Provides videotaping services including two-camera setups like a mobile video studio for depositions in Northeast Ohio.",
+    "certifications": [],
+    "services": [
+      "videotaping",
+      "two-camera depositions"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:22:56",
+    "sentiment": null
+  },
+  {
+    "slug": "the-ohio-reporting-company-columbus",
+    "name": "The Ohio Reporting Company",
+    "city": "columbus",
+    "state": "OH",
+    "address": "",
+    "lat": 39.9622601,
+    "lng": -83.0007065,
+    "phone": "",
+    "website": "https://ohioreporters.com",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Maintains over 100 in-house videographers across the US for uniformly high-quality, edited, trial-ready legal videos; ensures consistent formatting and perpetual cloud storage.",
+    "certifications": [],
+    "services": [
+      "legal videography",
+      "video editing",
+      "trial-ready videos"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:22:56",
+    "sentiment": null
+  }
+]

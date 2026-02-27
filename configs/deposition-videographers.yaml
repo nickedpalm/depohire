@@ -28,6 +28,15 @@ city_page_prompt_context: |
   and expedited delivery. Attorneys hire them for civil litigation,
   personal injury cases, and corporate disputes.
 
+# Editorial
+contact_email: "contact@depositionvideographers.com"
+founded_year: 2026
+editorial_author:
+  name: "Nick Palmer"
+  title: "Founder & Lead Researcher"
+  bio: "After years working in the legal services industry, Nick built this directory to help attorneys find qualified deposition videographers without the guesswork."
+  linkedin: "https://linkedin.com/in/nickedpalmer"
+
 # SEO
 primary_keyword: "deposition videographer"
 secondary_keywords:

@@ -1,0 +1,190 @@
+[
+  {
+    "slug": "action-video-productions-inc-miami",
+    "name": "Action Video Productions Inc.",
+    "city": "miami",
+    "state": "FL",
+    "address": "",
+    "lat": 25.7741566,
+    "lng": -80.1935973,
+    "phone": "",
+    "website": "https://actionvideoproductionsinc.com",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Provides certified legal video deposition services, remote depositions, court reporting, and trial video production for law firms throughout Florida and nationwide.",
+    "certifications": [],
+    "services": [
+      "video depositions",
+      "remote depositions",
+      "court reporting",
+      "trial video production"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:22:35",
+    "sentiment": {
+      "label": "positive",
+      "score": 0.75,
+      "keywords": [
+        "video depositions",
+        "remote depositions",
+        "court reporting",
+        "trial video production"
+      ],
+      "highlights": [
+        {
+          "text": "Action Video Productions provided professional and affordable video deposition services on multiple occasions to our firm.",
+          "sentiment": "positive"
+        },
+        {
+          "text": "They provided a last minute court reporter and we now use them for in-person and remote court reporting on a regular basis.",
+          "sentiment": "positive"
+        },
+        {
+          "text": "Action Video Productions provided our firm with virtual depositions throughout the pandemic.",
+          "sentiment": "positive"
+        }
+      ],
+      "summary": "Provides certified legal video deposition services, remote depositions, court reporting, and trial video production for law firms throughout Florida and nationwide."
+    }
+  },
+  {
+    "slug": "courtscribes-miami",
+    "name": "CourtScribes",
+    "city": "miami",
+    "state": "FL",
+    "address": "",
+    "lat": 25.7741566,
+    "lng": -80.1935973,
+    "phone": "",
+    "website": "https://courtscribes.com/deposition-videography-in-florida/",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Offers certified deposition videography in Florida using expert professionals and AI for accurate, secure legal video services.",
+    "certifications": [],
+    "services": [
+      "deposition videography",
+      "AI-enhanced transcription",
+      "secure video services"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:22:35",
+    "sentiment": null
+  },
+  {
+    "slug": "lexitas-miami",
+    "name": "Lexitas",
+    "city": "miami",
+    "state": "FL",
+    "address": "",
+    "lat": 25.7741566,
+    "lng": -80.1935973,
+    "phone": "",
+    "website": "https://www.lexitaslegal.com/locations/miami",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Offers digital recording of proceedings by professional legal video specialists for broadcast quality video content in Miami, Florida.",
+    "certifications": [],
+    "services": [
+      "legal videography",
+      "deposition suites",
+      "court reporting"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:22:35",
+    "sentiment": null
+  },
+  {
+    "slug": "magna-legal-services-miami",
+    "name": "Magna Legal Services",
+    "city": "miami",
+    "state": "FL",
+    "address": "",
+    "lat": 25.7741566,
+    "lng": -80.1935973,
+    "phone": "",
+    "website": "https://magnals.com/services/video-services/",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "In-house videography department providing comprehensive legal video deposition solutions including sync, editing, remote video conferencing, and trial presentations.",
+    "certifications": [],
+    "services": [
+      "video depositions",
+      "video/transcript sync",
+      "editing and redacting",
+      "remote videoconferencing"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:22:35",
+    "sentiment": null
+  },
+  {
+    "slug": "milestone-reporting-miami",
+    "name": "Milestone Reporting",
+    "city": "miami",
+    "state": "FL",
+    "address": "",
+    "lat": 25.7741566,
+    "lng": -80.1935973,
+    "phone": "",
+    "website": "https://milestonereporting.com",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Premier court reporting and legal video deposition firm in Florida and Georgia, offering certified videographers and nationwide network services.",
+    "certifications": [],
+    "services": [
+      "legal video depositions",
+      "court reporting",
+      "trial presentation technology"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:22:35",
+    "sentiment": null
+  },
+  {
+    "slug": "tisa-legal-media-miami",
+    "name": "Tisa Legal Media",
+    "city": "miami",
+    "state": "FL",
+    "address": "",
+    "lat": 25.7741566,
+    "lng": -80.1935973,
+    "phone": "",
+    "website": "https://tisalegalmedia.com",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Provides fast, reliable court reporting with trained Testimony Capture Technicians for audio/video preservation and deposition services.",
+    "certifications": [],
+    "services": [
+      "court reporting",
+      "deposition videography",
+      "testimony capture"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:22:35",
+    "sentiment": null
+  }
+]

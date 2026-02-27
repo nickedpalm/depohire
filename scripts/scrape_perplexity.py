@@ -124,20 +124,23 @@ def match_city(biz_city: str, state_cities: list[dict]) -> str | None:
 
 
 def query_perplexity(api_key: str, keyword: str, state: str, state_name: str) -> list[dict]:
-    """Query Perplexity for businesses in a state. Returns parsed listings."""
+    """Query Perplexity for businesses in a state. Returns parsed listings with reviews."""
 
     prompt = f"""Find real {keyword} companies and professionals in {state_name} ({state}).
 
-Search for actual businesses that provide {keyword} services. For each one found, provide:
-- Business name
+Search for actual businesses that provide {keyword} services. For each one, provide:
+- Business name (exact legal/business name)
 - City
+- Full street address (if available)
 - Phone number (if available)
 - Website URL (if available)
+- Google rating (e.g. 4.7) and approximate review count
+- 2-3 short review excerpts or highlights from Google Reviews (actual quotes if possible)
 - Brief description of their services
 
 Return ONLY a JSON array. No explanation, no markdown. Example format:
 [
-  {{"name": "Example Video LLC", "city": "Dallas", "phone": "(555) 123-4567", "website": "https://example.com", "description": "Full-service deposition videography"}},
+  {{"name": "Example Video LLC", "city": "Dallas", "address": "123 Main St, Dallas, TX 75201", "phone": "(555) 123-4567", "website": "https://example.com", "description": "Full-service deposition videography", "rating": 4.7, "review_count": 23, "review_highlights": ["Professional and always on time", "Great video quality for our trial"], "services": ["video sync", "streaming", "multi-camera"]}}
 ]
 
 Be thorough — include solo practitioners, small firms, and larger companies. Only include real, currently operating businesses."""
@@ -247,7 +250,7 @@ def main():
                 if not name:
                     continue
 
-                biz_city = biz.get("city", "").strip()
+                biz_city = (biz.get("city") or "").strip()
                 city_slug = match_city(biz_city, state_cities) if biz_city else None
 
                 try:
@@ -270,6 +273,43 @@ def main():
                         json.dumps(biz),
                     ))
                     total_found += 1
+
+                    # Get the listing ID for reviews/sentiment
+                    row = conn.execute(
+                        "SELECT id FROM raw_listings WHERE vertical = ? AND name = ? AND city = ?",
+                        (args.vertical, name, city_slug)
+                    ).fetchone()
+                    if row:
+                        lid = row[0]
+                        # Store review highlights as individual reviews
+                        for highlight in biz.get("review_highlights", []):
+                            if highlight and isinstance(highlight, str) and len(highlight) > 5:
+                                try:
+                                    conn.execute("""
+                                        INSERT OR IGNORE INTO reviews (listing_id, source, author, rating, text)
+                                        VALUES (?, 'perplexity', '', ?, ?)
+                                    """, (lid, biz.get("rating"), highlight))
+                                except sqlite3.IntegrityError:
+                                    pass
+
+                        # Auto-compute sentiment from rating + review highlights
+                        rating = biz.get("rating")
+                        try:
+                            rating = float(rating) if rating is not None else None
+                        except (ValueError, TypeError):
+                            rating = None
+                        highlights = [h for h in biz.get("review_highlights", []) if h and isinstance(h, str)]
+                        if rating or highlights:
+                            score = min(1.0, max(0.0, ((rating or 4.0) - 1) / 4))
+                            label = "positive" if score >= 0.75 else "mixed" if score >= 0.5 else "negative"
+                            kw = [s.strip() for s in biz.get("services", []) if isinstance(s, str)][:5]
+                            hl_json = [{"text": h[:150], "sentiment": "positive" if score >= 0.5 else "negative"} for h in highlights[:4]]
+                            summary = biz.get("description", "")[:200] if biz.get("description") else ""
+                            conn.execute("""
+                                INSERT OR REPLACE INTO sentiment (listing_id, label, score, keywords, highlights, summary)
+                                VALUES (?, ?, ?, ?, ?, ?)
+                            """, (lid, label, round(score, 2), json.dumps(kw), json.dumps(hl_json), summary))
+
                 except Exception as e:
                     print(f"    DB error for {name}: {e}")
 
