@@ -1,0 +1,31 @@
+---
+import config from '@/config';
+
+interface Props {
+  size?: 'hero' | 'compact';
+}
+
+const { size = 'hero' } = Astro.props;
+const isHero = size === 'hero';
+---
+<div class={isHero ? 'py-16 sm:py-24 bg-gradient-to-br from-primary-600 to-primary-800 text-white' : ''}>
+  <div class="container-narrow text-center">
+    {isHero && (
+      <>
+        <h1 class="text-3xl sm:text-5xl font-bold mb-4">{config.tagline}</h1>
+        <p class="text-lg sm:text-xl text-primary-100 mb-8 max-w-2xl mx-auto">{config.description}</p>
+      </>
+    )}
+    <form action="/search/" method="get" class={`flex gap-2 max-w-xl mx-auto ${isHero ? '' : 'my-4'}`}>
+      <input
+        type="search"
+        name="q"
+        placeholder={`Search ${config.primaryKeyword}s by city...`}
+        class={`flex-1 px-4 rounded-lg border-0 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-primary-300 ${isHero ? 'py-4 text-lg' : 'py-2'}`}
+      />
+      <button type="submit" class={`bg-primary-500 hover:bg-primary-400 text-white font-semibold rounded-lg transition-colors ${isHero ? 'px-8 py-4 text-lg' : 'px-4 py-2'}`}>
+        Search
+      </button>
+    </form>
+  </div>
+</div>

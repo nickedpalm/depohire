@@ -1,0 +1,65 @@
+[
+  {
+    "slug": "la-legal-video-pros",
+    "name": "LA Legal Video Pros",
+    "city": "los-angeles",
+    "state": "CA",
+    "address": "9000 Wilshire Blvd, Suite 200, Beverly Hills, CA 90212",
+    "lat": 34.0696,
+    "lng": -118.3950,
+    "phone": "(310) 555-3456",
+    "website": "https://lalegalvideo.com",
+    "email": "info@lalegalvideo.com",
+    "rating": 4.9,
+    "review_count": 31,
+    "description": "Los Angeles premier deposition videography service. Multi-camera setups, real-time streaming to remote attorneys, and expedited video-to-transcript synchronization.",
+    "certifications": ["CLVS"],
+    "services": ["video sync", "streaming", "multi-camera", "day-in-the-life"],
+    "years_experience": 18,
+    "claimed": false,
+    "source": "sample",
+    "scraped_at": "2026-02-26",
+    "sentiment": {
+      "label": "positive",
+      "score": 0.95,
+      "keywords": ["top-notch", "multi-camera", "streaming", "professional", "punctual"],
+      "highlights": [
+        {"text": "The multi-camera setup caught every detail. Our trial team was thrilled.", "sentiment": "positive"},
+        {"text": "Streaming quality was flawless for our remote co-counsel in New York.", "sentiment": "positive"},
+        {"text": "Most professional legal videographer in LA, hands down.", "sentiment": "positive"}
+      ],
+      "summary": "Top-rated in LA with exceptional marks for multi-camera work and streaming reliability."
+    }
+  },
+  {
+    "slug": "pacific-deposition-video",
+    "name": "Pacific Deposition Video",
+    "city": "los-angeles",
+    "state": "CA",
+    "address": "1100 S. Flower St, Suite 300, Los Angeles, CA 90015",
+    "lat": 34.0407,
+    "lng": -118.2622,
+    "phone": "(213) 555-7890",
+    "website": "https://pacificdepo.com",
+    "email": "book@pacificdepo.com",
+    "rating": 4.7,
+    "review_count": 15,
+    "description": "Full-service legal videography covering all of Southern California. Specializing in complex litigation, mass tort depositions, and remote participation setups.",
+    "certifications": ["CLVS"],
+    "services": ["video sync", "remote participation", "4K recording"],
+    "years_experience": 12,
+    "claimed": false,
+    "source": "sample",
+    "scraped_at": "2026-02-26",
+    "sentiment": {
+      "label": "positive",
+      "score": 0.82,
+      "keywords": ["SoCal coverage", "mass tort", "remote participation", "thorough"],
+      "highlights": [
+        {"text": "Covered depositions across 5 Southern California counties for our mass tort case.", "sentiment": "positive"},
+        {"text": "Remote participation setup worked well but audio had minor issues initially.", "sentiment": "negative"}
+      ],
+      "summary": "Strong regional coverage and mass tort expertise; minor technical hiccups noted."
+    }
+  }
+]

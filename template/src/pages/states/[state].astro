@@ -1,0 +1,62 @@
+---
+import Base from '@/layouts/Base.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import CityGrid from '@/components/CityGrid.astro';
+import config from '@/config';
+import citiesData from '@/data/cities.json';
+import { getListingCountByCity } from '@/lib/listings';
+
+export function getStaticPaths() {
+  // Get unique states
+  const stateMap = new Map<string, { stateSlug: string; stateName: string; state: string }>();
+  for (const city of citiesData) {
+    if (!stateMap.has(city.stateSlug)) {
+      stateMap.set(city.stateSlug, {
+        stateSlug: city.stateSlug,
+        stateName: city.stateName,
+        state: city.state,
+      });
+    }
+  }
+
+  // Add "all" route
+  const paths = [
+    {
+      params: { state: 'all' },
+      props: { stateName: 'All States', stateAbbr: '', isAll: true },
+    },
+    ...Array.from(stateMap.values()).map(s => ({
+      params: { state: s.stateSlug },
+      props: { stateName: s.stateName, stateAbbr: s.state, isAll: false },
+    })),
+  ];
+
+  return paths;
+}
+
+const { stateName, stateAbbr, isAll } = Astro.props;
+const cityCounts = getListingCountByCity();
+
+const filteredCities = isAll
+  ? citiesData
+  : citiesData.filter(c => c.state === stateAbbr);
+
+const citiesWithCounts = filteredCities
+  .map(c => ({ slug: c.slug, city: c.city, state: c.state, listingCount: cityCounts[c.slug] || 0 }))
+  .sort((a, b) => b.listingCount - a.listingCount || a.city.localeCompare(b.city));
+
+const title = isAll ? `Browse ${config.name} by State` : `${config.name} in ${stateName}`;
+const description = isAll
+  ? `Browse ${config.primaryKeyword}s across all 50 US states.`
+  : `Find ${config.primaryKeyword}s in ${stateName}. Browse ${filteredCities.length} cities.`;
+---
+<Base title={title} description={description}>
+  <div class="container-narrow py-8">
+    <Breadcrumbs crumbs={isAll ? [{ label: 'All States' }] : [
+      { label: 'All States', href: '/states/all/' },
+      { label: stateName },
+    ]} />
+
+    <CityGrid cities={citiesWithCounts} title={title} />
+  </div>
+</Base>

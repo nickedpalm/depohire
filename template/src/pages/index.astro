@@ -1,0 +1,66 @@
+---
+import Base from '@/layouts/Base.astro';
+import SearchBar from '@/components/SearchBar.astro';
+import CityGrid from '@/components/CityGrid.astro';
+import StateList from '@/components/StateList.astro';
+import config from '@/config';
+import citiesData from '@/data/cities.json';
+import { getListingCountByCity, getListingCountByState, getAllListings } from '@/lib/listings';
+
+const cityCounts = getListingCountByCity();
+const stateCounts = getListingCountByState();
+const totalListings = getAllListings().length;
+
+// Cities with listings first, then by population
+const citiesWithCounts = citiesData
+  .map(c => ({ ...c, listingCount: cityCounts[c.slug] || 0 }))
+  .sort((a, b) => b.listingCount - a.listingCount || b.population - a.population)
+  .slice(0, 25);
+
+// Aggregate states
+const stateMap = new Map<string, { stateSlug: string; stateName: string; state: string; cityCount: number; listingCount: number }>();
+for (const city of citiesData) {
+  const existing = stateMap.get(city.state);
+  if (existing) {
+    existing.cityCount++;
+    existing.listingCount += cityCounts[city.slug] || 0;
+  } else {
+    stateMap.set(city.state, {
+      stateSlug: city.stateSlug,
+      stateName: city.stateName,
+      state: city.state,
+      cityCount: 1,
+      listingCount: cityCounts[city.slug] || 0,
+    });
+  }
+}
+const states = Array.from(stateMap.values()).sort((a, b) => a.stateName.localeCompare(b.stateName));
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: config.name,
+  url: config.siteUrl,
+  description: config.description,
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: `${config.siteUrl}/search/?q={search_term_string}`,
+    'query-input': 'required name=search_term_string',
+  },
+};
+---
+<Base title={config.name} description={config.description} schema={schema}>
+  <SearchBar size="hero" />
+
+  {totalListings > 0 && (
+    <div class="container-narrow text-center py-6">
+      <p class="text-gray-500">
+        <span class="font-semibold text-gray-900">{totalListings}</span> {config.primaryKeyword}s across
+        <span class="font-semibold text-gray-900">{Object.keys(cityCounts).length}</span> cities
+      </p>
+    </div>
+  )}
+
+  <CityGrid cities={citiesWithCounts} title={`Top Cities for ${config.name}`} />
+  <StateList states={states} />
+</Base>

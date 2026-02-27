@@ -1,0 +1,15 @@
+{
+  "name": "Example Directory",
+  "slug": "example-directory",
+  "domain": "example.com",
+  "siteUrl": "https://example.com",
+  "tagline": "Find professionals near you",
+  "description": "A professional directory",
+  "jobValue": "",
+  "industry": "",
+  "primaryKeyword": "professional",
+  "secondaryKeywords": [],
+  "certifications": [],
+  "extraFields": [],
+  "cityPagePromptContext": ""
+}
