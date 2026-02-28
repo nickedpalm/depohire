@@ -39,7 +39,7 @@ def save_cache(vertical: str, cache: dict):
 
 
 def search_unsplash(query: str, access_key: str) -> dict | None:
-    """Search Unsplash for a photo. Returns first result or None."""
+    """Search Unsplash for a photo. Returns first result or None. Handles rate limits."""
     resp = httpx.get(
         f"{UNSPLASH_API}/search/photos",
         params={
@@ -50,6 +50,17 @@ def search_unsplash(query: str, access_key: str) -> dict | None:
         headers={"Authorization": f"Client-ID {access_key}"},
         timeout=30,
     )
+    if resp.status_code == 403:
+        remaining = resp.headers.get("X-Ratelimit-Remaining", "?")
+        print(f"RATE LIMITED (remaining: {remaining}). Waiting 10min...", end=" ", flush=True)
+        time.sleep(600)
+        # Retry once
+        resp = httpx.get(
+            f"{UNSPLASH_API}/search/photos",
+            params={"query": query, "per_page": 1, "orientation": "landscape"},
+            headers={"Authorization": f"Client-ID {access_key}"},
+            timeout=30,
+        )
     resp.raise_for_status()
     data = resp.json()
 
@@ -173,7 +184,8 @@ def main():
         for city in cities:
             if fetch_city_image(city["slug"], city["city"], access_key, cache):
                 fetched += 1
-                time.sleep(1.5)  # Rate limit: 50/hr ≈ 1 per 72s, but be conservative
+                save_cache(args.vertical, cache)
+                time.sleep(75)  # Rate limit: 50/hr ≈ 1 per 72s
 
     if args.topic:
         if not args.config:
@@ -195,7 +207,8 @@ def main():
         for topic in topics:
             if fetch_article_image(topic["slug"], topic["title"], access_key, cache):
                 fetched += 1
-                time.sleep(1.5)
+                save_cache(args.vertical, cache)
+                time.sleep(75)  # Rate limit: 50/hr ≈ 1 per 72s
 
     save_cache(args.vertical, cache)
     print(f"\nDone. {fetched} new images fetched. Cache: verticals/{args.vertical}/images.json")
