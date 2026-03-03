@@ -1,0 +1,118 @@
+---
+import PageLayout from '~/layouts/PageLayout.astro';
+import SearchBar from '~/components/directory/SearchBar.astro';
+import CityGrid from '~/components/directory/CityGrid.astro';
+import StateList from '~/components/directory/StateList.astro';
+import config from '~/config';
+import citiesData from '~/data/cities.json';
+import { getListingCountByCity, getListingCountByState, getAllListings } from '~/lib/listings';
+
+const cityCounts = getListingCountByCity();
+const stateCounts = getListingCountByState();
+const totalListings = getAllListings().length;
+const totalCities = Object.keys(cityCounts).length;
+const totalStates = Object.keys(stateCounts).length;
+
+// Cities with listings first, then by population
+const citiesWithCounts = citiesData
+  .map(c => ({ ...c, listingCount: cityCounts[c.slug] || 0 }))
+  .sort((a, b) => b.listingCount - a.listingCount || b.population - a.population)
+  .slice(0, 25);
+
+// Aggregate states
+const stateMap = new Map<string, { stateSlug: string; stateName: string; state: string; cityCount: number; listingCount: number }>();
+for (const city of citiesData) {
+  const existing = stateMap.get(city.state);
+  if (existing) {
+    existing.cityCount++;
+    existing.listingCount += cityCounts[city.slug] || 0;
+  } else {
+    stateMap.set(city.state, {
+      stateSlug: city.stateSlug,
+      stateName: city.stateName,
+      state: city.state,
+      cityCount: 1,
+      listingCount: cityCounts[city.slug] || 0,
+    });
+  }
+}
+const states = Array.from(stateMap.values()).sort((a, b) => a.stateName.localeCompare(b.stateName));
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: config.name,
+  url: config.siteUrl,
+  description: config.description,
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: `${config.siteUrl}/search/?q={search_term_string}`,
+    'query-input': 'required name=search_term_string',
+  },
+};
+
+const metadata = {
+  title: config.name,
+  ignoreTitleTemplate: true,
+  description: config.description,
+};
+---
+<PageLayout metadata={metadata}>
+  <Fragment slot="announcement"><span></span></Fragment>
+  <SearchBar size="hero" />
+
+  {/* StoryBrand: Problem → Guide → Plan → Action */}
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    {totalListings > 0 ? (
+      <div class="text-center mb-8">
+        <p class="text-lg text-muted max-w-2xl mx-auto">
+          Stop cold-calling firms and guessing who's qualified.
+          We've verified <span class="font-bold text-default">{totalListings}</span> {config.primaryKeyword}s
+          across <span class="font-bold text-default">{totalCities}</span> cities
+          so you can compare, read real reviews, and request quotes — in minutes.
+        </p>
+        <div class="flex items-center justify-center gap-6 mt-4 text-sm text-muted">
+          <span class="flex items-center gap-1.5">
+            <svg class="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.06l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg>
+            Verified listings
+          </span>
+          <span class="flex items-center gap-1.5">
+            <svg class="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.06l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg>
+            Real reviews
+          </span>
+          <span class="flex items-center gap-1.5">
+            <svg class="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.06l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg>
+            Free quotes
+          </span>
+        </div>
+      </div>
+    ) : (
+      <div class="text-center mb-8">
+        <p class="text-lg text-muted">{config.tagline}</p>
+      </div>
+    )}
+  </div>
+
+  <CityGrid cities={citiesWithCounts} title={`Find ${config.name} Near You`} />
+  <StateList states={states} />
+
+  {/* Trust signals */}
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+      <div class="p-5">
+        <p class="text-2xl font-bold text-primary">{totalStates}+</p>
+        <p class="text-sm text-muted mt-1">States Covered</p>
+      </div>
+      <div class="p-5">
+        <p class="text-2xl font-bold text-primary">Updated {new Date().getFullYear()}</p>
+        <p class="text-sm text-muted mt-1">Data Verified Regularly</p>
+      </div>
+      <div class="p-5">
+        <p class="text-2xl font-bold text-primary">100%</p>
+        <p class="text-sm text-muted mt-1">Free to Search</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+</PageLayout>

@@ -1,0 +1,56 @@
+---
+import PageLayout from '~/layouts/PageLayout.astro';
+import Breadcrumbs from '~/components/directory/Breadcrumbs.astro';
+import config from '~/config';
+import { getCollection } from 'astro:content';
+
+const allPosts = (await getCollection('blog'))
+  .filter(p => !p.data.draft)
+  .sort((a, b) => (b.data.pubDate?.valueOf() || 0) - (a.data.pubDate?.valueOf() || 0));
+
+const pillar = allPosts.find(p => p.data.tags.includes('pillar'));
+const posts = allPosts.filter(p => p !== pillar);
+
+const metadata = {
+  title: `Blog | ${config.name}`,
+  description: `Articles and guides about ${config.primaryKeyword}s.`,
+};
+---
+<PageLayout metadata={metadata}>
+  <Fragment slot="announcement"><span></span></Fragment>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <Breadcrumbs crumbs={[{ label: 'Blog' }]} />
+    <h1 class="text-3xl font-bold text-default mb-2">Blog</h1>
+    <p class="text-muted mb-8">Expert guides and insights on {config.primaryKeyword}s</p>
+
+    {pillar && (
+      <a href={`/blog/${pillar.id}/`} class="block mb-12 rounded-xl border-2 border-blue-100 bg-gradient-to-br from-blue-50 to-white p-8 no-underline group hover:border-blue-200 hover:shadow-lg transition-all">
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-700 mb-3">Complete Guide</span>
+        <h2 class="text-2xl sm:text-3xl font-bold text-default group-hover:text-primary transition-colors">{pillar.data.title}</h2>
+        <p class="text-muted mt-3 text-lg leading-relaxed">{pillar.data.description}</p>
+        <span class="inline-flex items-center mt-4 text-primary font-medium text-sm group-hover:gap-2 transition-all">
+          Read the complete guide <span class="ml-1">&rarr;</span>
+        </span>
+      </a>
+    )}
+
+    <div class="grid sm:grid-cols-2 gap-4">
+      {posts.map(post => (
+        <a href={`/blog/${post.id}/`} class="block bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow p-5 no-underline group">
+          <h2 class="text-base font-semibold text-default group-hover:text-primary transition-colors leading-snug">{post.data.title}</h2>
+          <p class="text-muted mt-1 text-sm">
+            {post.data.pubDate?.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+          </p>
+          <p class="text-muted mt-2 text-sm line-clamp-2">{post.data.description}</p>
+          {post.data.tags.length > 0 && (
+            <div class="flex flex-wrap gap-1 mt-3">
+              {post.data.tags.slice(0, 3).map((tag: string) => (
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-muted">{tag}</span>
+              ))}
+            </div>
+          )}
+        </a>
+      ))}
+    </div>
+  </div>
+</PageLayout>

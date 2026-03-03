@@ -1,0 +1,32 @@
+[
+  {
+    "slug": "legal-recorder-san-diego",
+    "name": "Legal Recorder\u00ae",
+    "city": "san-diego",
+    "state": "CA",
+    "address": "Not provided",
+    "lat": 32.7174202,
+    "lng": -117.162772,
+    "phone": "Not provided",
+    "website": "https://legalrecorder.com/video-depositions",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Premium deposition videography services with nearly two decades of audio and video technician experience. Authorized by the Secretary of the State of California.",
+    "certifications": [],
+    "services": [
+      "video depositions",
+      "in-person depositions",
+      "hybrid depositions",
+      "remote depositions",
+      "HD video recording",
+      "same-day service available"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:22:03",
+    "sentiment": null
+  }
+]

@@ -1,0 +1,83 @@
+---
+import PageLayout from '~/layouts/PageLayout.astro';
+import Breadcrumbs from '~/components/directory/Breadcrumbs.astro';
+import config from '~/config';
+
+const title = `Editorial Guidelines — ${config.name}`;
+const description = `How ${config.name} curates, verifies, and ranks ${config.primaryKeyword} listings. Our methodology, scoring criteria, and update process.`;
+const metadata = { title, description };
+---
+<PageLayout metadata={metadata}>
+  <Fragment slot="announcement"><span></span></Fragment>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <Breadcrumbs crumbs={[{ label: 'Editorial Guidelines' }]} />
+
+    <h1 class="text-3xl font-bold text-default mb-6">Editorial Guidelines</h1>
+
+    <div class="prose prose-lg max-w-none">
+      <p class="text-lg text-muted">
+        Transparency matters. Here's exactly how we source, verify, and present {config.primaryKeyword} listings on this directory.
+      </p>
+
+      <h2>Data Sources</h2>
+      <p>Our listings are compiled from multiple independent sources to ensure comprehensive coverage:</p>
+      <ul>
+        <li><strong>Public business directories</strong> — Google Business Profiles, industry registries, and state licensing databases</li>
+        <li><strong>Professional associations</strong> — Certification bodies and trade organizations relevant to {config.primaryKeyword}s</li>
+        <li><strong>Direct submissions</strong> — Professionals can submit or claim their listing for review</li>
+        <li><strong>Web research</strong> — Structured data extraction from business websites and review platforms</li>
+      </ul>
+
+      <h2>Verification Process</h2>
+      <p>Each listing undergoes the following checks before publication:</p>
+      <ol>
+        <li><strong>Identity verification</strong> — Business name and address are confirmed against public records</li>
+        <li><strong>Contact validation</strong> — Phone numbers and websites are tested for accuracy</li>
+        <li><strong>Active status</strong> — We confirm the business is currently operating and accepting clients</li>
+        <li><strong>Geographic accuracy</strong> — Locations are geocoded and mapped to the correct service area</li>
+      </ol>
+
+      <h2>Ranking & Display Order</h2>
+      <p>Listings within each city are ordered by a combination of factors:</p>
+      <ul>
+        <li><strong>Featured status</strong> — Businesses that sponsor their listing appear first, clearly labeled as "Featured"</li>
+        <li><strong>Aggregate rating</strong> — Higher-rated businesses appear above lower-rated ones</li>
+        <li><strong>Review volume</strong> — Businesses with more reviews receive a secondary boost</li>
+        <li><strong>Data completeness</strong> — Listings with verified websites, certifications, and detailed service descriptions rank higher</li>
+      </ul>
+      <p>We never accept payment to artificially inflate a listing's rating or reviews. Featured placements are clearly disclosed with a visual badge.</p>
+
+      <h2>Review & Sentiment Analysis</h2>
+      <p>Where available, we aggregate review data from public sources and compute a sentiment score. Our sentiment analysis considers:</p>
+      <ul>
+        <li>Overall star rating from review platforms</li>
+        <li>Volume and recency of reviews</li>
+        <li>Keyword extraction from review text</li>
+        <li>Positive/negative/mixed classification</li>
+      </ul>
+
+      <h2>Update Cadence</h2>
+      <p>
+        Our database is updated regularly. Listings are re-verified on a rolling basis to ensure accuracy.
+        If you notice outdated or incorrect information, please email
+        <a href={`mailto:corrections@${config.domain}`}>corrections@{config.domain}</a>.
+      </p>
+
+      <h2>Content Standards</h2>
+      <p>All editorial content (city guides, blog articles, industry resources) follows these principles:</p>
+      <ul>
+        <li><strong>Factual accuracy</strong> — Claims are backed by data, sourced from public records or industry research</li>
+        <li><strong>Practical value</strong> — Every piece aims to help users make informed hiring decisions</li>
+        <li><strong>No pay-for-play</strong> — Editorial recommendations are never influenced by advertising relationships</li>
+        <li><strong>Regular updates</strong> — Content is reviewed and updated to reflect current pricing, regulations, and market conditions</li>
+      </ul>
+
+      <div class="not-prose bg-gray-50 border border-gray-200 rounded-xl p-5 mt-6">
+        <p class="text-sm text-muted">
+          Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}. Questions about our editorial process?
+          Contact <a href={`mailto:${config.contactEmail}`} class="text-primary hover:underline">{config.contactEmail}</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</PageLayout>

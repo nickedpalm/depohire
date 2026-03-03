@@ -1,0 +1,163 @@
+---
+import PageLayout from '~/layouts/PageLayout.astro';
+import Breadcrumbs from '~/components/directory/Breadcrumbs.astro';
+import ListingCard from '~/components/directory/ListingCard.astro';
+import LeafletMap from '~/components/directory/LeafletMap.astro';
+import AdSlot from '~/components/directory/AdSlot.astro';
+import FAQAccordion from '~/components/directory/FAQAccordion.astro';
+import RelatedContent from '~/components/directory/RelatedContent.astro';
+import config from '~/config';
+import citiesData from '~/data/cities.json';
+import { getListingsForCity } from '~/lib/listings';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const cityContent = await getCollection('cities');
+  return citiesData.map(city => {
+    const content = cityContent.find(c => c.data.slug === city.slug);
+    return {
+      params: { city: city.slug },
+      props: { cityInfo: city, content },
+    };
+  });
+}
+
+const { cityInfo, content } = Astro.props;
+const allListings = getListingsForCity(cityInfo.slug);
+const { Content } = content ? await render(content) : { Content: null };
+const heroImage = content?.data?.image;
+const imageCredit = content?.data?.imageCredit;
+
+// Featured listings first, then by rating
+const featured = allListings.filter(l => l.featured);
+const regular = allListings.filter(l => !l.featured).sort((a, b) => (b.rating || 0) - (a.rating || 0));
+const listings = [...featured, ...regular];
+
+const pins = listings.filter(l => l.lat && l.lat !== 0).map(l => ({ lat: l.lat, lng: l.lng, name: l.name, slug: l.slug }));
+
+const currentYear = new Date().getFullYear();
+const title = `Best ${config.name} in ${cityInfo.city}, ${cityInfo.state} (${currentYear})`;
+const metaDescription = `Find the best ${config.primaryKeyword}s in ${cityInfo.city}, ${cityInfo.state}. Compare ${listings.length} professionals, read reviews, and request quotes. Updated ${currentYear}.`;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: title,
+  description: metaDescription,
+  numberOfItems: listings.length,
+  itemListElement: listings.map((l, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    item: {
+      '@type': 'LocalBusiness',
+      name: l.name,
+      address: l.address,
+      telephone: l.phone,
+      url: `${config.siteUrl}/listing/${l.slug}/`,
+      aggregateRating: l.review_count > 0 ? {
+        '@type': 'AggregateRating',
+        ratingValue: l.rating,
+        reviewCount: l.review_count,
+      } : undefined,
+    },
+  })),
+};
+
+const metadata = { title, description: metaDescription };
+---
+<PageLayout metadata={metadata}>
+  <Fragment slot="announcement"><span></span></Fragment>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <Breadcrumbs crumbs={[
+      { label: cityInfo.stateName || cityInfo.state, href: `/states/${cityInfo.stateSlug}/` },
+      { label: cityInfo.city },
+    ]} />
+
+    {heroImage && (
+      <div class="relative rounded-xl overflow-hidden mb-6 -mx-4 sm:mx-0">
+        <img
+          src={heroImage}
+          alt={`${cityInfo.city}, ${cityInfo.state} skyline`}
+          class="w-full h-48 sm:h-64 md:h-80 object-cover"
+          loading="eager"
+          decoding="async"
+        />
+        {imageCredit && (
+          <p class="absolute bottom-2 right-3 text-[10px] text-white/80 bg-black/40 px-2 py-0.5 rounded" set:html={imageCredit.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="underline hover:text-white" target="_blank" rel="noopener noreferrer">$1</a>')} />
+        )}
+      </div>
+    )}
+
+    <h1 class="text-3xl font-bold text-default mb-2">{title}</h1>
+    <p class="text-muted mb-8">{listings.length} {config.primaryKeyword}{listings.length !== 1 ? 's' : ''} found in {cityInfo.city}</p>
+
+    {pins.length > 0 && (
+      <div class="mb-8">
+        <LeafletMap pins={pins} centerLat={cityInfo.lat} centerLng={cityInfo.lng} />
+      </div>
+    )}
+
+    {listings.length > 0 ? (
+      <div data-pagefind-body>
+        {featured.length > 0 && (
+          <div class="grid grid-cols-1 gap-4 mb-4">
+            {featured.map(listing => (
+              <ListingCard {...listing} />
+            ))}
+          </div>
+        )}
+
+        {listings.length >= 3 && (
+          <div class="mb-4">
+            <AdSlot placement="city-top" city={cityInfo.city} state={cityInfo.state} />
+          </div>
+        )}
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          {regular.map(listing => (
+            <ListingCard {...listing} />
+          ))}
+        </div>
+      </div>
+    ) : (
+      <div class="text-center py-12 text-muted">
+        <p>No {config.primaryKeyword}s listed in {cityInfo.city} yet.</p>
+        <p class="mt-2 text-sm">Know a {config.primaryKeyword} here? <a href="mailto:submit@example.com">Submit a listing</a></p>
+      </div>
+    )}
+
+    {Content && (
+      <div class="prose prose-lg max-w-none mt-8">
+        <Content />
+      </div>
+    )}
+
+    <FAQAccordion faqs={[
+      {
+        question: `How much does a ${config.primaryKeyword} cost in ${cityInfo.city}?`,
+        answer: `${config.primaryKeyword.charAt(0).toUpperCase() + config.primaryKeyword.slice(1)} rates in ${cityInfo.city} typically range from ${config.jobValue || '$300-2,000'} depending on the scope, duration, and specific services required. Request quotes from multiple providers to compare pricing.`,
+      },
+      {
+        question: `How many ${config.primaryKeyword}s are listed in ${cityInfo.city}?`,
+        answer: `We currently list ${listings.length} verified ${config.primaryKeyword}${listings.length !== 1 ? 's' : ''} serving the ${cityInfo.city}, ${cityInfo.stateName} area. Our directory is updated regularly as new professionals are verified.`,
+      },
+      {
+        question: `What should I look for when hiring a ${config.primaryKeyword} in ${cityInfo.city}?`,
+        answer: `Key factors include ${config.certifications.length > 0 ? `certifications (like ${config.certifications[0]}), ` : ''}experience in your specific type of case, equipment quality, turnaround time, and client reviews. We recommend comparing at least 2-3 providers.`,
+      },
+      {
+        question: `Are ${config.primaryKeyword}s in ${cityInfo.city} certified?`,
+        answer: config.certifications.length > 0
+          ? `Some ${config.primaryKeyword}s in ${cityInfo.city} hold certifications such as ${config.certifications.join(' and ')}. Look for the credentials badge on individual listings for verified certifications.`
+          : `Certification requirements vary by state. Check individual listings for professional credentials and qualifications.`,
+      },
+    ]} />
+
+    <RelatedContent city={cityInfo.city} state={cityInfo.state} citySlug={cityInfo.slug} />
+
+    <p class="text-xs text-muted mt-8">
+      Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+    </p>
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+</PageLayout>

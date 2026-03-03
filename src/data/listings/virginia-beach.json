@@ -1,0 +1,126 @@
+[
+  {
+    "slug": "halasz-reporting-video-virginia-beach",
+    "name": "Halasz Reporting & Video",
+    "city": "virginia-beach",
+    "state": "VA",
+    "address": "",
+    "lat": 36.8496579,
+    "lng": -75.9760751,
+    "phone": "",
+    "website": "https://www.halaszreporting.com",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Offers professional court reporting, legal videography, and videoconferencing services to Virginia's legal community since 1983.",
+    "certifications": [],
+    "services": [
+      "legal videography",
+      "court reporting",
+      "videoconferencing"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:23:29",
+    "sentiment": {
+      "label": "positive",
+      "score": 0.75,
+      "keywords": [
+        "legal videography",
+        "court reporting",
+        "videoconferencing"
+      ],
+      "highlights": [
+        {
+          "text": "George Halasz and his staff provide excellent court-reporting and videography services throughout Virginia... personal, local touch.",
+          "sentiment": "positive"
+        }
+      ],
+      "summary": "Offers professional court reporting, legal videography, and videoconferencing services to Virginia's legal community since 1983."
+    }
+  },
+  {
+    "slug": "hart-reporting-virginia-beach",
+    "name": "Hart Reporting",
+    "city": "virginia-beach",
+    "state": "VA",
+    "address": "",
+    "lat": 36.8496579,
+    "lng": -75.9760751,
+    "phone": "",
+    "website": "https://hartreporting.com",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Provides court reporting, legal videography, videoconferencing, and full litigation support services covering Virginia for over 30 years.",
+    "certifications": [],
+    "services": [
+      "legal videography",
+      "court reporting",
+      "videoconferencing",
+      "litigation support"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:23:29",
+    "sentiment": null
+  },
+  {
+    "slug": "videoworks-of-virginia-virginia-beach",
+    "name": "VideoWorks of Virginia",
+    "city": "virginia-beach",
+    "state": "VA",
+    "address": "",
+    "lat": 36.8496579,
+    "lng": -75.9760751,
+    "phone": "",
+    "website": "https://lawvideova.com",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Provides professional videography and IT services for depositions, mediations, trial presentations, and remote AV support for over 30 years in Central Virginia.",
+    "certifications": [],
+    "services": [
+      "deposition videography",
+      "mediation presentations",
+      "trial presentations",
+      "remote AV support",
+      "video editing"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:23:29",
+    "sentiment": {
+      "label": "positive",
+      "score": 0.75,
+      "keywords": [
+        "deposition videography",
+        "mediation presentations",
+        "trial presentations",
+        "remote AV support",
+        "video editing"
+      ],
+      "highlights": [
+        {
+          "text": "Reid and his team are bright, talented, and dedicated professionals... adept in the use of the most current technology.",
+          "sentiment": "positive"
+        },
+        {
+          "text": "They were 'THE' original service in Richmond providing video for depositions... flexible and reliable.",
+          "sentiment": "positive"
+        },
+        {
+          "text": "VideoWorks puts my ideas into action. If you are looking for a great group that will help elevate your presentations... VideoWorks is that group.",
+          "sentiment": "positive"
+        }
+      ],
+      "summary": "Provides professional videography and IT services for depositions, mediations, trial presentations, and remote AV support for over 30 years in Central Virginia."
+    }
+  }
+]

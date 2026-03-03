@@ -1,0 +1,30 @@
+[
+  {
+    "slug": "law-order-record-lorr-san-antonio",
+    "name": "Law & Order Record (LORR)",
+    "city": "san-antonio",
+    "state": "TX",
+    "address": "Not provided",
+    "lat": 29.4246002,
+    "lng": -98.4951405,
+    "phone": "Not provided",
+    "website": "https://lorr.com/service/legal-videographers-and-photography/",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Legal videography and photography provider offering crisp, high-resolution images and clear audio quality with optional date and time stamping",
+    "certifications": [],
+    "services": [
+      "legal videography",
+      "photography",
+      "high-resolution imaging",
+      "date/time stamping"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:22:29",
+    "sentiment": null
+  }
+]

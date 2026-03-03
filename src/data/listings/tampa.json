@@ -1,0 +1,58 @@
+[
+  {
+    "slug": "esquire-deposition-solutions-tampa",
+    "name": "Esquire Deposition Solutions",
+    "city": "tampa",
+    "state": "FL",
+    "address": "",
+    "lat": 27.9449854,
+    "lng": -82.4583107,
+    "phone": "",
+    "website": "https://www.esquiresolutions.com/court-reporting-in-tampa-florida/",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Provides in-person and remote court reporting, interpreting, audio, and legal videography services in the Tampa Bay area.",
+    "certifications": [],
+    "services": [
+      "legal videography",
+      "court reporting",
+      "remote depositions",
+      "interpreting"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:22:35",
+    "sentiment": null
+  },
+  {
+    "slug": "the-legal-video-team-tampa",
+    "name": "The Legal Video Team",
+    "city": "tampa",
+    "state": "FL",
+    "address": "",
+    "lat": 27.9449854,
+    "lng": -82.4583107,
+    "phone": "888-409-8350",
+    "website": "https://www.legalvideoteam.com",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Specializes in professional-grade video depositions, IME/CME recording, settlement videos, and picture-in-picture depositions in Orlando, St. Petersburg, and Tampa, FL.",
+    "certifications": [],
+    "services": [
+      "video depositions",
+      "IME/CME recording",
+      "settlement videos",
+      "picture-in-picture depositions"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:22:35",
+    "sentiment": null
+  }
+]

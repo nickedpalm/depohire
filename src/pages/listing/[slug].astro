@@ -1,0 +1,96 @@
+---
+import PageLayout from '~/layouts/PageLayout.astro';
+import Breadcrumbs from '~/components/directory/Breadcrumbs.astro';
+import ListingDetail from '~/components/directory/ListingDetail.astro';
+import ContactForm from '~/components/directory/ContactForm.astro';
+import AdSlot from '~/components/directory/AdSlot.astro';
+import config from '~/config';
+import citiesData from '~/data/cities.json';
+import { getAllListings } from '~/lib/listings';
+
+export async function getStaticPaths() {
+  const listings = getAllListings();
+  return listings.map(listing => ({
+    params: { slug: listing.slug },
+    props: { listing },
+  }));
+}
+
+const { listing } = Astro.props;
+const cityInfo = citiesData.find(c => c.slug === listing.city);
+const title = `${listing.name} — ${config.primaryKeyword} in ${cityInfo?.city || listing.city}, ${listing.state}`;
+const description = listing.description || `${listing.name} is a ${config.primaryKeyword} in ${cityInfo?.city || listing.city}, ${listing.state}.`;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  name: listing.name,
+  description: listing.description,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: listing.address,
+    addressLocality: cityInfo?.city,
+    addressRegion: listing.state,
+  },
+  telephone: listing.phone,
+  url: listing.website,
+  ...(listing.website ? { sameAs: [listing.website] } : {}),
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: listing.lat,
+    longitude: listing.lng,
+  },
+  areaServed: {
+    '@type': 'City',
+    name: cityInfo?.city || listing.city,
+  },
+  ...(config.jobValue ? { priceRange: config.jobValue } : {}),
+  ...(listing.certifications?.length ? {
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'Services',
+      itemListElement: listing.services?.map(s => ({
+        '@type': 'Offer',
+        itemOffered: { '@type': 'Service', name: s },
+      })) || [],
+    },
+  } : {}),
+  ...(listing.certifications?.length ? {
+    hasCredential: listing.certifications.map(c => ({
+      '@type': 'EducationalOccupationalCredential',
+      credentialCategory: 'Professional Certification',
+      name: c,
+    })),
+  } : {}),
+  ...(listing.review_count > 0 ? {
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: listing.rating,
+      reviewCount: listing.review_count,
+    },
+  } : {}),
+};
+
+const metadata = { title, description };
+---
+<PageLayout metadata={metadata}>
+  <Fragment slot="announcement"><span></span></Fragment>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8" data-pagefind-body>
+    <Breadcrumbs crumbs={[
+      { label: cityInfo?.stateName || listing.state, href: `/states/${cityInfo?.stateSlug || 'all'}/` },
+      { label: cityInfo?.city || listing.city, href: `/${listing.city}/` },
+      { label: listing.name },
+    ]} />
+
+    <ListingDetail listing={listing} />
+
+    <div class="mt-8">
+      <ContactForm listingName={listing.name} listingEmail={listing.email} />
+    </div>
+
+    <div class="mt-8">
+      <AdSlot placement="listing-bottom" city={cityInfo?.city} state={listing.state} />
+    </div>
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+</PageLayout>

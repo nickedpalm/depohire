@@ -1,0 +1,444 @@
+{
+  "cities": {
+    "new-york": {
+      "url": "https://images.unsplash.com/photo-1570304816841-906a17d7b067?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxOZXclMjBZb3JrJTIwc2t5bGluZXxlbnwwfDB8fHwxNzcyMjE4NzY2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Mark Boss",
+      "photographer_url": "https://unsplash.com/@vork",
+      "unsplash_url": "https://unsplash.com/photos/chrysler-building-new-york-aTWNx7yoJWo"
+    },
+    "los-angeles": {
+      "url": "https://images.unsplash.com/flagged/photo-1575555201693-7cd442b8023f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxMb3MlMjBBbmdlbGVzJTIwc2t5bGluZXxlbnwwfDB8fHwxNzcyMjMxMDM1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Cedric Letsch",
+      "photographer_url": "https://unsplash.com/@cedricletsch",
+      "unsplash_url": "https://unsplash.com/photos/green-palm-tree-and-city-view-UZVlSjrIJ3o"
+    },
+    "chicago": {
+      "url": "https://images.unsplash.com/photo-1575380591643-b2c92368dc6d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxDaGljYWdvJTIwc2t5bGluZXxlbnwwfDB8fHwxNzcyMjMxMDM3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Rohan Gangopadhyay",
+      "photographer_url": "https://unsplash.com/@rohan_gangopadhyay",
+      "unsplash_url": "https://unsplash.com/photos/photography-of-cityscape-heIaYq6A7tg"
+    },
+    "houston": {
+      "url": "https://images.unsplash.com/photo-1692154600992-463fa9b27abd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxIb3VzdG9uJTIwc2t5bGluZXxlbnwwfDB8fHwxNzcyMjMxMDM5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Jeswin Thomas",
+      "photographer_url": "https://unsplash.com/@jeswinthomas",
+      "unsplash_url": "https://unsplash.com/photos/a-view-of-a-city-at-night-from-the-top-of-a-building-DdsXgbHVg7M"
+    },
+    "phoenix": {
+      "url": "https://images.unsplash.com/photo-1729041534038-fdc1f9cf3d3a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxQaG9lbml4JTIwc2t5bGluZXxlbnwwfDB8fHwxNzcyMjMxMDQxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Nils Huenerfuerst",
+      "photographer_url": "https://unsplash.com/@nhuenerfuerst",
+      "unsplash_url": "https://unsplash.com/photos/a-view-of-a-city-with-tall-buildings-RcDEbNQsjHU"
+    },
+    "philadelphia": {
+      "url": "https://images.unsplash.com/photo-1569761316261-9a8696fa2ca3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxQaGlsYWRlbHBoaWElMjBza3lsaW5lfGVufDB8MHx8fDE3NzIyMzEwNDJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "ActionVance",
+      "photographer_url": "https://unsplash.com/@actionvance",
+      "unsplash_url": "https://unsplash.com/photos/aerial-photo-of-buildings-guy5aS3GvgA"
+    },
+    "san-antonio": {
+      "url": "https://images.unsplash.com/photo-1514510249063-e0faf6c6ec0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxTYW4lMjBBbnRvbmlvJTIwc2t5bGluZXxlbnwwfDB8fHwxNzcyMjMxMDQ0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Matthew LeJune",
+      "photographer_url": "https://unsplash.com/@matthewlejune",
+      "unsplash_url": "https://unsplash.com/photos/aerial-view-of-white-building-IpvDhQjrewM"
+    },
+    "san-diego": {
+      "url": "https://images.unsplash.com/photo-1634312944845-72e0075cf500?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxTYW4lMjBEaWVnbyUyMHNreWxpbmV8ZW58MHwwfHx8MTc3MjIzMTA0Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Justin Wolff",
+      "photographer_url": "https://unsplash.com/@jayphoto",
+      "unsplash_url": "https://unsplash.com/photos/a-large-body-of-water-with-a-city-in-the-background-IgpQ-nYh3Tk"
+    },
+    "dallas": {
+      "url": "https://images.unsplash.com/photo-1625950019503-cae6a7825762?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxEYWxsYXMlMjBza3lsaW5lfGVufDB8MHx8fDE3NzIyMzEwNDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Max Fray",
+      "photographer_url": "https://unsplash.com/@thmxfy",
+      "unsplash_url": "https://unsplash.com/photos/city-skyline-during-night-time-V6CQgi7Pgdc"
+    },
+    "austin": {
+      "url": "https://images.unsplash.com/photo-1666969565832-b55bf42a900d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxBdXN0aW4lMjBza3lsaW5lfGVufDB8MHx8fDE3NzIyMzEwNTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Justin Wallace",
+      "photographer_url": "https://unsplash.com/@justinwallacephotography",
+      "unsplash_url": "https://unsplash.com/photos/a-city-skyline-at-sunset-cB_LQ6NGkq4"
+    },
+    "jacksonville": {
+      "url": "https://images.unsplash.com/photo-1683552424939-dfc29064d449?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxKYWNrc29udmlsbGUlMjBza3lsaW5lfGVufDB8MHx8fDE3NzIyMzEwNTJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Kevin Snow",
+      "photographer_url": "https://unsplash.com/@snowbot",
+      "unsplash_url": "https://unsplash.com/photos/a-bridge-over-a-river-with-a-city-in-the-background-a2VrthnrXSg"
+    },
+    "fort-worth": {
+      "url": "https://images.unsplash.com/photo-1704743679432-ac7db2c2655e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxGb3J0JTIwV29ydGglMjBza3lsaW5lfGVufDB8MHx8fDE3NzIyMzEwNTR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Cody Groce",
+      "photographer_url": "https://unsplash.com/@codygroce",
+      "unsplash_url": "https://unsplash.com/photos/a-view-of-a-tower-in-the-distance-with-trees-in-the-foreground-gDch16P1Omo"
+    },
+    "columbus": {
+      "url": "https://images.unsplash.com/photo-1654115480560-67642e776a30?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxDb2x1bWJ1cyUyMHNreWxpbmV8ZW58MHwwfHx8MTc3MjIzMTA1Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Jordan Griffith",
+      "photographer_url": "https://unsplash.com/@jordanpgriffith",
+      "unsplash_url": "https://unsplash.com/photos/a-view-of-a-city-with-a-bridge-over-a-river-1ttZYIpCLe4"
+    },
+    "indianapolis": {
+      "url": "https://images.unsplash.com/photo-1593096966468-c7869f66def9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxJbmRpYW5hcG9saXMlMjBza3lsaW5lfGVufDB8MHx8fDE3NzIyMzEwNTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Corbin Mathias",
+      "photographer_url": "https://unsplash.com/@cdm",
+      "unsplash_url": "https://unsplash.com/photos/city-skyline-under-blue-sky-during-daytime-3tWrSC2pEuQ"
+    },
+    "charlotte": {
+      "url": "https://images.unsplash.com/photo-1507810670121-b08efd787765?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxDaGFybG90dGUlMjBza3lsaW5lfGVufDB8MHx8fDE3NzIyMzEwNjB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Daniel Weiss",
+      "photographer_url": "https://unsplash.com/@dweiss002",
+      "unsplash_url": "https://unsplash.com/photos/birds-eye-view-of-city-aj2Os9mYgJU"
+    },
+    "san-francisco": {
+      "url": "https://images.unsplash.com/photo-1625726411847-8cbb60cc71e6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxTYW4lMjBGcmFuY2lzY28lMjBza3lsaW5lfGVufDB8MHx8fDE3NzIyMzEwNjJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Andrew Whitmore",
+      "photographer_url": "https://unsplash.com/@andrewdavid90",
+      "unsplash_url": "https://unsplash.com/photos/city-skyline-across-body-of-water-during-daytime-Mo4kWixUOHw"
+    },
+    "seattle": {
+      "url": "https://images.unsplash.com/photo-1502175353174-a7a70e73b362?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxTZWF0dGxlJTIwc2t5bGluZXxlbnwwfDB8fHwxNzcyMjMxMDY0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Thom Milkovic",
+      "photographer_url": "https://unsplash.com/@thommilkovic",
+      "unsplash_url": "https://unsplash.com/photos/aerial-photography-of-seattle-skyline-skUTVJi8-jc"
+    },
+    "denver": {
+      "url": "https://images.unsplash.com/photo-1648441095877-90406e6ba04d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxEZW52ZXIlMjBza3lsaW5lfGVufDB8MHx8fDE3NzIyMzEwNjZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Bill Griepenstroh",
+      "photographer_url": "https://unsplash.com/@billgrip",
+      "unsplash_url": "https://unsplash.com/photos/a-view-of-a-city-with-mountains-in-the-background-Q9X_p5dDq_8"
+    },
+    "washington-dc": {
+      "url": "https://images.unsplash.com/photo-1627103094411-ac68e30c442e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxXYXNoaW5ndG9uJTIwc2t5bGluZXxlbnwwfDB8fHwxNzcyMjMxMDY4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "S Edward",
+      "photographer_url": "https://unsplash.com/@squidward222",
+      "unsplash_url": "https://unsplash.com/photos/text-KWJgvGX8C9I"
+    },
+    "nashville": {
+      "url": "https://images.unsplash.com/photo-1556033681-83abea291a96?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxOYXNodmlsbGUlMjBza3lsaW5lfGVufDB8MHx8fDE3NzIyMzEwNzB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Tanner Boriack",
+      "photographer_url": "https://unsplash.com/@tannerboriack",
+      "unsplash_url": "https://unsplash.com/photos/american-football-arena-beside-building-and-roadway-during-daytime-GmoaEH48m8c"
+    },
+    "oklahoma-city": {
+      "url": "https://images.unsplash.com/photo-1519876217051-4449feb0b589?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxPa2xhaG9tYSUyMENpdHklMjBza3lsaW5lfGVufDB8MHx8fDE3NzIyMzEwNzJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Gerson Repreza",
+      "photographer_url": "https://unsplash.com/@gersonrepreza",
+      "unsplash_url": "https://unsplash.com/photos/city-buildings-during-daytime-WpQBXuqyVlo"
+    },
+    "el-paso": {
+      "url": "https://images.unsplash.com/photo-1650687034903-d0278e2cd5b8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxFbCUyMFBhc28lMjBza3lsaW5lfGVufDB8MHx8fDE3NzIyMzEwNzR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Greg Bulla",
+      "photographer_url": "https://unsplash.com/@gregbulla",
+      "unsplash_url": "https://unsplash.com/photos/a-city-at-night-JgmV0-gieyA"
+    },
+    "boston": {
+      "url": "https://images.unsplash.com/photo-1565127803082-69dd82351360?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxCb3N0b24lMjBza3lsaW5lfGVufDB8MHx8fDE3NzIyMzEwNzZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "jacob Licht",
+      "photographer_url": "https://unsplash.com/@jolicht",
+      "unsplash_url": "https://unsplash.com/photos/body-of-water-near-cityscape-at-daytime-8nA_iHrxHIo"
+    },
+    "portland": {
+      "url": "https://images.unsplash.com/photo-1603312504738-3dd0fdaff23b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxQb3J0bGFuZCUyMHNreWxpbmV8ZW58MHwwfHx8MTc3MjIzMTA3OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Trang Nguyen",
+      "photographer_url": "https://unsplash.com/@trangpdx",
+      "unsplash_url": "https://unsplash.com/photos/aerial-view-of-city-buildings-during-daytime-w1X8gY5dcH4"
+    },
+    "las-vegas": {
+      "url": "https://images.unsplash.com/photo-1668261929011-4ade8c225292?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxMYXMlMjBWZWdhcyUyMHNreWxpbmV8ZW58MHwwfHx8MTc3MjIzMTA4MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Yves Scheuber",
+      "photographer_url": "https://unsplash.com/@xgrt51m",
+      "unsplash_url": "https://unsplash.com/photos/a-city-with-a-fountain-in-the-middle-of-it-6R1d2ihF-zE"
+    },
+    "memphis": {
+      "url": "https://images.unsplash.com/photo-1704727783994-5e362227d584?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxNZW1waGlzJTIwc2t5bGluZXxlbnwwfDB8fHwxNzcyMjMxMDgyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Sean Davis",
+      "photographer_url": "https://unsplash.com/@seandavis",
+      "unsplash_url": "https://unsplash.com/photos/the-sun-is-setting-over-a-city-in-the-distance-LBkjBVTot_Y"
+    },
+    "louisville": {
+      "url": "https://images.unsplash.com/photo-1763518186257-e679dc84976e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxMb3Vpc3ZpbGxlJTIwc2t5bGluZXxlbnwwfDB8fHwxNzcyMjM1NDU5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Chris Marlin",
+      "photographer_url": "https://unsplash.com/@mitchbagnet",
+      "unsplash_url": "https://unsplash.com/photos/city-skyline-at-dusk-with-illuminated-buildings-A9LoLmADuRk"
+    },
+    "baltimore": {
+      "url": "https://images.unsplash.com/photo-1644006754934-c61f73f47baa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxCYWx0aW1vcmUlMjBza3lsaW5lfGVufDB8MHx8fDE3NzIyMzU1MzV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Yianni Mathioudakis",
+      "photographer_url": "https://unsplash.com/@yiannifive",
+      "unsplash_url": "https://unsplash.com/photos/a-view-of-a-city-skyline-at-sunset-XRwb892hC5U"
+    },
+    "milwaukee": {
+      "url": "https://images.unsplash.com/photo-1566792215009-e1f1a1ded130?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxNaWx3YXVrZWUlMjBza3lsaW5lfGVufDB8MHx8fDE3NzIyMzU2MTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Kellie Klumb",
+      "photographer_url": "https://unsplash.com/@kklumb",
+      "unsplash_url": "https://unsplash.com/photos/landscape-photography-of-cityscape-GV5touJMTaw"
+    },
+    "albuquerque": {
+      "url": "https://images.unsplash.com/photo-1612225468439-f1bb30790f3f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxBbGJ1cXVlcnF1ZSUyMHNreWxpbmV8ZW58MHwwfHx8MTc3MjIzNTY4Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Gabriel Griego",
+      "photographer_url": "https://unsplash.com/@gabetheg",
+      "unsplash_url": "https://unsplash.com/photos/city-skyline-under-blue-sky-during-daytime-HRf8z9jWRcs"
+    },
+    "tucson": {
+      "url": "https://images.unsplash.com/photo-1740855918767-62bfe12de850?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxUdWNzb24lMjBza3lsaW5lfGVufDB8MHx8fDE3NzIyMzU3NjJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Donald Teel",
+      "photographer_url": "https://unsplash.com/@epartner",
+      "unsplash_url": "https://unsplash.com/photos/sunset-over-a-mountain-range-with-clouds-d3ExIu0_RO4"
+    },
+    "sacramento": {
+      "url": "https://images.unsplash.com/photo-1606461978153-5d15a8067fd7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxTYWNyYW1lbnRvJTIwc2t5bGluZXxlbnwwfDB8fHwxNzcyMjM1ODM4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Leo_Visions",
+      "photographer_url": "https://unsplash.com/@leo_visions_",
+      "unsplash_url": "https://unsplash.com/photos/aerial-view-of-city-buildings-during-daytime-1hgbA3dWb84"
+    },
+    "kansas-city": {
+      "url": "https://images.unsplash.com/photo-1536622638768-9403a9d35a1a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxLYW5zYXMlMjBDaXR5JTIwc2t5bGluZXxlbnwwfDB8fHwxNzcyMjM1OTEzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Colton Sturgeon",
+      "photographer_url": "https://unsplash.com/@coltonsturgeon",
+      "unsplash_url": "https://unsplash.com/photos/new-york-city-FiCPutl_aog"
+    },
+    "atlanta": {
+      "url": "https://images.unsplash.com/photo-1663601460253-aba72eea6edf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxBdGxhbnRhJTIwc2t5bGluZXxlbnwwfDB8fHwxNzcyMjM1OTg5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Lance Asper",
+      "photographer_url": "https://unsplash.com/@lance_asper",
+      "unsplash_url": "https://unsplash.com/photos/a-city-with-tall-buildings-9fxD3UW_C1I"
+    },
+    "omaha": {
+      "url": "https://images.unsplash.com/photo-1601780998888-0bfe1f4ca675?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxPbWFoYSUyMHNreWxpbmV8ZW58MHwwfHx8MTc3MjIzNjA2NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Tim Umphreys",
+      "photographer_url": "https://unsplash.com/@timumphreys",
+      "unsplash_url": "https://unsplash.com/photos/a-city-skyline-is-reflected-in-a-body-of-water-rtk3UhhCJEE"
+    },
+    "colorado-springs": {
+      "url": "https://images.unsplash.com/photo-1733871207272-1a969b9de82c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxDb2xvcmFkbyUyMFNwcmluZ3MlMjBza3lsaW5lfGVufDB8MHx8fDE3NzIyMzYxNDF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Catherine",
+      "photographer_url": "https://unsplash.com/@hell0_cc",
+      "unsplash_url": "https://unsplash.com/photos/a-view-of-a-mountain-range-from-a-wooded-area-V3IeELrWyd8"
+    },
+    "raleigh": {
+      "url": "https://images.unsplash.com/photo-1676934556859-624fa21e2588?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxSYWxlaWdoJTIwc2t5bGluZXxlbnwwfDB8fHwxNzcyMjM2MjE2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Reba Spike",
+      "photographer_url": "https://unsplash.com/@rebaspike",
+      "unsplash_url": "https://unsplash.com/photos/a-view-of-a-city-skyline-at-sunset-ICOLTTjYgaA"
+    },
+    "long-beach": {
+      "url": "https://images.unsplash.com/photo-1715559929479-423e5b8efaa9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxMb25nJTIwQmVhY2glMjBza3lsaW5lfGVufDB8MHx8fDE3NzIyMzYyOTJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Logan Voss",
+      "photographer_url": "https://unsplash.com/@loganvoss",
+      "unsplash_url": "https://unsplash.com/photos/a-view-of-a-city-from-the-top-of-a-skyscraper-3XKQtcjePYw"
+    },
+    "virginia-beach": {
+      "url": "https://images.unsplash.com/photo-1748381837257-9d6a3b53122f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxWaXJnaW5pYSUyMEJlYWNoJTIwc2t5bGluZXxlbnwwfDB8fHwxNzcyMjM3MjY1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Zoshua Colah",
+      "photographer_url": "https://unsplash.com/@zoshuacolah",
+      "unsplash_url": "https://unsplash.com/photos/a-long-bridge-spans-across-a-calm-body-of-water-V2JJcvTj3v4"
+    },
+    "miami": {
+      "url": "https://images.unsplash.com/photo-1670861643063-0892c6fab1ce?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxNaWFtaSUyMHNreWxpbmV8ZW58MHwwfHx8MTc3MjIzNzM0MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Rolando Yera",
+      "photographer_url": "https://unsplash.com/@rolandoyera",
+      "unsplash_url": "https://unsplash.com/photos/a-view-of-a-city-from-across-the-water-1T4xUbhjmmk"
+    },
+    "oakland": {
+      "url": "https://images.unsplash.com/photo-1656716719634-b3f856a488b0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxPYWtsYW5kJTIwc2t5bGluZXxlbnwwfDB8fHwxNzcyMjM3NDE2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "James A. Molnar",
+      "photographer_url": "https://unsplash.com/@jamesamolnar",
+      "unsplash_url": "https://unsplash.com/photos/a-bridge-over-water-thcaxSFiCl8"
+    },
+    "minneapolis": {
+      "url": "https://images.unsplash.com/photo-1535082049017-5a7b43f3bcef?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxNaW5uZWFwb2xpcyUyMHNreWxpbmV8ZW58MHwwfHx8MTc3MjIzNzQ5Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Nicole Geri",
+      "photographer_url": "https://unsplash.com/@nicolegeri",
+      "unsplash_url": "https://unsplash.com/photos/aerial-shot-of-concrete-structures-near-body-of-water-ohK_uJJm2G8"
+    },
+    "tampa": {
+      "url": "https://images.unsplash.com/photo-1561063139-e183e66909c4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxUYW1wYSUyMHNreWxpbmV8ZW58MHwwfHx8MTc3MjIzNzU2OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Kody Cheyne",
+      "photographer_url": "https://unsplash.com/@kodycheyne",
+      "unsplash_url": "https://unsplash.com/photos/buildings-near-body-of-water-VHFBDTwiIy4"
+    },
+    "new-orleans": {
+      "url": "https://images.unsplash.com/photo-1586974325246-05d48d665f24?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxOZXclMjBPcmxlYW5zJTIwc2t5bGluZXxlbnwwfDB8fHwxNzcyMjM3NjQzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Kool C",
+      "photographer_url": "https://unsplash.com/@koolcreation",
+      "unsplash_url": "https://unsplash.com/photos/city-buildings-under-blue-sky-during-daytime-ykoBMdRPD00"
+    },
+    "cleveland": {
+      "url": "https://images.unsplash.com/photo-1547916721-7469af15e2a3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxDbGV2ZWxhbmQlMjBza3lsaW5lfGVufDB8MHx8fDE3NzIyMzc3MTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "DJ Johnson",
+      "photographer_url": "https://unsplash.com/@dj_johns1",
+      "unsplash_url": "https://unsplash.com/photos/high-rise-buildings-near-body-of-water-during-daytime-4JHy5rxsF5g"
+    },
+    "pittsburgh": {
+      "url": "https://images.unsplash.com/photo-1555424221-250de2a343ad?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxQaXR0c2J1cmdoJTIwc2t5bGluZXxlbnwwfDB8fHwxNzcyMjM3Nzk0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Vidar Nordli-Mathisen",
+      "photographer_url": "https://unsplash.com/@vidarnm",
+      "unsplash_url": "https://unsplash.com/photos/aerial-photo-of-bridge-and-buildings-under-blue-sky-9HGqJq3vglc"
+    },
+    "detroit": {
+      "url": "https://images.unsplash.com/photo-1568267938179-f50e67de5ffc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxEZXRyb2l0JTIwc2t5bGluZXxlbnwwfDB8fHwxNzcyMjM3ODcwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "William Duggan",
+      "photographer_url": "https://unsplash.com/@dugganw",
+      "unsplash_url": "https://unsplash.com/photos/cityscape-at-night-1SmpGvlKq2U"
+    }
+  },
+  "articles": {
+    "what-does-a-deposition-videographer-do": {
+      "url": "https://images.unsplash.com/photo-1768796370611-d891bfc91f3b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxkZXBvc2l0aW9uJTIwdmlkZW9ncmFwaGVyJTIwYmVoaW5kJTIwc2NlbmVzfGVufDB8MHx8fDE3NzIyMTg3NzN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Hoi An and Da Nang Photographer",
+      "photographer_url": "https://unsplash.com/@hoianphotographer",
+      "unsplash_url": "https://unsplash.com/photos/filmmaker-with-camera-and-microphone-records-content-8y_LBy_ls84"
+    },
+    "complete-guide-deposition-videographers": {
+      "url": "https://images.unsplash.com/photo-1508500973481-60349cc2b8db?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxjb21wbGV0ZSUyMGd1aWRlJTIwZGVwb3NpdGlvbiUyMHZpZGVvZ3JhcGhlcnN8ZW58MHwwfHx8MTc3MjI0ODc0OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Maddy Baker",
+      "photographer_url": "https://unsplash.com/@maddybakes",
+      "unsplash_url": "https://unsplash.com/photos/man-holding-camera-slider-OGeWW3OJai0"
+    },
+    "how-to-choose-a-deposition-videographer": {
+      "url": "https://images.unsplash.com/photo-1632670467450-bc8f70fe5ad1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxjaG9vc2UlMjBkZXBvc2l0aW9uJTIwdmlkZW9ncmFwaGVyJTIwbm9ib2R5fGVufDB8MHx8fDE3NzIyNDg4MjR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Billy Freeman",
+      "photographer_url": "https://unsplash.com/@billyfreeman",
+      "unsplash_url": "https://unsplash.com/photos/a-man-holding-a-camera-up-to-his-face-vcue7q-6tYY"
+    },
+    "questions-to-ask-before-hiring-a-deposition-videographer": {
+      "url": "https://images.unsplash.com/photo-1587116987844-bd3d2f866f16?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxxdWVzdGlvbnMlMjBhc2slMjBiZWZvcmUlMjBoaXJpbmd8ZW58MHwwfHx8MTc3MjI0ODkwMHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "iMattSmart",
+      "photographer_url": "https://unsplash.com/@imattsmart",
+      "unsplash_url": "https://unsplash.com/photos/text-OqipdE59Pjw"
+    },
+    "red-flags-when-hiring-a-deposition-videographer": {
+      "url": "https://images.unsplash.com/photo-1741363690669-1a420ac31ce8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxyZWQlMjBmbGFncyUyMGhpcmluZyUyMGRlcG9zaXRpb258ZW58MHwwfHx8MTc3MjI0ODk3NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Denise Jans",
+      "photographer_url": "https://unsplash.com/@dmjdenise",
+      "unsplash_url": "https://unsplash.com/photos/red-flag-flying-from-a-buildings-window-Z-3KllTPFfs"
+    },
+    "how-much-does-deposition-videographer-cost": {
+      "url": "https://images.unsplash.com/photo-1768483543087-998a370902b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxkZXBvc2l0aW9uJTIwdmlkZW9ncmFwaGVyJTIwY29zdCUyMHByaWNpbmd8ZW58MHwwfHx8MTc3MjI0OTA1MXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Gabriel Weyand",
+      "photographer_url": "https://unsplash.com/@werealproduction",
+      "unsplash_url": "https://unsplash.com/photos/man-holding-a-professional-video-camera-with-microphone-NhtyLyy1EG0"
+    },
+    "are-cheap-deposition-videographers-worth-it": {
+      "url": "https://images.unsplash.com/photo-1508500973481-60349cc2b8db?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxjaGVhcCUyMGRlcG9zaXRpb24lMjB2aWRlb2dyYXBoZXJzJTIwd29ydGh8ZW58MHwwfHx8MTc3MjI0OTEyN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Maddy Baker",
+      "photographer_url": "https://unsplash.com/@maddybakes",
+      "unsplash_url": "https://unsplash.com/photos/man-holding-camera-slider-OGeWW3OJai0"
+    },
+    "clvs-certified-legal-video-specialist-certification-guide": {
+      "url": "https://images.unsplash.com/photo-1696041760912-a06e1f747850?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxjbHZzJTIwY2VydGlmaWVkJTIwbGVnYWwlMjB2aWRlb3xlbnwwfDB8fHwxNzcyMjQ5MjAzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Hakim Menikh",
+      "photographer_url": "https://unsplash.com/@grafiklink",
+      "unsplash_url": "https://unsplash.com/photos/a-close-up-of-the-word-videos-on-a-black-background-owS6oZm9hIY"
+    },
+    "certified-vs-uncertified-deposition-videographer": {
+      "url": "https://images.unsplash.com/photo-1659355894099-b2c2b2884322?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxjZXJ0aWZpZWQlMjB2cy4lMjB1bmNlcnRpZmllZCUyMGRlcG9zaXRpb258ZW58MHwwfHx8MTc3MjI0OTI3OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Fotos",
+      "photographer_url": "https://unsplash.com/@fotospk",
+      "unsplash_url": "https://unsplash.com/photos/a-man-holding-a-piece-of-paper-9fSLn5-nL7k"
+    },
+    "what-to-expect-hiring-a-deposition-videographer": {
+      "url": "https://images.unsplash.com/photo-1768796372085-42a481cd1aad?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxleHBlY3QlMjBoaXJlJTIwZGVwb3NpdGlvbiUyMHZpZGVvZ3JhcGhlcnxlbnwwfDB8fHwxNzcyMjQ5MzU0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Hoi An and Da Nang Photographer",
+      "photographer_url": "https://unsplash.com/@hoianphotographer",
+      "unsplash_url": "https://unsplash.com/photos/two-men-in-safety-vests-operating-a-video-camera-8w4E8tHOLyM"
+    },
+    "deposition-videographer-equipment-explained": {
+      "url": "https://images.unsplash.com/photo-1569648575039-fa56679917fe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxkZXBvc2l0aW9uJTIwdmlkZW9ncmFwaGVyJTIwZXF1aXBtZW50JTIwbWF0dGVyc3xlbnwwfDB8fHwxNzcyMjQ5NDMwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Mohan Chan",
+      "photographer_url": "https://unsplash.com/@momohan",
+      "unsplash_url": "https://unsplash.com/photos/black-sony-dslr-camera-NYwEpK4PChk"
+    },
+    "deposition-videographer-legal-requirements": {
+      "url": "https://images.unsplash.com/photo-1687313217063-0f1e74b04139?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxkZXBvc2l0aW9uJTIwdmlkZW9ncmFwaGVyJTIwbGVnYWwlMjByZXF1aXJlbWVudHN8ZW58MHwwfHx8MTc3MjI0OTUwNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Scarbor Siu",
+      "photographer_url": "https://unsplash.com/@kameeru322813",
+      "unsplash_url": "https://unsplash.com/photos/a-close-up-of-a-camera-attached-to-a-tripod-IcHekJT-dLc"
+    },
+    "can-a-deposition-videographer-testify-in-court": {
+      "url": "https://images.unsplash.com/photo-1767972159674-460283907c21?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxkZXBvc2l0aW9uJTIwdmlkZW9ncmFwaGVyJTIwdGVzdGlmeSUyMGNvdXJ0fGVufDB8MHx8fDE3NzIyNDk1ODF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Sasun Bughdaryan",
+      "photographer_url": "https://unsplash.com/@sasun1990",
+      "unsplash_url": "https://unsplash.com/photos/a-gavel-rests-on-a-dark-background-qVOJqYI37qE"
+    },
+    "deposition-videographer-industry-trends": {
+      "url": "https://images.unsplash.com/photo-1508500973481-60349cc2b8db?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxkZXBvc2l0aW9uJTIwdmlkZW9ncmFwaGVyJTIwaW5kdXN0cnklMjB0cmVuZHN8ZW58MHwwfHx8MTc3MjI0OTY1N3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Maddy Baker",
+      "photographer_url": "https://unsplash.com/@maddybakes",
+      "unsplash_url": "https://unsplash.com/photos/man-holding-camera-slider-OGeWW3OJai0"
+    },
+    "remote-vs-in-person-deposition-videographer": {
+      "url": "https://images.unsplash.com/photo-1770317238762-e0bca107fd5b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxyZW1vdGUlMjB2cy4lMjBpbi1wZXJzb24lMjBkZXBvc2l0aW9ufGVufDB8MHx8fDE3NzIyNDk3MzJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Dani Adkins",
+      "photographer_url": "https://unsplash.com/@freefolkphoto",
+      "unsplash_url": "https://unsplash.com/photos/the-word-remington-on-a-vintage-typewriter-ENMa7nY5yds"
+    },
+    "ai-impact-on-deposition-videographers": {
+      "url": "https://images.unsplash.com/photo-1632670467450-bc8f70fe5ad1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxhaSUyMHJlcGxhY2UlMjBkZXBvc2l0aW9uJTIwdmlkZW9ncmFwaGVyc3xlbnwwfDB8fHwxNzcyMjQ5ODA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Billy Freeman",
+      "photographer_url": "https://unsplash.com/@billyfreeman",
+      "unsplash_url": "https://unsplash.com/photos/a-man-holding-a-camera-up-to-his-face-vcue7q-6tYY"
+    },
+    "best-deposition-videographers-new-york": {
+      "url": "https://images.unsplash.com/photo-1508500973481-60349cc2b8db?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxiZXN0JTIwZGVwb3NpdGlvbiUyMHZpZGVvZ3JhcGhlcnMlMjBuZXd8ZW58MHwwfHx8MTc3MjI0OTg4NHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Maddy Baker",
+      "photographer_url": "https://unsplash.com/@maddybakes",
+      "unsplash_url": "https://unsplash.com/photos/man-holding-camera-slider-OGeWW3OJai0"
+    },
+    "best-deposition-videographers-los-angeles": {
+      "url": "https://images.unsplash.com/photo-1508500973481-60349cc2b8db?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxiZXN0JTIwZGVwb3NpdGlvbiUyMHZpZGVvZ3JhcGhlcnMlMjBsb3N8ZW58MHwwfHx8MTc3MjI0OTk1OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Maddy Baker",
+      "photographer_url": "https://unsplash.com/@maddybakes",
+      "unsplash_url": "https://unsplash.com/photos/man-holding-camera-slider-OGeWW3OJai0"
+    },
+    "best-deposition-videographers-houston": {
+      "url": "https://images.unsplash.com/photo-1651069674563-b1f057020cc2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxiZXN0JTIwZGVwb3NpdGlvbiUyMHZpZGVvZ3JhcGhlcnMlMjBob3VzdG9ufGVufDB8MHx8fDE3NzIyNTAwMzV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Datingscout",
+      "photographer_url": "https://unsplash.com/@datingscout",
+      "unsplash_url": "https://unsplash.com/photos/a-city-with-tall-buildings-E7VhSVdViQU"
+    },
+    "deposition-videographer-vs-court-reporter": {
+      "url": "https://images.unsplash.com/photo-1629806123852-9cbd6b718064?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxkZXBvc2l0aW9uJTIwdmlkZW9ncmFwaGVyJTIwdnMuJTIwY291cnR8ZW58MHwwfHx8MTc3MjI1MDExMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Masakaze Kawakami",
+      "photographer_url": "https://unsplash.com/@masakaze",
+      "unsplash_url": "https://unsplash.com/photos/black-nikon-dslr-camera-on-brown-wooden-table-tlpq1hthMLo"
+    },
+    "freelance-vs-agency-deposition-videographer": {
+      "url": "https://images.unsplash.com/photo-1585686398360-075d6cd5dca1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxmcmVlbGFuY2UlMjB2cy4lMjBhZ2VuY3klMjBkZXBvc2l0aW9ufGVufDB8MHx8fDE3NzIyNTAxODh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Markus Winkler",
+      "photographer_url": "https://unsplash.com/@markuswinkler",
+      "unsplash_url": "https://unsplash.com/photos/white-and-black-braille-machine-g6lfF47wA2c"
+    },
+    "how-to-prepare-for-a-deposition-videographer-session": {
+      "url": "https://images.unsplash.com/photo-1629326267282-015d1593d84e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxwcmVwYXJlJTIwZGVwb3NpdGlvbiUyMHZpZGVvZ3JhcGhlciUyMHNlc3Npb258ZW58MHwwfHx8MTc3MjI1MDI2NHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Mufid Majnun",
+      "photographer_url": "https://unsplash.com/@mufidpwt",
+      "unsplash_url": "https://unsplash.com/photos/man-in-black-and-white-crew-neck-t-shirt-using-black-dslr-camera-during-daytime-qYROtyaBnyo"
+    },
+    "common-deposition-videographer-mistakes": {
+      "url": "https://images.unsplash.com/photo-1768483543087-998a370902b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxjb21tb24lMjBkZXBvc2l0aW9uJTIwdmlkZW9ncmFwaGVyJTIwbWlzdGFrZXN8ZW58MHwwfHx8MTc3MjI1MDMzOXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Gabriel Weyand",
+      "photographer_url": "https://unsplash.com/@werealproduction",
+      "unsplash_url": "https://unsplash.com/photos/man-holding-a-professional-video-camera-with-microphone-NhtyLyy1EG0"
+    },
+    "how-to-review-deposition-videographer-work": {
+      "url": "https://images.unsplash.com/photo-1508500973481-60349cc2b8db?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxyZXZpZXclMjBkZXBvc2l0aW9uJTIwdmlkZW9ncmFwaGVyJTI3cyUyMHdvcmt8ZW58MHwwfHx8MTc3MjI1MDQxNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Maddy Baker",
+      "photographer_url": "https://unsplash.com/@maddybakes",
+      "unsplash_url": "https://unsplash.com/photos/man-holding-camera-slider-OGeWW3OJai0"
+    },
+    "deposition-videographer-industry-statistics": {
+      "url": "https://images.unsplash.com/photo-1508500973481-60349cc2b8db?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxkZXBvc2l0aW9uJTIwdmlkZW9ncmFwaGVyJTIwaW5kdXN0cnklMjBzdGF0aXN0aWNzfGVufDB8MHx8fDE3NzIyNTA0OTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Maddy Baker",
+      "photographer_url": "https://unsplash.com/@maddybakes",
+      "unsplash_url": "https://unsplash.com/photos/man-holding-camera-slider-OGeWW3OJai0"
+    },
+    "deposition-videographer-salary-earnings": {
+      "url": "https://images.unsplash.com/photo-1768483543087-998a370902b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxkZXBvc2l0aW9uJTIwdmlkZW9ncmFwaGVycyUyMG1ha2UlMjBzYWxhcnl8ZW58MHwwfHx8MTc3MjI3ODk3N3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Gabriel Weyand",
+      "photographer_url": "https://unsplash.com/@werealproduction",
+      "unsplash_url": "https://unsplash.com/photos/man-holding-a-professional-video-camera-with-microphone-NhtyLyy1EG0"
+    }
+  }
+}

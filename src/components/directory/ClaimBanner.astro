@@ -1,0 +1,16 @@
+---
+interface Props {
+  listingName: string;
+}
+
+const { listingName } = Astro.props;
+---
+<div class="bg-amber-50 border border-amber-200 rounded-xl p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+  <div class="flex-1">
+    <h3 class="font-semibold text-amber-900">Is this your business?</h3>
+    <p class="text-sm text-amber-700 mt-1">Claim your listing to update information, respond to reviews, and manage your profile on our directory.</p>
+  </div>
+  <a href={`mailto:claims@example.com?subject=Claim: ${encodeURIComponent(listingName)}`} class="btn-primary bg-amber-600 hover:bg-amber-700 whitespace-nowrap no-underline">
+    Claim Listing
+  </a>
+</div>

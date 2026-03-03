@@ -1,0 +1,199 @@
+[
+  {
+    "slug": "2-rivers-multimedia-denver",
+    "name": "2 Rivers Multimedia",
+    "city": "denver",
+    "state": "CO",
+    "address": "",
+    "lat": 39.7392364,
+    "lng": -104.984862,
+    "phone": "",
+    "website": "https://www.2riversmultimedia.com",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Provides video deposition services with Jeremy Signorini, a Certified Deposition Video Specialist (CDVS).",
+    "certifications": [],
+    "services": [
+      "Video Depositions",
+      "Certified Legal Videography"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:58:14",
+    "sentiment": null
+  },
+  {
+    "slug": "esquire-deposition-solutions-denver",
+    "name": "Esquire Deposition Solutions",
+    "city": "denver",
+    "state": "CO",
+    "address": "600 17th Street, Suite 2800, Denver, CO 80202",
+    "lat": 39.7392364,
+    "lng": -104.984862,
+    "phone": "303.316.0330",
+    "website": "https://www.esquiresolutions.com/offices/denver-co/",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "National provider of court reporting and litigation support with a Denver office offering comprehensive deposition solutions including complete video capabilities and broadcast-ready video depositions.",
+    "certifications": [],
+    "services": [
+      "Video Depositions",
+      "Post-Production",
+      "Remote Depositions",
+      "Audio/Video Services",
+      "Court Reporting"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:58:14",
+    "sentiment": null
+  },
+  {
+    "slug": "naegeli-deposition-trial-denver",
+    "name": "NAEGELI Deposition & Trial",
+    "city": "denver",
+    "state": "CO",
+    "address": "",
+    "lat": 39.7392364,
+    "lng": -104.984862,
+    "phone": "",
+    "website": "https://www.naegeliusa.com/locations/denver-colorado",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Provides court reporting, remote depositions, legal transcription, videography, interpreting, and trial presentation services for Denver legal proceedings.",
+    "certifications": [],
+    "services": [
+      "Videography",
+      "Remote Depositions",
+      "Legal Transcription",
+      "High-Definition Recordings",
+      "Synchronized Timestamps and Transcripts"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:58:14",
+    "sentiment": null
+  },
+  {
+    "slug": "pike-reporting-company-denver",
+    "name": "Pike Reporting Company",
+    "city": "denver",
+    "state": "CO",
+    "address": "",
+    "lat": 39.7392364,
+    "lng": -104.984862,
+    "phone": "",
+    "website": "https://pikereporting.com",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Full-service court reporting firm providing court reporters and legal videographers for deposition needs across Colorado.",
+    "certifications": [],
+    "services": [
+      "Legal Videography",
+      "Court Reporting",
+      "Deposition Transcription",
+      "Legal Video Depositions"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:58:14",
+    "sentiment": null
+  },
+  {
+    "slug": "preston-benson-legal-video-denver",
+    "name": "Preston Benson Legal Video",
+    "city": "denver",
+    "state": "CO",
+    "address": "",
+    "lat": 39.7392364,
+    "lng": -104.984862,
+    "phone": "970-250-8261",
+    "website": "https://prestonbenson.com",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Legal videographers with 7 years of experience based in Grand Junction and Durango, covering video depositions across the Western Slope of Colorado including Cortez, Pagosa Springs, Telluride, Alamosa, and Montrose.",
+    "certifications": [],
+    "services": [
+      "Video Depositions",
+      "Site Inspections",
+      "Day-in-the-Life Video Documentaries",
+      "NCRA Certified Legal Video Specialist",
+      "Video/Transcript Syncing",
+      "Remote Depositions"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:58:14",
+    "sentiment": null
+  },
+  {
+    "slug": "rocky-mountain-reporting-denver",
+    "name": "Rocky Mountain Reporting",
+    "city": "denver",
+    "state": "CO",
+    "address": "",
+    "lat": 39.7392364,
+    "lng": -104.984862,
+    "phone": "",
+    "website": "https://www.rmreporting.com",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Specializes in legal video deposition services in Denver, Boulder, Colorado Springs, Fort Collins and across Colorado using state-of-the-art equipment.",
+    "certifications": [],
+    "services": [
+      "Legal Videography",
+      "Video Depositions",
+      "Video Conferencing",
+      "High-Quality Digital Cameras",
+      "Individual Microphones",
+      "Litigation Software"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:58:14",
+    "sentiment": {
+      "label": "positive",
+      "score": 0.75,
+      "keywords": [
+        "Legal Videography",
+        "Video Depositions",
+        "Video Conferencing",
+        "High-Quality Digital Cameras",
+        "Individual Microphones"
+      ],
+      "highlights": [
+        {
+          "text": "I never have to worry when Rocky Mountain Reporting is scheduled for a deposition.",
+          "sentiment": "positive"
+        },
+        {
+          "text": "RMR is always reliable and punctual.",
+          "sentiment": "positive"
+        },
+        {
+          "text": "They are very conscientious about their work and consistently deliver an accurate and timely transcript.",
+          "sentiment": "positive"
+        }
+      ],
+      "summary": "Specializes in legal video deposition services in Denver, Boulder, Colorado Springs, Fort Collins and across Colorado using state-of-the-art equipment."
+    }
+  }
+]
