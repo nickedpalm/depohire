@@ -33,13 +33,24 @@ interface Props {
 
 const { listing } = Astro.props;
 const cityData = citiesJson.find((c: any) => c.slug === listing.city);
+
+const hasCerts = listing.certifications && listing.certifications.length > 0;
+const hasServices = listing.services && listing.services.length > 0;
+const hasExperience = !!listing.years_experience;
+const hasTabs = hasCerts || hasServices || hasExperience;
+
+// Build tab list dynamically
+const tabs: Array<{ id: string; label: string }> = [];
+if (hasServices) tabs.push({ id: 'services', label: 'Services' });
+if (hasCerts) tabs.push({ id: 'certifications', label: 'Certifications' });
+if (hasExperience) tabs.push({ id: 'experience', label: 'Experience' });
 ---
 <div class="space-y-6">
   <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
     <div class="flex items-center gap-4">
       <InitialsAvatar name={listing.name} size="lg" />
       <div>
-      <h1 class="text-3xl font-bold text-gray-900">{listing.name}</h1>
+      <h1 class="text-4xl font-heading font-bold text-gray-900">{listing.name}</h1>
       <p class="text-gray-500 mt-1">{listing.address}</p>
       <div class="mt-2 flex items-center gap-3">
         <ReviewStars rating={listing.rating} count={listing.review_count} />
@@ -68,36 +79,52 @@ const cityData = citiesJson.find((c: any) => c.slug === listing.city);
     </div>
   )}
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-    {listing.certifications && listing.certifications.length > 0 && (
-      <div class="card p-4">
-        <h3 class="font-semibold text-sm text-gray-500 uppercase tracking-wide mb-2">Certifications</h3>
-        <div class="flex flex-wrap gap-1.5">
-          {listing.certifications.map((cert) => (
-            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-sm font-medium bg-green-100 text-green-800">{cert}</span>
+  {/* Tabbed interface */}
+  {hasTabs && (
+    <div>
+      <div class="border-b border-gray-200 mb-4" id="detail-tabs">
+        <nav class="flex gap-6" role="tablist">
+          {tabs.map((tab, i) => (
+            <button
+              role="tab"
+              class={`detail-tab ${i === 0 ? 'active' : ''}`}
+              data-tab={tab.id}
+              aria-selected={i === 0 ? 'true' : 'false'}
+            >
+              {tab.label}
+            </button>
           ))}
-        </div>
+        </nav>
       </div>
-    )}
 
-    {listing.services && listing.services.length > 0 && (
-      <div class="card p-4">
-        <h3 class="font-semibold text-sm text-gray-500 uppercase tracking-wide mb-2">Services</h3>
-        <div class="flex flex-wrap gap-1.5">
-          {listing.services.map((svc) => (
-            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-sm font-medium bg-primary-50 text-primary-700">{svc}</span>
-          ))}
+      {hasServices && (
+        <div id="panel-services" class="detail-panel" data-panel="services">
+          <div class="flex flex-wrap gap-1.5">
+            {listing.services!.map((svc) => (
+              <span class="inline-flex items-center px-2.5 py-1 rounded-md text-sm font-medium bg-primary-50 text-primary-700">{svc}</span>
+            ))}
+          </div>
         </div>
-      </div>
-    )}
+      )}
 
-    {listing.years_experience && (
-      <div class="card p-4">
-        <h3 class="font-semibold text-sm text-gray-500 uppercase tracking-wide mb-2">Experience</h3>
-        <p class="text-2xl font-bold text-gray-900">{listing.years_experience}+ years</p>
-      </div>
-    )}
-  </div>
+      {hasCerts && (
+        <div id="panel-certifications" class={`detail-panel ${tabs[0]?.id !== 'certifications' ? 'hidden' : ''}`} data-panel="certifications">
+          <div class="flex flex-wrap gap-1.5">
+            {listing.certifications!.map((cert) => (
+              <span class="inline-flex items-center px-2.5 py-1 rounded-md text-sm font-medium bg-accent-50 text-accent-800">{cert}</span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {hasExperience && (
+        <div id="panel-experience" class={`detail-panel ${tabs[0]?.id !== 'experience' ? 'hidden' : ''}`} data-panel="experience">
+          <p class="text-2xl font-heading font-bold text-gray-900">{listing.years_experience}+ years</p>
+          <p class="text-sm text-muted mt-1">of professional experience</p>
+        </div>
+      )}
+    </div>
+  )}
 
   <!-- Sentiment & Review Highlights -->
   {listing.sentiment && (
@@ -119,6 +146,31 @@ const cityData = citiesJson.find((c: any) => c.slug === listing.city);
 </div>
 
 <script is:inline>
+  // Tab switching
+  (function() {
+    const container = document.getElementById('detail-tabs');
+    if (!container) return;
+    const tabs = container.querySelectorAll('.detail-tab');
+    const panels = document.querySelectorAll('.detail-panel');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const target = tab.dataset.tab;
+        tabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+        panels.forEach(p => {
+          if (p.dataset.panel === target) {
+            p.classList.remove('hidden');
+          } else {
+            p.classList.add('hidden');
+          }
+        });
+      });
+    });
+  })();
+
+  // Lazy-load map
   (function() {
     const el = document.getElementById('listing-map');
     if (!el) return;

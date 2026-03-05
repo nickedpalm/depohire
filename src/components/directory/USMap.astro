@@ -1,0 +1,115 @@
+---
+/**
+ * Interactive US Map — shows state listing density with clickable paths.
+ * Only rendered on /states/all/. Uses inline SVG (~25KB).
+ * Density tiers: 0 = gray, 1-4 = accent-100, 5-8 = accent-300, 9+ = accent-500
+ */
+import citiesData from '~/data/cities.json';
+import { getListingCountByCity } from '~/lib/listings';
+
+const cityCounts = getListingCountByCity();
+
+// Aggregate listing counts per state abbreviation
+const stateListingCounts: Record<string, number> = {};
+const stateSlugs: Record<string, string> = {};
+for (const city of citiesData) {
+  stateListingCounts[city.state] = (stateListingCounts[city.state] || 0) + (cityCounts[city.slug] || 0);
+  if (!stateSlugs[city.state]) stateSlugs[city.state] = city.stateSlug;
+}
+
+function densityClass(abbr: string): string {
+  const count = stateListingCounts[abbr] || 0;
+  if (count === 0) return 'fill-gray-100 stroke-gray-300';
+  if (count < 5) return 'fill-accent-100 stroke-accent-200';
+  if (count < 9) return 'fill-accent-300 stroke-accent-400';
+  return 'fill-accent-500 stroke-accent-600';
+}
+
+function stateHref(abbr: string): string {
+  return stateSlugs[abbr] ? `/states/${stateSlugs[abbr]}/` : '#';
+}
+
+function stateTitle(abbr: string, name: string): string {
+  const count = stateListingCounts[abbr] || 0;
+  return `${name}: ${count} videographer${count !== 1 ? 's' : ''}`;
+}
+
+// State paths — simplified US map (viewBox 0 0 960 600)
+const states: Array<{ abbr: string; name: string; d: string }> = [
+  { abbr: 'AL', name: 'Alabama', d: 'M628,430 L628,492 L618,502 L622,510 L632,510 L639,492 L654,492 L654,430Z' },
+  { abbr: 'AK', name: 'Alaska', d: 'M161,485 L183,485 L183,510 L199,510 L199,530 L161,530Z' },
+  { abbr: 'AZ', name: 'Arizona', d: 'M205,410 L205,490 L170,505 L148,490 L148,420 L170,400Z' },
+  { abbr: 'AR', name: 'Arkansas', d: 'M564,430 L626,430 L626,492 L564,492Z' },
+  { abbr: 'CA', name: 'California', d: 'M46,280 L108,260 L128,310 L148,350 L148,420 L126,450 L106,460 L80,440 L46,380Z' },
+  { abbr: 'CO', name: 'Colorado', d: 'M260,320 L370,320 L370,395 L260,395Z' },
+  { abbr: 'CT', name: 'Connecticut', d: 'M852,220 L876,212 L884,228 L868,240 L852,236Z' },
+  { abbr: 'DE', name: 'Delaware', d: 'M832,300 L844,290 L852,305 L840,315Z' },
+  { abbr: 'FL', name: 'Florida', d: 'M654,492 L720,478 L752,492 L760,530 L730,565 L700,570 L685,555 L675,530 L654,510Z' },
+  { abbr: 'GA', name: 'Georgia', d: 'M654,430 L710,420 L720,478 L654,492Z' },
+  { abbr: 'HI', name: 'Hawaii', d: 'M260,520 L290,510 L300,525 L275,535Z' },
+  { abbr: 'ID', name: 'Idaho', d: 'M175,145 L218,140 L228,190 L220,250 L185,270 L175,230Z' },
+  { abbr: 'IL', name: 'Illinois', d: 'M575,250 L610,250 L620,290 L620,380 L600,400 L575,400 L565,370Z' },
+  { abbr: 'IN', name: 'Indiana', d: 'M620,260 L662,260 L662,380 L620,380Z' },
+  { abbr: 'IA', name: 'Iowa', d: 'M490,250 L574,250 L574,320 L490,320Z' },
+  { abbr: 'KS', name: 'Kansas', d: 'M380,340 L500,340 L500,410 L380,410Z' },
+  { abbr: 'KY', name: 'Kentucky', d: 'M620,355 L740,340 L745,370 L700,390 L628,395Z' },
+  { abbr: 'LA', name: 'Louisiana', d: 'M564,492 L626,492 L626,540 L600,555 L575,545 L564,530Z' },
+  { abbr: 'ME', name: 'Maine', d: 'M880,95 L905,90 L915,130 L900,170 L880,160Z' },
+  { abbr: 'MD', name: 'Maryland', d: 'M770,300 L832,290 L840,315 L830,325 L780,320Z' },
+  { abbr: 'MA', name: 'Massachusetts', d: 'M852,200 L900,188 L910,200 L895,210 L852,216Z' },
+  { abbr: 'MI', name: 'Michigan', d: 'M600,160 L660,155 L675,195 L680,240 L660,260 L620,260 L615,220 L600,200Z' },
+  { abbr: 'MN', name: 'Minnesota', d: 'M460,110 L540,110 L545,200 L540,250 L488,250 L472,200Z' },
+  { abbr: 'MS', name: 'Mississippi', d: 'M594,430 L628,430 L628,510 L610,530 L594,510Z' },
+  { abbr: 'MO', name: 'Missouri', d: 'M500,340 L574,320 L580,400 L564,430 L500,430 L500,410Z' },
+  { abbr: 'MT', name: 'Montana', d: 'M220,110 L370,100 L375,185 L230,190Z' },
+  { abbr: 'NE', name: 'Nebraska', d: 'M340,280 L490,270 L490,340 L380,340 L340,330Z' },
+  { abbr: 'NV', name: 'Nevada', d: 'M120,230 L175,220 L185,270 L170,350 L148,350 L120,310Z' },
+  { abbr: 'NH', name: 'New Hampshire', d: 'M870,130 L886,125 L890,175 L876,185 L870,160Z' },
+  { abbr: 'NJ', name: 'New Jersey', d: 'M840,240 L858,235 L862,265 L850,295 L835,290Z' },
+  { abbr: 'NM', name: 'New Mexico', d: 'M210,400 L310,395 L310,490 L230,505 L205,492Z' },
+  { abbr: 'NY', name: 'New York', d: 'M770,160 L860,145 L870,175 L852,200 L840,230 L770,250Z' },
+  { abbr: 'NC', name: 'North Carolina', d: 'M660,380 L790,356 L810,375 L780,400 L710,418Z' },
+  { abbr: 'ND', name: 'North Dakota', d: 'M360,110 L460,105 L465,190 L370,195Z' },
+  { abbr: 'OH', name: 'Ohio', d: 'M662,255 L730,240 L745,280 L740,340 L662,355Z' },
+  { abbr: 'OK', name: 'Oklahoma', d: 'M370,395 L380,410 L500,410 L500,460 L400,470 L370,460Z' },
+  { abbr: 'OR', name: 'Oregon', d: 'M46,155 L170,140 L175,220 L120,230 L46,240Z' },
+  { abbr: 'PA', name: 'Pennsylvania', d: 'M730,230 L830,218 L840,245 L835,285 L730,295Z' },
+  { abbr: 'RI', name: 'Rhode Island', d: 'M880,215 L895,210 L898,225 L885,230Z' },
+  { abbr: 'SC', name: 'South Carolina', d: 'M690,405 L750,388 L770,410 L735,440 L700,435Z' },
+  { abbr: 'SD', name: 'South Dakota', d: 'M370,195 L465,190 L472,280 L370,285Z' },
+  { abbr: 'TN', name: 'Tennessee', d: 'M600,390 L740,370 L740,405 L600,425Z' },
+  { abbr: 'TX', name: 'Texas', d: 'M310,430 L400,425 L410,470 L500,465 L510,530 L480,570 L430,590 L380,585 L340,560 L310,530Z' },
+  { abbr: 'UT', name: 'Utah', d: 'M190,260 L260,255 L260,380 L210,395 L190,380Z' },
+  { abbr: 'VT', name: 'Vermont', d: 'M852,130 L870,125 L876,175 L860,185 L852,170Z' },
+  { abbr: 'VA', name: 'Virginia', d: 'M695,330 L800,305 L810,340 L790,355 L700,375Z' },
+  { abbr: 'WA', name: 'Washington', d: 'M70,75 L175,70 L180,145 L80,152 L46,130Z' },
+  { abbr: 'WV', name: 'West Virginia', d: 'M720,290 L760,280 L770,310 L755,345 L730,340Z' },
+  { abbr: 'WI', name: 'Wisconsin', d: 'M530,130 L600,140 L605,210 L575,250 L540,250 L530,200Z' },
+  { abbr: 'WY', name: 'Wyoming', d: 'M230,195 L370,185 L375,280 L240,285Z' },
+  { abbr: 'DC', name: 'Washington DC', d: 'M793,308 L800,304 L804,312 L797,316Z' },
+];
+---
+
+<div class="mb-8">
+  <h2 class="text-2xl font-heading font-bold text-center mb-4">Browse by State</h2>
+  <div class="relative max-w-3xl mx-auto">
+    <svg viewBox="0 0 960 600" class="w-full h-auto" role="img" aria-label="US Map showing videographer coverage by state">
+      {states.map(({ abbr, name, d }) => (
+        <a href={stateHref(abbr)} class="group">
+          <path
+            d={d}
+            class={`${densityClass(abbr)} stroke-1 hover:fill-accent-400 hover:stroke-accent-500 transition-colors cursor-pointer`}
+          >
+            <title>{stateTitle(abbr, name)}</title>
+          </path>
+        </a>
+      ))}
+    </svg>
+    <div class="flex items-center justify-center gap-4 mt-3 text-xs text-muted">
+      <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm bg-gray-100 border border-gray-300"></span> 0</span>
+      <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm bg-accent-100 border border-accent-200"></span> 1-4</span>
+      <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm bg-accent-300 border border-accent-400"></span> 5-8</span>
+      <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm bg-accent-500 border border-accent-600"></span> 9+</span>
+    </div>
+  </div>
+</div>

@@ -11,7 +11,7 @@ export const headerData = {
       href: getPermalink('/states/all'),
     },
     {
-      text: 'Blog',
+      text: 'Expert Insights',
       href: getBlogPermalink(),
     },
     {
@@ -39,7 +39,7 @@ export const footerData = {
     {
       title: 'Resources',
       links: [
-        { text: 'Blog', href: getBlogPermalink() },
+        { text: 'Expert Insights', href: getBlogPermalink() },
         { text: 'Editorial Guidelines', href: getPermalink('/editorial-guidelines') },
       ],
     },

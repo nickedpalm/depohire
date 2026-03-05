@@ -2,6 +2,7 @@
 import PageLayout from '~/layouts/PageLayout.astro';
 import Breadcrumbs from '~/components/directory/Breadcrumbs.astro';
 import CityGrid from '~/components/directory/CityGrid.astro';
+import USMap from '~/components/directory/USMap.astro';
 import config from '~/config';
 import citiesData from '~/data/cities.json';
 import { getListingCountByCity } from '~/lib/listings';
@@ -57,6 +58,8 @@ const metadata = { title, description };
       { label: 'All States', href: '/states/all/' },
       { label: stateName },
     ]} />
+
+    {isAll && <USMap />}
 
     <CityGrid cities={citiesWithCounts} title={title} />
   </div>

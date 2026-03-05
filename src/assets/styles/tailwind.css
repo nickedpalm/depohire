@@ -22,11 +22,15 @@
 
 @layer components {
   .btn {
-    @apply inline-flex items-center justify-center rounded-full border-gray-400 border bg-transparent font-medium text-center text-base text-page leading-snug transition py-3.5 px-6 md:px-8 ease-in duration-200 focus:ring-blue-500 focus:ring-offset-blue-200 focus:ring-2 focus:ring-offset-2 hover:bg-gray-100 hover:border-gray-600 dark:text-slate-300 dark:border-slate-500 dark:hover:bg-slate-800 dark:hover:border-slate-800 cursor-pointer;
+    @apply inline-flex items-center justify-center rounded-full border-gray-400 border bg-transparent font-medium text-center text-base text-page leading-snug transition py-3.5 px-6 md:px-8 ease-in duration-200 focus:ring-accent-500 focus:ring-offset-accent-200 focus:ring-2 focus:ring-offset-2 hover:bg-gray-100 hover:border-gray-600 dark:text-slate-300 dark:border-slate-500 dark:hover:bg-slate-800 dark:hover:border-slate-800 cursor-pointer;
   }
 
   .btn-primary {
-    @apply btn font-semibold bg-primary text-white border-primary hover:bg-secondary hover:border-secondary hover:text-white dark:text-white dark:bg-primary dark:border-primary dark:hover:border-secondary dark:hover:bg-secondary;
+    @apply btn font-semibold bg-accent-600 text-white border-accent-600 hover:bg-accent-500 hover:border-accent-500 hover:text-white dark:text-white dark:bg-accent-600 dark:border-accent-600 dark:hover:border-accent-500 dark:hover:bg-accent-500;
+  }
+
+  .card {
+    @apply bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow;
   }
 
   .btn-secondary {
@@ -40,7 +44,7 @@
 
 #header.scroll > div:first-child {
   @apply bg-page md:bg-white/90 md:backdrop-blur-md;
-  box-shadow: 0 0.375rem 1.5rem 0 rgb(140 152 164 / 13%);
+  box-shadow: 0 0.375rem 1.5rem 0 rgb(15 30 68 / 8%);
 }
 .dark #header.scroll > div:first-child,
 #header.scroll.dark > div:first-child {
@@ -105,16 +109,32 @@
     @apply m-0;
   }
   .callout-info {
-    @apply border-blue-400 bg-blue-50 text-blue-900;
+    @apply border-primary-400 bg-primary-50 text-primary-900;
   }
   .callout-warning {
     @apply border-amber-400 bg-amber-50 text-amber-900;
   }
   .callout-success {
-    @apply border-green-400 bg-green-50 text-green-900;
+    @apply border-accent-400 bg-accent-50 text-accent-900;
   }
   .callout-danger {
     @apply border-red-400 bg-red-50 text-red-900;
+  }
+
+  /* Filter tabs */
+  .filter-btn {
+    @apply inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium border border-gray-200 text-muted bg-white hover:bg-gray-50 transition-colors cursor-pointer;
+  }
+  .filter-btn.active {
+    @apply bg-accent-600 text-white border-accent-600;
+  }
+
+  /* Listing detail tabs */
+  .detail-tab {
+    @apply pb-3 text-sm font-medium text-muted border-b-2 border-transparent cursor-pointer transition-colors hover:text-gray-900;
+  }
+  .detail-tab.active {
+    @apply text-accent-600 border-accent-500;
   }
 
   /* Responsive tables */
