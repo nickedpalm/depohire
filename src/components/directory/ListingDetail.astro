@@ -118,19 +118,34 @@ const cityData = citiesJson.find((c: any) => c.slug === listing.city);
   {!listing.claimed && <ClaimBanner listingName={listing.name} />}
 </div>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script is:inline src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script is:inline>
-  document.addEventListener('DOMContentLoaded', () => {
+  (function() {
     const el = document.getElementById('listing-map');
     if (!el) return;
-    const lat = parseFloat(el.dataset.lat);
-    const lng = parseFloat(el.dataset.lng);
-    const name = el.dataset.name;
-    const map = L.map(el).setView([lat, lng], 14);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
-    L.marker([lat, lng]).addTo(map).bindPopup(name).openPopup();
-  });
+    let loaded = false;
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && !loaded) {
+        loaded = true;
+        observer.disconnect();
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css';
+        document.head.appendChild(link);
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js';
+        script.onload = function() {
+          const lat = parseFloat(el.dataset.lat);
+          const lng = parseFloat(el.dataset.lng);
+          const name = el.dataset.name;
+          const map = L.map(el).setView([lat, lng], 14);
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+          }).addTo(map);
+          L.marker([lat, lng]).addTo(map).bindPopup(name).openPopup();
+        };
+        document.head.appendChild(script);
+      }
+    }, { rootMargin: '200px' });
+    observer.observe(el);
+  })();
 </script>
