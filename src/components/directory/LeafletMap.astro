@@ -18,7 +18,7 @@ const { pins, centerLat, centerLng, zoom = 11 } = Astro.props;
 <div class="card overflow-hidden">
   <div
     id="city-map"
-    class="h-80 w-full"
+    class="h-80 w-full bg-gray-100"
     data-center-lat={centerLat}
     data-center-lng={centerLng}
     data-zoom={zoom}
@@ -26,31 +26,57 @@ const { pins, centerLat, centerLng, zoom = 11 } = Astro.props;
   ></div>
 </div>
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
-<script is:inline src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
 <script is:inline>
-  document.addEventListener('DOMContentLoaded', () => {
-    const el = document.getElementById('city-map');
-    if (!el) return;
-    const lat = parseFloat(el.dataset.centerLat);
-    const lng = parseFloat(el.dataset.centerLng);
-    const zoom = parseInt(el.dataset.zoom);
-    const pins = JSON.parse(el.dataset.pins || '[]');
+  (function() {
+    let loaded = false;
 
-    const map = L.map(el).setView([lat, lng], zoom);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
+    function initMap() {
+      if (loaded) return;
+      loaded = true;
 
-    pins.forEach(pin => {
-      L.marker([pin.lat, pin.lng])
-        .addTo(map)
-        .bindPopup(`<a href="/listing/${pin.slug}/">${pin.name}</a>`);
-    });
+      const el = document.getElementById('city-map');
+      if (!el) return;
 
-    if (pins.length > 1) {
-      const group = L.featureGroup(pins.map(p => L.marker([p.lat, p.lng])));
-      map.fitBounds(group.getBounds().pad(0.1));
+      const css = document.createElement('link');
+      css.rel = 'stylesheet';
+      css.href = 'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css';
+      document.head.appendChild(css);
+
+      const js = document.createElement('script');
+      js.src = 'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js';
+      js.onload = function() {
+        const lat = parseFloat(el.dataset.centerLat);
+        const lng = parseFloat(el.dataset.centerLng);
+        const zoom = parseInt(el.dataset.zoom);
+        const pins = JSON.parse(el.dataset.pins || '[]');
+
+        const map = L.map(el).setView([lat, lng], zoom);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        pins.forEach(function(pin) {
+          L.marker([pin.lat, pin.lng])
+            .addTo(map)
+            .bindPopup('<a href="/listing/' + pin.slug + '/">' + pin.name + '</a>');
+        });
+
+        if (pins.length > 1) {
+          const group = L.featureGroup(pins.map(function(p) { return L.marker([p.lat, p.lng]); }));
+          map.fitBounds(group.getBounds().pad(0.1));
+        }
+      };
+      document.head.appendChild(js);
     }
-  });
+
+    var observer = new IntersectionObserver(function(entries) {
+      if (entries[0].isIntersecting) {
+        initMap();
+        observer.disconnect();
+      }
+    }, { rootMargin: '200px' });
+
+    var el = document.getElementById('city-map');
+    if (el) observer.observe(el);
+  })();
 </script>
