@@ -89,7 +89,28 @@ const metadata = { title, description: metaDescription };
     )}
 
     <h1 class="text-3xl font-bold text-default mb-2">{title}</h1>
-    <p class="text-muted mb-8">{listings.length} {config.primaryKeyword}{listings.length !== 1 ? 's' : ''} found in {cityInfo.city}</p>
+
+    {/* Social proof bar */}
+    <div class="flex flex-wrap items-center gap-x-5 gap-y-2 mb-8 text-sm text-muted">
+      <span class="flex items-center gap-1.5">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-accent-600"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <strong class="font-semibold text-default">{listings.length}</strong> verified {config.primaryKeyword}{listings.length !== 1 ? 's' : ''}
+      </span>
+      {featured.length > 0 && (
+        <span class="flex items-center gap-1.5">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" class="text-amber-400"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <strong class="font-semibold text-default">{featured.length}</strong> featured
+        </span>
+      )}
+      <span class="flex items-center gap-1.5">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-500"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Verified listings
+      </span>
+      <span class="flex items-center gap-1.5 ml-auto text-xs">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Updated {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+      </span>
+    </div>
 
     {pins.length > 0 && (
       <div class="mb-8">
