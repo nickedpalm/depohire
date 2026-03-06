@@ -1,0 +1,47 @@
+---
+/**
+ * CityCTA.astro
+ * FILE LOCATION: src/components/directory/CityCTA.astro
+ *
+ * Inline city-specific CTA for blog posts — especially City Guide and City Best posts.
+ * Drop mid-article in MDX files using:
+ *
+ *   import CityCTA from '~/components/directory/CityCTA.astro'
+ *   <CityCTA city="New York" citySlug="new-york" state="NY" count={10} />
+ *
+ * Or add it automatically in blog/[...slug].astro after the <Content /> slot
+ * for posts where hub === 'city-guide'.
+ */
+
+import config from '~/config';
+
+interface Props {
+  city: string;
+  citySlug: string;
+  state: string;
+  count?: number;
+}
+
+const { city, citySlug, state, count } = Astro.props;
+---
+
+<div class="not-prose my-8 rounded-2xl border border-accent-200 bg-gradient-to-br from-accent-50 to-white p-6 flex flex-col sm:flex-row sm:items-center gap-4">
+  <div class="flex-1">
+    <p class="text-xs font-semibold uppercase tracking-wider text-accent-600 mb-1">Find a Professional</p>
+    <p class="font-bold text-gray-900 text-lg leading-tight">
+      {count ? `${count} Verified ${config.name} in ${city}` : `Find ${config.name} in ${city}, ${state}`}
+    </p>
+    <p class="text-sm text-gray-600 mt-1">
+      Compare profiles, read reviews, and get free quotes — all in one place.
+    </p>
+  </div>
+  <a
+    href={`/${citySlug}/`}
+    class="flex-shrink-0 inline-flex items-center gap-2 btn-primary px-5 py-2.5 text-sm font-semibold no-underline"
+  >
+    Browse {city} Listings
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+    </svg>
+  </a>
+</div>

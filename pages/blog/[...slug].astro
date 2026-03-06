@@ -1,0 +1,279 @@
+---
+import PageLayout from '~/layouts/PageLayout.astro';
+import Breadcrumbs from '~/components/directory/Breadcrumbs.astro';
+import AuthorBox from '~/components/directory/AuthorBox.astro';
+import RelatedContent from '~/components/directory/RelatedContent.astro';
+import BlogEmailCTA from '~/components/directory/BlogEmailCTA.astro';
+import config from '~/config';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map(post => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const { title, description, pubDate, author = config.editorialAuthor.name, tags = [], hub, image: heroImage, imageCredit } = post.data;
+const formattedDate = pubDate ? pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
+const body = post.body || '';
+const wordCount = body.split(/\s+/).length;
+const readingTime = Math.max(1, Math.round(wordCount / 200));
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title,
+  description,
+  datePublished: pubDate?.toISOString(),
+  dateModified: new Date().toISOString(),
+  author: {
+    '@type': 'Person',
+    name: config.editorialAuthor.name,
+    jobTitle: config.editorialAuthor.title,
+    ...(config.editorialAuthor.linkedin ? { sameAs: [config.editorialAuthor.linkedin] } : {}),
+    knowsAbout: [config.primaryKeyword, config.industry, ...config.secondaryKeywords.slice(0, 3)],
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: config.name,
+    url: config.siteUrl,
+  },
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': `${config.siteUrl}/blog/`,
+  },
+};
+
+const metadata = { title, description };
+---
+<PageLayout metadata={metadata}>
+  <Fragment slot="announcement"><span></span></Fragment>
+  <section class="py-8 sm:py-16 lg:py-20 mx-auto">
+    <article>
+      <header class="intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:max-w-5xl">
+          <Breadcrumbs crumbs={[
+            { label: 'Expert Insights', href: '/blog/' },
+            ...(hub ? [{ label: hub, href: `/blog/${hub.toLowerCase().replace(/\s+/g, '-')}/` }] : []),
+            { label: title },
+          ]} />
+        </div>
+
+        <h1 class="px-4 sm:px-6 max-w-3xl mx-auto lg:max-w-5xl text-4xl md:text-5xl font-bold leading-tighter tracking-tighter font-heading">
+          {title}
+        </h1>
+
+        <p class="max-w-3xl mx-auto lg:max-w-5xl mt-4 mb-4 px-4 sm:px-6 text-xl md:text-2xl text-muted">
+          {description}
+        </p>
+
+        {/* Enhanced author byline with avatar and certification badges */}
+        <div class="max-w-3xl mx-auto lg:max-w-5xl px-4 sm:px-6 mb-4">
+          <div class="flex items-center gap-3 mt-2 mb-2">
+            <div class="w-10 h-10 rounded-full bg-accent-100 flex items-center justify-center text-accent-700 font-bold text-sm flex-shrink-0">
+              {config.editorialAuthor.name.charAt(0)}
+            </div>
+            <div>
+              <p class="text-sm font-medium text-gray-900">
+                <a href="/about/" class="hover:underline">{author}</a>
+              </p>
+              <p class="text-xs text-muted">
+                {config.editorialAuthor.title}
+                {config.certifications.length > 0 && (
+                  <> &middot; {config.certifications.map(cert => (
+                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-primary-100 text-primary-700 ml-1">{cert}</span>
+                  ))}</>
+                )}
+              </p>
+              <p class="text-xs text-muted">{formattedDate} &middot; {readingTime} min read</p>
+            </div>
+          </div>
+        </div>
+
+        {tags.length > 0 && (
+          <div class="max-w-3xl mx-auto lg:max-w-5xl px-4 sm:px-6 mb-6">
+            <div class="flex flex-wrap gap-1.5">
+              {tags.map((tag) => (
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent-50 text-accent-700">{tag}</span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div class="max-w-3xl mx-auto lg:max-w-5xl px-4 sm:px-6">
+          {heroImage ? (
+            <div class="relative rounded-xl overflow-hidden">
+              <img
+                src={heroImage}
+                alt={title}
+                class="w-full h-48 sm:h-64 md:h-80 object-cover"
+                loading="eager"
+                decoding="async"
+              />
+              {imageCredit && (
+                <p class="absolute bottom-2 right-3 text-[10px] text-white/80 bg-black/40 px-2 py-0.5 rounded" set:html={imageCredit.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="underline hover:text-white" target="_blank" rel="noopener noreferrer">$1</a>')} />
+              )}
+            </div>
+          ) : (
+            <div class="border-t border-gray-200"></div>
+          )}
+        </div>
+      </header>
+
+      {/* Mobile TOC fallback */}
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 mt-4 lg:hidden">
+        <details class="card p-4">
+          <summary class="text-sm font-semibold cursor-pointer">Table of Contents</summary>
+          <ul id="toc-list-mobile" class="text-sm space-y-1.5 mt-3 border-l border-gray-200 pl-3"></ul>
+        </details>
+      </div>
+
+      {/* Two-column layout: article body LEFT + sidebar RIGHT */}
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 mt-8 lg:flex lg:gap-10">
+        {/* Article body — LEFT */}
+        <div
+          class="flex-1 min-w-0 prose prose-lg lg:prose-xl font-serif prose-headings:font-heading prose-headings:font-bold prose-headings:leading-tighter prose-headings:tracking-tighter prose-a:text-accent-600 prose-a:no-underline hover:prose-a:underline prose-img:rounded-md prose-img:shadow-lg prose-headings:scroll-mt-[80px] prose-li:my-0"
+          id="article-content"
+        >
+          <Content />
+        </div>
+
+        {/* Sidebar — RIGHT (sticky, desktop only) */}
+        <aside class="hidden lg:block w-80 xl:w-96 flex-shrink-0">
+          <div class="sticky top-24 space-y-6">
+            {/* Author card */}
+            <AuthorBox mode="sidebar" />
+
+            {/* Email CTA */}
+            <BlogEmailCTA />
+
+            {/* TOC */}
+            <nav>
+              <p class="text-xs font-semibold uppercase tracking-wider text-muted mb-3">On this page</p>
+              <ul id="toc-list" class="text-sm space-y-1.5 border-l border-gray-200 pl-3"></ul>
+            </nav>
+
+            {/* Related articles */}
+            <RelatedContent currentSlug={Astro.url.pathname} mode="sidebar" />
+          </div>
+        </aside>
+      </div>
+
+      {/* Below-article section — mobile only (desktop sees these in sidebar) */}
+      <div class="lg:hidden mx-auto px-4 sm:px-6 max-w-3xl">
+        <AuthorBox />
+        <BlogEmailCTA compact />
+        <RelatedContent currentSlug={Astro.url.pathname} />
+      </div>
+
+      <p class="text-xs text-muted mt-6 max-w-3xl mx-auto lg:max-w-5xl px-4 sm:px-6">
+        Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+      </p>
+    </article>
+  </section>
+
+  <script>
+    function enhanceArticle() {
+      const article = document.getElementById('article-content');
+      if (!article) return;
+
+      // Callout detection
+      const calloutMap: Record<string, string> = {
+        'the short version': 'callout-info',
+        'key takeaway': 'callout-info',
+        'bottom line': 'callout-info',
+        'note': 'callout-info',
+        'reality check': 'callout-warning',
+        'warning': 'callout-warning',
+        'important': 'callout-warning',
+        'watch out': 'callout-warning',
+        'pro tip': 'callout-success',
+        'tip': 'callout-success',
+        'quick answer': 'callout-success',
+        'danger': 'callout-danger',
+        'red flag': 'callout-danger',
+        'caution': 'callout-danger',
+      };
+
+      article.querySelectorAll('blockquote').forEach((bq) => {
+        const strong = bq.querySelector('strong');
+        if (!strong) {
+          // Non-callout blockquote without bold prefix: decorative style
+          bq.classList.add('quote-decorative');
+          return;
+        }
+        const text = strong.textContent?.replace(/[:\u2014]/g, '').trim().toLowerCase() || '';
+        let isCallout = false;
+        for (const [prefix, cls] of Object.entries(calloutMap)) {
+          if (text.startsWith(prefix)) {
+            bq.classList.add('callout', cls);
+            isCallout = true;
+            break;
+          }
+        }
+        // Non-callout blockquotes with bold text that didn't match a callout prefix
+        if (!isCallout) {
+          bq.classList.add('quote-decorative');
+        }
+      });
+
+      // Table wrapping
+      article.querySelectorAll('table').forEach((table) => {
+        if (table.parentElement?.classList.contains('table-wrap')) return;
+        const wrapper = document.createElement('div');
+        wrapper.className = 'table-wrap';
+        table.parentNode?.insertBefore(wrapper, table);
+        wrapper.appendChild(table);
+      });
+
+      // Build TOC from h2/h3
+      const tocList = document.getElementById('toc-list');
+      const tocListMobile = document.getElementById('toc-list-mobile');
+      const headings = article.querySelectorAll('h2, h3');
+      if (headings.length === 0) return;
+
+      const tocTargets = [tocList, tocListMobile].filter(Boolean) as HTMLElement[];
+
+      headings.forEach((h, i) => {
+        if (!h.id) h.id = `heading-${i}`;
+        tocTargets.forEach(target => {
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          a.href = `#${h.id}`;
+          a.textContent = h.textContent || '';
+          a.className = `block text-muted hover:text-accent-600 transition-colors toc-link ${h.tagName === 'H3' ? 'pl-3 text-xs' : ''}`;
+          a.dataset.target = h.id;
+          li.appendChild(a);
+          target.appendChild(li);
+        });
+      });
+
+      // Highlight current section via IntersectionObserver (desktop TOC only)
+      if (tocList) {
+        const tocLinks = tocList.querySelectorAll('.toc-link');
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              tocLinks.forEach(l => l.classList.remove('text-accent-600', 'font-medium'));
+              const active = tocList.querySelector(`[data-target="${entry.target.id}"]`);
+              if (active) {
+                active.classList.add('text-accent-600', 'font-medium');
+                active.classList.remove('text-muted');
+              }
+            }
+          });
+        }, { rootMargin: '-80px 0px -60% 0px', threshold: 0 });
+
+        headings.forEach(h => observer.observe(h));
+      }
+    }
+    enhanceArticle();
+    document.addEventListener('astro:page-load', enhanceArticle);
+  </script>
+
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+</PageLayout>

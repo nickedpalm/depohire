@@ -1,0 +1,29 @@
+[
+  {
+    "slug": "veritext-memphis",
+    "name": "Veritext",
+    "city": "memphis",
+    "state": "TN",
+    "address": "",
+    "lat": 35.1460249,
+    "lng": -90.0517638,
+    "phone": "",
+    "website": "https://veritext.com/memphis/",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Provides professional court reporters, videographers, and deposition suites with broadcast-quality video in Memphis.",
+    "certifications": [],
+    "services": [
+      "Legal Videography",
+      "Depositions",
+      "Video Conferencing"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:23:36",
+    "sentiment": null
+  }
+]

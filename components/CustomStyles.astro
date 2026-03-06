@@ -1,0 +1,50 @@
+---
+import '@fontsource-variable/inter';
+import '@fontsource-variable/dm-sans';
+import '@fontsource/source-serif-4/400.css';
+import '@fontsource/source-serif-4/400-italic.css';
+import '@fontsource/source-serif-4/600.css';
+---
+
+<style is:inline>
+  :root {
+    --aw-font-sans: 'DM Sans Variable', 'Inter Variable', ui-sans-serif;
+    --aw-font-serif: 'Source Serif 4', Georgia, ui-serif;
+    --aw-font-heading: 'DM Sans Variable', 'Inter Variable', ui-sans-serif;
+
+    --aw-color-primary: rgb(15 30 68);
+    --aw-color-secondary: rgb(10 22 52);
+    --aw-color-accent: rgb(0 166 153);
+
+    --aw-color-text-heading: rgb(0 0 0);
+    --aw-color-text-default: rgb(16 16 16);
+    --aw-color-text-muted: rgb(16 16 16 / 66%);
+    --aw-color-bg-page: rgb(255 255 255);
+
+    --aw-color-bg-page-dark: rgb(3 6 32);
+
+    ::selection {
+      background-color: lavender;
+    }
+  }
+
+  .dark {
+    --aw-font-sans: 'DM Sans Variable', 'Inter Variable', ui-sans-serif;
+    --aw-font-serif: 'Source Serif 4', Georgia, ui-serif;
+    --aw-font-heading: 'DM Sans Variable', 'Inter Variable', ui-sans-serif;
+
+    --aw-color-primary: rgb(15 30 68);
+    --aw-color-secondary: rgb(10 22 52);
+    --aw-color-accent: rgb(0 166 153);
+
+    --aw-color-text-heading: rgb(247, 248, 248);
+    --aw-color-text-default: rgb(229 236 246);
+    --aw-color-text-muted: rgb(229 236 246 / 66%);
+    --aw-color-bg-page: rgb(3 6 32);
+
+    ::selection {
+      background-color: black;
+      color: snow;
+    }
+  }
+</style>

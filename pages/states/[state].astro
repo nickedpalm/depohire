@@ -1,0 +1,68 @@
+---
+import PageLayout from '~/layouts/PageLayout.astro';
+import Breadcrumbs from '~/components/directory/Breadcrumbs.astro';
+import CityGrid from '~/components/directory/CityGrid.astro';
+import USMap from '~/components/directory/USMap.astro';
+import StateMap from '~/components/directory/StateMap.astro';
+import config from '~/config';
+import citiesData from '~/data/cities.json';
+import { getListingCountByCity } from '~/lib/listings';
+
+export function getStaticPaths() {
+  const stateMap = new Map<string, { stateSlug: string; stateName: string; state: string }>();
+  for (const city of citiesData) {
+    if (!stateMap.has(city.stateSlug)) {
+      stateMap.set(city.stateSlug, {
+        stateSlug: city.stateSlug,
+        stateName: city.stateName,
+        state: city.state,
+      });
+    }
+  }
+
+  const paths = [
+    {
+      params: { state: 'all' },
+      props: { stateName: 'All States', stateAbbr: '', isAll: true },
+    },
+    ...Array.from(stateMap.values()).map(s => ({
+      params: { state: s.stateSlug },
+      props: { stateName: s.stateName, stateAbbr: s.state, isAll: false },
+    })),
+  ];
+
+  return paths;
+}
+
+const { stateName, stateAbbr, isAll } = Astro.props;
+const cityCounts = getListingCountByCity();
+
+const filteredCities = isAll
+  ? citiesData
+  : citiesData.filter(c => c.state === stateAbbr);
+
+const citiesWithCounts = filteredCities
+  .map(c => ({ slug: c.slug, city: c.city, state: c.state, listingCount: cityCounts[c.slug] || 0 }))
+  .sort((a, b) => b.listingCount - a.listingCount || a.city.localeCompare(b.city));
+
+const title = isAll ? `Browse ${config.name} by State` : `${config.name} in ${stateName}`;
+const description = isAll
+  ? `Browse ${config.primaryKeyword}s across all 50 US states.`
+  : `Find ${config.primaryKeyword}s in ${stateName}. Browse ${filteredCities.length} cities.`;
+
+const metadata = { title, description };
+---
+<PageLayout metadata={metadata}>
+  <Fragment slot="announcement"><span></span></Fragment>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <Breadcrumbs crumbs={isAll ? [{ label: 'All States' }] : [
+      { label: 'All States', href: '/states/all/' },
+      { label: stateName },
+    ]} />
+
+    {isAll && <USMap />}
+    {!isAll && <StateMap stateAbbr={stateAbbr} />}
+
+    <CityGrid cities={citiesWithCounts} title={title} />
+  </div>
+</PageLayout>

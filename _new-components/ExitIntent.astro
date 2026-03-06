@@ -1,0 +1,186 @@
+---
+/**
+ * ExitIntent.astro
+ * FILE LOCATION: src/components/directory/ExitIntent.astro
+ *
+ * Triggers on listing pages when mouse leaves viewport toward top.
+ * Drop at bottom of listing/[slug].astro, before closing </PageLayout>:
+ *
+ *   <ExitIntent city={cityInfo?.city} citySlug={listing.city} />
+ *
+ * Lead magnet: "Deposition Prep Checklist for Attorneys" (PDF)
+ * — create this PDF and host at /downloads/deposition-prep-checklist.pdf
+ */
+
+import config from '~/config';
+
+interface Props {
+  city?: string;
+  citySlug?: string;
+}
+
+const { city, citySlug } = Astro.props;
+---
+
+<!-- Exit Intent Modal (hidden by default) -->
+<div
+  id="exit-intent-modal"
+  class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="exit-intent-title"
+>
+  <!-- Backdrop -->
+  <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="exit-intent-backdrop"></div>
+
+  <!-- Modal card -->
+  <div class="relative bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-8 animate-fade-in">
+
+    <!-- Close button -->
+    <button
+      id="exit-intent-close"
+      class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+      aria-label="Close"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+
+    <!-- Icon -->
+    <div class="w-12 h-12 rounded-full bg-accent-100 flex items-center justify-center mb-4">
+      <svg class="w-6 h-6 text-accent-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+      </svg>
+    </div>
+
+    <p class="text-xs font-semibold uppercase tracking-wider text-accent-600 mb-1">Free Download</p>
+    <h2 id="exit-intent-title" class="text-xl font-bold text-gray-900 leading-tight">
+      Before you go — grab our free checklist
+    </h2>
+    <p class="text-sm text-gray-600 mt-2 mb-5">
+      <strong>Deposition Prep Checklist for Attorneys</strong> — what to confirm with your videographer before every deposition. Used by 500+ legal teams.
+    </p>
+
+    <!-- Success state -->
+    <div id="exit-intent-success" class="hidden text-center py-4">
+      <p class="text-green-700 font-semibold">✓ Check your inbox!</p>
+      <p class="text-sm text-gray-500 mt-1">Your checklist is on its way. Also check spam just in case.</p>
+      <a href="/downloads/deposition-prep-checklist.pdf" class="inline-block mt-3 text-sm text-accent-600 hover:underline" target="_blank">
+        Or download it directly →
+      </a>
+    </div>
+
+    <!-- Form -->
+    <form id="exit-intent-form" class="space-y-3">
+      <input
+        type="email"
+        name="email"
+        required
+        placeholder="your@email.com"
+        class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-accent-500 focus:ring-2 focus:ring-accent-200 outline-none transition"
+        data-city={city || ''}
+      />
+      <button
+        type="submit"
+        class="w-full btn-primary py-2.5 text-sm font-semibold flex items-center justify-center gap-2"
+      >
+        <span class="exit-submit-text">Send Me the Checklist</span>
+        <span class="exit-spinner hidden">
+          <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+          </svg>
+        </span>
+      </button>
+      <p class="text-xs text-gray-400 text-center">No spam. Unsubscribe anytime.</p>
+    </form>
+
+  </div>
+</div>
+
+<script>
+  (function () {
+    const modal = document.getElementById('exit-intent-modal');
+    const closeBtn = document.getElementById('exit-intent-close');
+    const backdrop = document.getElementById('exit-intent-backdrop');
+    const form = document.getElementById('exit-intent-form') as HTMLFormElement | null;
+    const successEl = document.getElementById('exit-intent-success');
+
+    if (!modal) return;
+
+    // Only fire once per session
+    const STORAGE_KEY = 'dh_exit_shown';
+    if (sessionStorage.getItem(STORAGE_KEY)) return;
+
+    let fired = false;
+
+    function showModal() {
+      if (fired) return;
+      fired = true;
+      sessionStorage.setItem(STORAGE_KEY, '1');
+      modal!.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function hideModal() {
+      modal!.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    // Trigger: mouse exits toward top of viewport
+    document.addEventListener('mouseleave', (e) => {
+      if (e.clientY < 20) showModal();
+    });
+
+    // Trigger: mobile back button tap (popstate)
+    window.addEventListener('popstate', () => {
+      setTimeout(showModal, 100);
+    });
+
+    closeBtn?.addEventListener('click', hideModal);
+    backdrop?.addEventListener('click', hideModal);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') hideModal(); });
+
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+      const text = btn.querySelector('.exit-submit-text') as HTMLElement;
+      const spinner = btn.querySelector('.exit-spinner') as HTMLElement;
+
+      btn.disabled = true;
+      text.classList.add('hidden');
+      spinner.classList.remove('hidden');
+
+      const emailInput = form.querySelector('input[name="email"]') as HTMLInputElement;
+      const cityInput = form.querySelector('input[name="email"]') as HTMLInputElement;
+
+      try {
+        await fetch('/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: emailInput.value,
+            city: emailInput.dataset.city || '',
+            source: 'exit-intent',
+            tags: 'lead-magnet:checklist',
+          }),
+        });
+      } catch { /* fail silently */ }
+
+      form.classList.add('hidden');
+      successEl?.classList.remove('hidden');
+
+      // Auto-close after 4 seconds
+      setTimeout(hideModal, 4000);
+    });
+  })();
+</script>
+
+<style>
+  @keyframes fade-in {
+    from { opacity: 0; transform: scale(0.95) translateY(8px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .animate-fade-in { animation: fade-in 0.2s ease-out; }
+</style>

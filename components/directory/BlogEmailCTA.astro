@@ -1,0 +1,110 @@
+---
+/**
+ * BlogEmailCTA.astro
+ * FILE LOCATION: src/components/directory/BlogEmailCTA.astro
+ *
+ * Replaces the generic "Search Directory" sidebar CTA in blog/[...slug].astro.
+ *
+ * In blog/[...slug].astro, find this block in the sidebar:
+ *   <div class="card p-5 bg-accent-50 border-accent-200">
+ *     <p class="font-semibold ...">Find a {config.primaryKeyword}</p>
+ *     ...
+ *     <a href="/states/all/" class="btn-primary ...">Search Directory</a>
+ *   </div>
+ *
+ * Replace the entire div with:
+ *   <BlogEmailCTA />
+ *
+ * Also drop below article body for mobile (below <AuthorBox /> in the mobile section):
+ *   <BlogEmailCTA compact />
+ */
+
+import config from '~/config';
+
+interface Props {
+  compact?: boolean;
+}
+const { compact = false } = Astro.props;
+---
+
+<div class={`card ${compact ? 'p-4' : 'p-5'} bg-accent-50 border-accent-200`} id="blog-email-cta">
+
+  {!compact && (
+    <div class="flex items-center gap-2 mb-2">
+      <svg class="w-4 h-4 text-accent-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+      </svg>
+      <p class="text-xs font-semibold uppercase tracking-wider text-accent-600">Free Download</p>
+    </div>
+  )}
+
+  <p class={`font-semibold text-gray-900 ${compact ? 'text-sm' : ''}`}>
+    Get the Hiring Checklist
+  </p>
+  <p class={`text-gray-600 mt-1 ${compact ? 'text-xs' : 'text-xs'}`}>
+    15 questions to ask before booking a {config.primaryKeyword}. Free PDF for attorneys.
+  </p>
+
+  <!-- Success state -->
+  <div class="blog-email-success hidden mt-3 rounded-lg bg-green-50 border border-green-200 p-3 text-center">
+    <p class="text-xs text-green-700 font-medium">✓ Check your inbox!</p>
+    <a href="/downloads/deposition-hiring-checklist.pdf" class="text-xs text-accent-600 hover:underline mt-1 block" target="_blank">
+      Download directly →
+    </a>
+  </div>
+
+  <!-- Form -->
+  <form class="blog-email-form mt-3 space-y-2" data-source="blog-sidebar">
+    <input
+      type="email"
+      name="email"
+      required
+      placeholder="your@email.com"
+      class="w-full rounded-lg border border-gray-300 px-3 py-2 text-xs focus:border-accent-500 focus:ring-1 focus:ring-accent-200 outline-none transition"
+    />
+    <button
+      type="submit"
+      class="w-full btn-primary text-xs py-2 font-semibold flex items-center justify-center gap-1.5"
+    >
+      <span class="blog-submit-text">Send Me the Checklist</span>
+      <span class="blog-spinner hidden">
+        <svg class="animate-spin h-3 w-3" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+        </svg>
+      </span>
+    </button>
+  </form>
+
+  <p class="text-[10px] text-gray-400 mt-2">No spam. Unsubscribe anytime.</p>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>('.blog-email-form').forEach(form => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const wrapper = form.closest('#blog-email-cta') as HTMLElement;
+      const btn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+      const text = btn?.querySelector('.blog-submit-text') as HTMLElement;
+      const spinner = btn?.querySelector('.blog-spinner') as HTMLElement;
+      const success = wrapper?.querySelector('.blog-email-success') as HTMLElement;
+
+      btn.disabled = true;
+      text?.classList.add('hidden');
+      spinner?.classList.remove('hidden');
+
+      const email = (form.querySelector('input[name="email"]') as HTMLInputElement)?.value;
+
+      try {
+        await fetch('/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, source: form.dataset.source || 'blog-sidebar', tags: 'lead-magnet:checklist' }),
+        });
+      } catch { /* fail silently */ }
+
+      form.classList.add('hidden');
+      success?.classList.remove('hidden');
+    });
+  });
+</script>

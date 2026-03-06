@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "naegeli-deposition-trial-dallas",
+    "name": "NAEGELI Deposition & Trial",
+    "city": "dallas",
+    "state": "VA",
+    "address": "",
+    "lat": 40.0161857,
+    "lng": -80.5270152,
+    "phone": "",
+    "website": "https://www.naegeliusa.com/locations/arlington-virginia-court-reporters",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Offers certified videographers for depositions, arbitrations, and mediations with high-quality recordings, synced transcripts, and support in the DMV area.",
+    "certifications": [],
+    "services": [
+      "legal videography",
+      "deposition video",
+      "transcript syncing",
+      "remote depositions",
+      "trial presentation"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:23:29",
+    "sentiment": null
+  }
+]

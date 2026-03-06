@@ -1,0 +1,286 @@
+[
+  {
+    "slug": "buell-realtime-reporting-seattle",
+    "name": "Buell Realtime Reporting",
+    "city": "seattle",
+    "state": "WA",
+    "address": "",
+    "lat": 47.6038321,
+    "lng": -122.330062,
+    "phone": "",
+    "website": "https://www.buellrealtime.com",
+    "email": "",
+    "rating": 0.0,
+    "review_count": 0,
+    "description": "Provides legal videography services including video depositions, videoconferencing, post-production editing, and trial enhancements for Washington state.",
+    "certifications": [],
+    "services": [
+      "video depositions",
+      "videoconferencing",
+      "post-production",
+      "site inspections",
+      "day-in-the-life videos"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:58:26",
+    "sentiment": {
+      "label": "negative",
+      "score": 0.0,
+      "keywords": [
+        "video depositions",
+        "videoconferencing",
+        "post-production",
+        "site inspections",
+        "day-in-the-life videos"
+      ],
+      "highlights": [
+        {
+          "text": "I have had the pleasure of working with Buell Realtime for the past several years.",
+          "sentiment": "negative"
+        }
+      ],
+      "summary": "Provides legal videography services including video depositions, videoconferencing, post-production editing, and trial enhancements for Washington state."
+    }
+  },
+  {
+    "slug": "caption-legal-seattle",
+    "name": "Caption Legal",
+    "city": "seattle",
+    "state": "WA",
+    "address": "",
+    "lat": 47.6038321,
+    "lng": -122.330062,
+    "phone": "805.885.7742",
+    "website": "https://captionlegal.com/seattle-wa",
+    "email": "",
+    "rating": 0.0,
+    "review_count": 0,
+    "description": "Offers onsite, remote, and hybrid deposition videography services for Seattle attorneys with expert litigation support.",
+    "certifications": [],
+    "services": [
+      "onsite videography",
+      "remote depositions",
+      "hybrid depositions"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:58:26",
+    "sentiment": {
+      "label": "negative",
+      "score": 0.0,
+      "keywords": [
+        "onsite videography",
+        "remote depositions",
+        "hybrid depositions"
+      ],
+      "highlights": [],
+      "summary": "Offers onsite, remote, and hybrid deposition videography services for Seattle attorneys with expert litigation support."
+    }
+  },
+  {
+    "slug": "central-court-reporting-video-seattle",
+    "name": "Central Court Reporting & Video",
+    "city": "seattle",
+    "state": "WA",
+    "address": "",
+    "lat": 47.6038321,
+    "lng": -122.330062,
+    "phone": "",
+    "website": "https://centralcourtreporting.com",
+    "email": "",
+    "rating": 0.0,
+    "review_count": 0,
+    "description": "Full-service litigation support with videography, videostreaming, videoconferencing, and conference suites throughout Washington State since 1985.",
+    "certifications": [],
+    "services": [
+      "videography",
+      "videostreaming",
+      "videoconferencing",
+      "trial presentation",
+      "court reporting"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:58:26",
+    "sentiment": {
+      "label": "negative",
+      "score": 0.0,
+      "keywords": [
+        "videography",
+        "videostreaming",
+        "videoconferencing",
+        "trial presentation",
+        "court reporting"
+      ],
+      "highlights": [],
+      "summary": "Full-service litigation support with videography, videostreaming, videoconferencing, and conference suites throughout Washington State since 1985."
+    }
+  },
+  {
+    "slug": "grant-legal-services-llc-seattle",
+    "name": "Grant Legal Services LLC",
+    "city": "seattle",
+    "state": "WA",
+    "address": "911 145th St, Seattle, WA 98133",
+    "lat": 47.7337882,
+    "lng": -122.3473395,
+    "phone": "",
+    "website": "https://www.grantlegalservices.com",
+    "email": "",
+    "rating": 0.0,
+    "review_count": 0,
+    "description": "Provides video conferencing, depositions, IMEs, expert witness filming, digital sync, editing, and trial-ready exhibits in Seattle.",
+    "certifications": [],
+    "services": [
+      "video conferencing",
+      "depositions",
+      "IMEs",
+      "digital sync & editing",
+      "PIP & HD Elmo production"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:58:26",
+    "sentiment": {
+      "label": "negative",
+      "score": 0.0,
+      "keywords": [
+        "video conferencing",
+        "depositions",
+        "IMEs",
+        "digital sync & editing",
+        "PIP & HD Elmo production"
+      ],
+      "highlights": [],
+      "summary": "Provides video conferencing, depositions, IMEs, expert witness filming, digital sync, editing, and trial-ready exhibits in Seattle."
+    }
+  },
+  {
+    "slug": "hampton-videography-seattle",
+    "name": "Hampton Videography",
+    "city": "seattle",
+    "state": "WA",
+    "address": "",
+    "lat": 47.6038321,
+    "lng": -122.330062,
+    "phone": "",
+    "website": "https://www.hamptonvideography.com",
+    "email": "",
+    "rating": 0.0,
+    "review_count": 0,
+    "description": "Specializes in deposition videography, IMEs/DMEs, CR35 evaluations, transcript-video matching, and secure video delivery compliant with WA court rules.",
+    "certifications": [],
+    "services": [
+      "depositions",
+      "IMEs/DMEs",
+      "transcript-video matching",
+      "remote video capture",
+      "video archiving"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:58:26",
+    "sentiment": {
+      "label": "negative",
+      "score": 0.0,
+      "keywords": [
+        "depositions",
+        "IMEs/DMEs",
+        "transcript-video matching",
+        "remote video capture",
+        "video archiving"
+      ],
+      "highlights": [],
+      "summary": "Specializes in deposition videography, IMEs/DMEs, CR35 evaluations, transcript-video matching, and secure video delivery compliant with WA court rules."
+    }
+  },
+  {
+    "slug": "lakeside-reporting-seattle",
+    "name": "Lakeside Reporting",
+    "city": "seattle",
+    "state": "WA",
+    "address": "",
+    "lat": 47.6038321,
+    "lng": -122.330062,
+    "phone": "",
+    "website": "https://lakesidereporting.com",
+    "email": "",
+    "rating": 0.0,
+    "review_count": 0,
+    "description": "Offers certified legal videographers for depositions and arbitration in Kirkland, WA, covering Seattle, Bellevue, Everett, and surrounding areas.",
+    "certifications": [],
+    "services": [
+      "video depositions",
+      "video/transcript synchronization",
+      "LiveNote Stream broadcasts",
+      "editing and DVD production",
+      "settlement documentaries"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:58:26",
+    "sentiment": {
+      "label": "negative",
+      "score": 0.0,
+      "keywords": [
+        "video depositions",
+        "video/transcript synchronization",
+        "LiveNote Stream broadcasts",
+        "editing and DVD production",
+        "settlement documentaries"
+      ],
+      "highlights": [],
+      "summary": "Offers certified legal videographers for depositions and arbitration in Kirkland, WA, covering Seattle, Bellevue, Everett, and surrounding areas."
+    }
+  },
+  {
+    "slug": "lexitas-seattle",
+    "name": "Lexitas",
+    "city": "seattle",
+    "state": "WA",
+    "address": "",
+    "lat": 47.6038321,
+    "lng": -122.330062,
+    "phone": "",
+    "website": "https://www.lexitaslegal.com/locations/seattle-seventh-ave",
+    "email": "",
+    "rating": 0.0,
+    "review_count": 0,
+    "description": "Provides digital recording by professional legal video specialists for broadcast quality video content in Seattle deposition suites.",
+    "certifications": [],
+    "services": [
+      "legal videography",
+      "deposition suites",
+      "digital recording"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-02-27 05:58:26",
+    "sentiment": {
+      "label": "negative",
+      "score": 0.0,
+      "keywords": [
+        "legal videography",
+        "deposition suites",
+        "digital recording"
+      ],
+      "highlights": [],
+      "summary": "Provides digital recording by professional legal video specialists for broadcast quality video content in Seattle deposition suites."
+    }
+  }
+]

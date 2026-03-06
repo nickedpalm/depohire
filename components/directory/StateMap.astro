@@ -1,0 +1,210 @@
+---
+/**
+ * StateMap — SVG state outline with city dots.
+ * Uses the same Albers USA projection as USMap to project city lat/lng to SVG coords.
+ * Navy background, teal state fill, white city dots with labels.
+ * Includes label collision avoidance for close cities.
+ */
+import { statePaths } from './statePathData';
+import { geoAlbersUsa } from 'd3-geo';
+import citiesData from '~/data/cities.json';
+import { getListingCountByCity } from '~/lib/listings';
+
+interface Props {
+  stateAbbr: string;
+}
+
+const { stateAbbr } = Astro.props;
+
+// Same projection as the gen-map.mjs that produced statePaths
+const projection = geoAlbersUsa().scale(1100).translate([480, 300]);
+
+// Find this state's path
+const stateData = statePaths.find(s => s.abbr === stateAbbr);
+if (!stateData) throw new Error(`No path data for state: ${stateAbbr}`);
+
+// Parse bounding box from SVG path d attribute
+function parseBBox(d: string): { minX: number; minY: number; maxX: number; maxY: number } {
+  const re = /(-?\d+\.?\d*),(-?\d+\.?\d*)/g;
+  let m: RegExpExecArray | null;
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  while ((m = re.exec(d)) !== null) {
+    const x = parseFloat(m[1]), y = parseFloat(m[2]);
+    if (x < minX) minX = x;
+    if (x > maxX) maxX = x;
+    if (y < minY) minY = y;
+    if (y > maxY) maxY = y;
+  }
+  return { minX, minY, maxX, maxY };
+}
+
+const bbox = parseBBox(stateData.d);
+const width = bbox.maxX - bbox.minX;
+const height = bbox.maxY - bbox.minY;
+const padX = width * 0.2;
+const padY = height * 0.2;
+const viewBox = `${bbox.minX - padX} ${bbox.minY - padY} ${width + padX * 2} ${height + padY * 2}`;
+
+// Scale dot and text sizes relative to the state size
+const stateSpan = Math.max(width, height);
+const dotBase = Math.max(2.5, Math.min(5, stateSpan * 0.018));
+const fontSize = Math.max(7, Math.min(11, stateSpan * 0.035));
+const labelGap = dotBase * 1.8 + fontSize * 0.3;
+
+// Get city data for this state
+const cityCounts = getListingCountByCity();
+const stateCities = citiesData.filter(c => c.state === stateAbbr);
+
+// Project cities to SVG coordinates
+const projectedCities = stateCities
+  .map(city => {
+    const coords = projection([city.lng, city.lat]);
+    if (!coords) return null;
+    return {
+      slug: city.slug,
+      city: city.city,
+      x: coords[0],
+      y: coords[1],
+      count: cityCounts[city.slug] || 0,
+    };
+  })
+  .filter((c): c is NonNullable<typeof c> => c !== null)
+  .sort((a, b) => b.count - a.count);
+
+// Compute dot radius based on listing count (bigger = more listings)
+const maxCount = Math.max(1, ...projectedCities.map(c => c.count));
+function dotRadius(count: number): number {
+  const scale = count > 0 ? 0.5 + 0.5 * Math.sqrt(count / maxCount) : 0.4;
+  return dotBase * scale;
+}
+
+// --- Label collision avoidance ---
+// Approximate label width in SVG units (chars * fontSize * factor)
+const charWidth = fontSize * 0.55;
+// Placement directions: right, left, below-right, above-right
+type Placement = { tx: number; ty: number; anchor: string };
+const placements: (offset: number) => Placement[] = (offset) => [
+  { tx: offset, ty: fontSize * 0.35, anchor: 'start' },         // right
+  { tx: -offset, ty: fontSize * 0.35, anchor: 'end' },           // left
+  { tx: offset, ty: fontSize * 1.4, anchor: 'start' },           // below-right
+  { tx: -offset, ty: -fontSize * 0.7, anchor: 'end' },           // above-left
+  { tx: 0, ty: -fontSize * 0.9, anchor: 'middle' },              // above-center
+  { tx: 0, ty: fontSize * 1.8, anchor: 'middle' },               // below-center
+];
+
+interface LabelRect { x1: number; y1: number; x2: number; y2: number }
+function labelRect(cx: number, cy: number, text: string, p: Placement): LabelRect {
+  const textW = text.length * charWidth;
+  const textH = fontSize;
+  let x1: number;
+  if (p.anchor === 'start') x1 = cx + p.tx;
+  else if (p.anchor === 'end') x1 = cx + p.tx - textW;
+  else x1 = cx + p.tx - textW / 2;
+  return { x1, y1: cy + p.ty - textH, x2: x1 + textW, y2: cy + p.ty + textH * 0.3 };
+}
+function rectsOverlap(a: LabelRect, b: LabelRect): boolean {
+  return a.x1 < b.x2 && a.x2 > b.x1 && a.y1 < b.y2 && a.y2 > b.y1;
+}
+
+// Assign label placement per city, avoiding overlaps
+const placedLabels: LabelRect[] = [];
+const cityPlacements: Map<string, Placement> = new Map();
+
+for (const c of projectedCities) {
+  const labelText = c.city + (c.count > 0 ? ` (${c.count})` : '');
+  const options = placements(labelGap);
+  let bestPlacement = options[0]; // default: right
+  let bestOverlaps = Infinity;
+
+  for (const p of options) {
+    const rect = labelRect(c.x, c.y, labelText, p);
+    const overlapCount = placedLabels.filter(r => rectsOverlap(rect, r)).length;
+    if (overlapCount < bestOverlaps) {
+      bestOverlaps = overlapCount;
+      bestPlacement = p;
+      if (overlapCount === 0) break; // perfect placement found
+    }
+  }
+
+  const finalRect = labelRect(c.x, c.y, labelText, bestPlacement);
+  placedLabels.push(finalRect);
+  cityPlacements.set(c.slug, bestPlacement);
+}
+---
+
+<div class="rounded-2xl overflow-hidden mb-8 shadow-lg border border-gray-200 dark:border-gray-700">
+  <!-- Header bar -->
+  <div class="bg-primary-900 px-5 py-3 flex items-center justify-between">
+    <h2 class="text-white font-heading font-semibold text-lg">{stateData.name}</h2>
+    <span class="text-accent-300 text-sm">{projectedCities.length} {projectedCities.length === 1 ? 'city' : 'cities'}</span>
+  </div>
+
+  <!-- Map -->
+  <svg
+    viewBox={viewBox}
+    class="w-full h-auto bg-primary-900/95 block"
+    style="max-height: 480px;"
+    role="img"
+    aria-label={`Map of ${stateData.name} with city locations`}
+  >
+    <!-- Subtle grid pattern -->
+    <defs>
+      <pattern id="grid" width={stateSpan * 0.05} height={stateSpan * 0.05} patternUnits="userSpaceOnUse">
+        <path d={`M ${stateSpan * 0.05} 0 L 0 0 0 ${stateSpan * 0.05}`} fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" />
+      </pattern>
+    </defs>
+    <rect x={bbox.minX - padX} y={bbox.minY - padY} width={width + padX * 2} height={height + padY * 2} fill="url(#grid)" />
+
+    <!-- State outline with glow -->
+    <path d={stateData.d} fill="rgba(45,212,191,0.15)" stroke="rgba(45,212,191,0.6)" stroke-width="2" fill-rule="evenodd" />
+    <path d={stateData.d} fill="none" stroke="rgba(45,212,191,0.2)" stroke-width="6" fill-rule="evenodd" />
+
+    <!-- City dots + labels -->
+    {projectedCities.map((c) => {
+      const r = dotRadius(c.count);
+      const glowR = r * 2.5;
+      const p = cityPlacements.get(c.slug)!;
+      const labelText = c.city + (c.count > 0 ? ` (${c.count})` : '');
+      return (
+        <a href={`/${c.slug}/`} class="group">
+          {/* Glow behind dot */}
+          <circle cx={c.x} cy={c.y} r={glowR} fill="rgba(255,255,255,0.08)" />
+          {/* Dot */}
+          <circle cx={c.x} cy={c.y} r={r} fill="white" class="group-hover:fill-accent-300 transition-colors" style="cursor: pointer;" />
+          {/* Leader line for non-right placements */}
+          <line
+            x1={c.x}
+            y1={c.y}
+            x2={c.x + p.tx * 0.6}
+            y2={c.y + p.ty * 0.6}
+            stroke="rgba(255,255,255,0.2)"
+            stroke-width="0.5"
+          />
+          {/* Label */}
+          <text
+            x={c.x + p.tx}
+            y={c.y + p.ty}
+            fill="rgba(255,255,255,0.9)"
+            font-size={fontSize}
+            font-family="system-ui, sans-serif"
+            font-weight="500"
+            text-anchor={p.anchor}
+            style="cursor: pointer; text-shadow: 0 1px 3px rgba(0,0,0,0.6);"
+            class="group-hover:fill-accent-300"
+          >{labelText}</text>
+          {/* Tooltip */}
+          <title>{c.city}: {c.count} videographer{c.count !== 1 ? 's' : ''}</title>
+        </a>
+      );
+    })}
+  </svg>
+
+  <!-- Legend footer -->
+  <div class="bg-primary-900 px-5 py-2.5 flex items-center gap-4 text-xs text-gray-400 border-t border-white/5">
+    <span class="flex items-center gap-1.5">
+      <span class="w-2 h-2 rounded-full bg-white inline-block"></span> City location
+    </span>
+    <span class="text-gray-500">|</span>
+    <span>Click a city to view listings</span>
+  </div>
+</div>

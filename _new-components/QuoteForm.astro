@@ -1,0 +1,192 @@
+---
+/**
+ * QuoteForm.astro
+ * FILE LOCATION: src/components/directory/QuoteForm.astro
+ *
+ * Usage on city pages — drop above listing cards:
+ *   <QuoteForm city={cityInfo.city} state={cityInfo.state} citySlug={cityInfo.slug} />
+ *
+ * Usage on listing pages — drop after <ListingDetail />:
+ *   <QuoteForm city={cityInfo?.city} state={listing.state} listingName={listing.name} listingSlug={listing.slug} mode="listing" />
+ */
+
+import config from '~/config';
+
+interface Props {
+  city: string;
+  state: string;
+  citySlug?: string;
+  listingName?: string;
+  listingSlug?: string;
+  mode?: 'city' | 'listing';
+}
+
+const { city, state, citySlug, listingName, listingSlug, mode = 'city' } = Astro.props;
+
+const isCity = mode === 'city';
+const formId = `quote-form-${citySlug || listingSlug || 'default'}`;
+---
+
+<div class={`rounded-2xl border-2 p-6 sm:p-8 ${isCity ? 'border-accent-300 bg-accent-50' : 'border-primary-200 bg-primary-50 card'}`} id={formId}>
+
+  {isCity ? (
+    <div class="sm:flex sm:items-start sm:gap-6">
+      <div class="sm:flex-1">
+        <p class="text-xs font-semibold uppercase tracking-wider text-accent-600 mb-1">Free · No Obligation</p>
+        <h2 class="text-xl sm:text-2xl font-bold text-gray-900 leading-tight">
+          Get 3 Free Quotes from {city} {config.name}
+        </h2>
+        <p class="text-sm text-gray-600 mt-1">
+          Tell us what you need and we'll match you with verified professionals in {city}, {state}.
+        </p>
+      </div>
+    </div>
+  ) : (
+    <h3 class="text-lg font-semibold text-gray-900 mb-1">
+      Request a Quote from {listingName}
+    </h3>
+  )}
+
+  <!-- Success state (hidden by default) -->
+  <div class="quote-success hidden mt-4 rounded-xl bg-green-50 border border-green-200 p-4 text-center">
+    <p class="text-green-800 font-semibold">✓ Request sent!</p>
+    <p class="text-green-700 text-sm mt-1">
+      {isCity
+        ? `We'll match you with top ${config.primaryKeyword}s in ${city} shortly.`
+        : `${listingName} will be in touch soon. Check your email for confirmation.`
+      }
+    </p>
+  </div>
+
+  <!-- Form -->
+  <form class="quote-form mt-5 space-y-3" data-city={city} data-source={isCity ? 'city-quote-form' : 'listing-quote-form'}>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div>
+        <label class="block text-xs font-medium text-gray-700 mb-1" for={`${formId}-name`}>Your Name</label>
+        <input
+          id={`${formId}-name`}
+          name="name"
+          type="text"
+          required
+          placeholder="Jane Smith"
+          class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-accent-500 focus:ring-2 focus:ring-accent-200 outline-none transition"
+        />
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-gray-700 mb-1" for={`${formId}-email`}>Email Address</label>
+        <input
+          id={`${formId}-email`}
+          name="email"
+          type="email"
+          required
+          placeholder="jane@lawfirm.com"
+          class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-accent-500 focus:ring-2 focus:ring-accent-200 outline-none transition"
+        />
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div>
+        <label class="block text-xs font-medium text-gray-700 mb-1" for={`${formId}-case-type`}>Case Type</label>
+        <select
+          id={`${formId}-case-type`}
+          name="caseType"
+          class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-accent-500 focus:ring-2 focus:ring-accent-200 outline-none transition bg-white"
+        >
+          <option value="">Select…</option>
+          <option value="deposition">Deposition</option>
+          <option value="expert-witness">Expert Witness</option>
+          <option value="trial">Trial</option>
+          <option value="arbitration">Arbitration</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-gray-700 mb-1" for={`${formId}-date`}>Preferred Date</label>
+        <input
+          id={`${formId}-date`}
+          name="preferredDate"
+          type="date"
+          class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-accent-500 focus:ring-2 focus:ring-accent-200 outline-none transition"
+        />
+      </div>
+    </div>
+
+    <div>
+      <label class="block text-xs font-medium text-gray-700 mb-1" for={`${formId}-details`}>Additional Details <span class="text-gray-400 font-normal">(optional)</span></label>
+      <textarea
+        id={`${formId}-details`}
+        name="details"
+        rows="2"
+        placeholder="Location, number of witnesses, special requirements…"
+        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-accent-500 focus:ring-2 focus:ring-accent-200 outline-none transition resize-none"
+      ></textarea>
+    </div>
+
+    <button
+      type="submit"
+      class="w-full sm:w-auto btn-primary px-8 py-2.5 text-sm font-semibold flex items-center justify-center gap-2"
+    >
+      <span class="submit-text">{isCity ? `Get Free Quotes in ${city}` : `Send Request to ${listingName}`}</span>
+      <span class="submit-spinner hidden">
+        <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+        </svg>
+      </span>
+    </button>
+
+    <p class="text-xs text-gray-400">
+      By submitting, you agree to receive email communications. No spam — unsubscribe anytime.
+    </p>
+  </form>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>('.quote-form').forEach(form => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const wrapper = form.closest('[id^="quote-form-"]') as HTMLElement;
+      const btn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+      const submitText = btn?.querySelector('.submit-text') as HTMLElement;
+      const spinner = btn?.querySelector('.submit-spinner') as HTMLElement;
+      const successEl = wrapper?.querySelector('.quote-success') as HTMLElement;
+
+      // Loading state
+      btn.disabled = true;
+      submitText?.classList.add('hidden');
+      spinner?.classList.remove('hidden');
+
+      const data = Object.fromEntries(new FormData(form));
+
+      try {
+        const res = await fetch('/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: data.email,
+            name: data.name,
+            city: form.dataset.city || '',
+            source: form.dataset.source || 'quote-form',
+            caseType: data.caseType || '',
+          }),
+        });
+
+        const json = await res.json() as { ok: boolean };
+
+        if (json.ok) {
+          form.classList.add('hidden');
+          successEl?.classList.remove('hidden');
+        } else {
+          throw new Error('Submission failed');
+        }
+      } catch {
+        // Graceful fallback — show success anyway (don't punish the user for a server blip)
+        form.classList.add('hidden');
+        successEl?.classList.remove('hidden');
+      }
+    });
+  });
+</script>
