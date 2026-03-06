@@ -1,0 +1,349 @@
+---
+import PageLayout from '~/layouts/PageLayout.astro';
+import Breadcrumbs from '~/components/directory/Breadcrumbs.astro';
+import config from '~/config';
+
+const title = `Advertise on ${config.name} — Reach Attorneys Hiring Now`;
+const description = `Get your deposition videography business in front of attorneys actively searching for providers. Featured listings, enhanced profiles, and city spotlight placements on ${config.name}.`;
+
+const metadata = { title, description };
+
+const LISTMONK_URL = import.meta.env.LISTMONK_URL ?? '';
+const LIST_UUID    = 'b8c38467-94a1-4e6a-aeb4-c14a72bd11a8'; // DepoHire Provider Interest (list 33)
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: title,
+  description,
+  url: `${config.siteUrl}/advertise/`,
+};
+---
+
+<PageLayout metadata={metadata}>
+  <Fragment slot="announcement"><span></span></Fragment>
+
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <Breadcrumbs crumbs={[{ label: 'Advertise' }]} />
+
+    {/* ─── Hero ─────────────────────────────────────────────── */}
+    <div class="bg-gradient-to-br from-primary-900 to-primary-700 rounded-2xl px-8 py-12 text-white mb-10 text-center">
+      <p class="text-xs font-semibold uppercase tracking-widest text-primary-200 mb-3">For Deposition Videographers</p>
+      <h1 class="text-3xl sm:text-4xl font-bold leading-tight mb-4">
+        Put Your Business in Front of<br class="hidden sm:block" /> Attorneys Searching Right Now
+      </h1>
+      <p class="text-lg text-primary-100 max-w-2xl mx-auto">
+        {config.name} connects litigation attorneys with qualified deposition videographers in their city. A featured listing puts you at the top of search results where hiring decisions get made.
+      </p>
+    </div>
+
+    {/* ─── Stats strip ──────────────────────────────────────── */}
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-12">
+      {[
+        { num: '40+', label: 'Cities covered' },
+        { num: '1,000+', label: 'Monthly attorney visitors' },
+        { num: '85%', label: 'High-intent search traffic' },
+        { num: '0', label: 'Setup fees' },
+      ].map(({ num, label }) => (
+        <div class="text-center bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+          <p class="text-3xl font-bold text-primary-700">{num}</p>
+          <p class="text-sm text-muted mt-1">{label}</p>
+        </div>
+      ))}
+    </div>
+
+    {/* ─── Two-column: packages + form ─────────────────────── */}
+    <div class="lg:grid lg:grid-cols-2 lg:gap-12">
+
+      {/* Left: packages */}
+      <div>
+        <h2 class="text-2xl font-bold text-default mb-6">Placement Options</h2>
+
+        <div class="space-y-5">
+          {/* Featured listing */}
+          <div class="rounded-xl border-2 border-primary-500 bg-primary-50 p-6">
+            <div class="flex items-start justify-between gap-3 mb-3">
+              <h3 class="font-bold text-default text-lg">Featured City Listing</h3>
+              <span class="flex-shrink-0 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary-600 text-white">Most Popular</span>
+            </div>
+            <ul class="space-y-2 text-sm text-default">
+              <li class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                Pinned at top of city directory results
+              </li>
+              <li class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                "Featured" badge on listing card
+              </li>
+              <li class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                Enhanced profile: photo, extended bio, all services listed
+              </li>
+              <li class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                Direct link to your booking page or intake form
+              </li>
+              <li class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                Monthly impressions report
+              </li>
+            </ul>
+          </div>
+
+          {/* Blog mention */}
+          <div class="rounded-xl border border-gray-200 bg-white p-6">
+            <h3 class="font-bold text-default text-lg mb-3">City Guide Mention</h3>
+            <ul class="space-y-2 text-sm text-default">
+              <li class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                Named mention in our "Best Videographers in [City]" guide
+              </li>
+              <li class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                Dofollow backlink to your website
+              </li>
+              <li class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                Evergreen — content stays live indefinitely
+              </li>
+            </ul>
+          </div>
+
+          {/* Newsletter */}
+          <div class="rounded-xl border border-gray-200 bg-white p-6">
+            <h3 class="font-bold text-default text-lg mb-3">Newsletter Sponsorship</h3>
+            <ul class="space-y-2 text-sm text-default">
+              <li class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                Sponsor slot in monthly attorney newsletter
+              </li>
+              <li class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                Custom copy, logo, and CTA link
+              </li>
+              <li class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                Open rate report after send
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">
+          <strong>Note:</strong> We review all advertisers for quality standards — CLVS certification, professional equipment, and verifiable client history. This protects the trust attorneys place in our recommendations.
+        </div>
+      </div>
+
+      {/* Right: signup form */}
+      <div class="mt-10 lg:mt-0">
+        <h2 class="text-2xl font-bold text-default mb-2">Get Pricing & Availability</h2>
+        <p class="text-muted text-sm mb-6">Tell us about your business. We'll follow up within one business day with current availability and rates for your city.</p>
+
+        <div
+          id="advertise-form"
+          class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 sm:p-8"
+        >
+          <div id="form-fields">
+            <div class="space-y-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="adv-name" class="block text-sm font-medium text-default mb-1">Your Name <span class="text-red-500">*</span></label>
+                  <input
+                    id="adv-name"
+                    type="text"
+                    placeholder="Jane Smith"
+                    class="w-full px-3 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label for="adv-company" class="block text-sm font-medium text-default mb-1">Business Name <span class="text-red-500">*</span></label>
+                  <input
+                    id="adv-company"
+                    type="text"
+                    placeholder="Acme Legal Video"
+                    class="w-full px-3 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label for="adv-email" class="block text-sm font-medium text-default mb-1">Email Address <span class="text-red-500">*</span></label>
+                <input
+                  id="adv-email"
+                  type="email"
+                  placeholder="you@yourbusiness.com"
+                  class="w-full px-3 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                />
+              </div>
+
+              <div>
+                <label for="adv-city" class="block text-sm font-medium text-default mb-1">Primary City / Metro <span class="text-red-500">*</span></label>
+                <input
+                  id="adv-city"
+                  type="text"
+                  placeholder="Chicago, IL"
+                  class="w-full px-3 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                />
+              </div>
+
+              <div>
+                <label for="adv-interest" class="block text-sm font-medium text-default mb-1">Placement Interest</label>
+                <select
+                  id="adv-interest"
+                  class="w-full px-3 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                >
+                  <option value="">Select a placement type...</option>
+                  <option value="featured">Featured City Listing</option>
+                  <option value="guide">City Guide Mention</option>
+                  <option value="newsletter">Newsletter Sponsorship</option>
+                  <option value="multiple">Multiple / Not sure yet</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="adv-message" class="block text-sm font-medium text-default mb-1">Anything else? <span class="text-muted font-normal">(optional)</span></label>
+                <textarea
+                  id="adv-message"
+                  rows="3"
+                  placeholder="Tell us about your certification, specialization, or coverage area..."
+                  class="w-full px-3 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
+                ></textarea>
+              </div>
+
+              <p id="form-error" class="hidden text-sm text-red-600"></p>
+
+              <button
+                id="adv-submit"
+                type="button"
+                class="w-full btn-primary py-3 font-semibold text-sm rounded-lg flex items-center justify-center gap-2"
+              >
+                <span id="btn-label">Request Advertising Info</span>
+                <svg id="btn-spinner" class="hidden w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+              </button>
+
+              <p class="text-xs text-center text-muted">
+                No spam. We'll reach out once with availability and rates. You can unsubscribe at any time.
+              </p>
+            </div>
+          </div>
+
+          {/* Success state */}
+          <div id="form-success" class="hidden text-center py-6">
+            <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
+              <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-default mb-2">Request received!</h3>
+            <p class="text-muted text-sm">We'll follow up within one business day with current availability and pricing for your city.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* ─── FAQ ──────────────────────────────────────────────── */}
+    <div class="mt-16">
+      <h2 class="text-2xl font-bold text-default mb-6 text-center">Common Questions</h2>
+      <div class="grid sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        {[
+          {
+            q: 'Who sees my listing?',
+            a: 'Primarily litigation attorneys, paralegals, and legal ops professionals searching for deposition videographers in their city. Our traffic skews heavily toward high-intent searches.',
+          },
+          {
+            q: 'Do I need to be CLVS certified?',
+            a: 'We require documentation of professional credentials and a track record in legal videography. CLVS certification from NCRA is preferred but not always required — we evaluate case by case.',
+          },
+          {
+            q: 'How long does setup take?',
+            a: 'Featured listings go live within 2–3 business days of approval. City guide mentions are included in the next scheduled content update for your city.',
+          },
+          {
+            q: 'Can I advertise in multiple cities?',
+            a: 'Yes — and we offer multi-city packages for firms with regional coverage. Mention this in your message and we\'ll include bundle pricing in our response.',
+          },
+        ].map(({ q, a }) => (
+          <div class="bg-white rounded-xl border border-gray-200 p-5">
+            <h3 class="font-semibold text-default mb-2">{q}</h3>
+            <p class="text-sm text-muted leading-relaxed">{a}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <script define:vars={{ LISTMONK_URL, LIST_UUID }}>
+    const submitBtn  = document.getElementById('adv-submit');
+    const btnLabel   = document.getElementById('btn-label');
+    const btnSpinner = document.getElementById('btn-spinner');
+    const formFields = document.getElementById('form-fields');
+    const formSuccess = document.getElementById('form-success');
+    const formError  = document.getElementById('form-error');
+
+    function setLoading(on) {
+      submitBtn.disabled = on;
+      btnLabel.textContent = on ? 'Sending...' : 'Request Advertising Info';
+      btnSpinner.classList.toggle('hidden', !on);
+    }
+
+    function showError(msg) {
+      formError.textContent = msg;
+      formError.classList.remove('hidden');
+    }
+
+    function hideError() {
+      formError.classList.add('hidden');
+    }
+
+    submitBtn.addEventListener('click', async () => {
+      hideError();
+
+      const name     = document.getElementById('adv-name').value.trim();
+      const company  = document.getElementById('adv-company').value.trim();
+      const email    = document.getElementById('adv-email').value.trim();
+      const city     = document.getElementById('adv-city').value.trim();
+      const interest = document.getElementById('adv-interest').value;
+      const message  = document.getElementById('adv-message').value.trim();
+
+      if (!name)    { showError('Please enter your name.'); return; }
+      if (!company) { showError('Please enter your business name.'); return; }
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showError('Please enter a valid email address.'); return; }
+      if (!city)    { showError('Please enter your primary city.'); return; }
+
+      setLoading(true);
+
+      try {
+        // Build note from optional fields
+        const noteParts = [`Company: ${company}`, `City: ${city}`];
+        if (interest) noteParts.push(`Interest: ${interest}`);
+        if (message)  noteParts.push(`Message: ${message}`);
+
+        // Use the Cloudflare Pages Function to handle subscription
+        const response = await fetch('/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, name, source: 'advertise-form' }),
+        });
+
+        if (response.ok) {
+          formFields.classList.add('hidden');
+          formSuccess.classList.remove('hidden');
+        } else {
+          const text = await response.text();
+          showError('Something went wrong. Please try again or email us directly.');
+          console.error('Subscribe error:', text);
+        }
+      } catch (err) {
+        showError('Network error. Please check your connection and try again.');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    });
+  </script>
+
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+</PageLayout>

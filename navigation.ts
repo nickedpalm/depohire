@@ -22,6 +22,10 @@ export const headerData = {
       text: 'About',
       href: getPermalink('/about'),
     },
+    {
+      text: 'Advertise',
+      href: getPermalink('/advertise'),
+    },
   ],
   actions: [],
 };
@@ -47,6 +51,7 @@ export const footerData = {
       title: 'Company',
       links: [
         { text: 'About', href: getPermalink('/about') },
+        { text: 'Advertise', href: getPermalink('/advertise') },
         { text: 'Privacy Policy', href: getPermalink('/privacy') },
       ],
     },

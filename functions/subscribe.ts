@@ -2,43 +2,43 @@
  * FILE LOCATION: functions/subscribe.ts
  * Cloudflare Pages Function — handles POST /subscribe from all forms
  *
- * LISTMONK LIST IDs (mail.firestick.io):
- *   3  = Firestick.io Weekly       (2,331 subscribers — existing)
- *   5  = Firestick.io Newsletter
- *   6  = DepoHire Newsletter
- *   30 = DepoHire Leads            ← quote forms, city page CTAs
- *   31 = DepoHire Blog             ← blog sidebar email capture
- *   32 = Firestick.io Leads
- *   33 = DepoHire Provider Interest ← /advertise/ page signups
- *   34 = Lead Magnet Downloads     ← exit intent, checklist downloads
+ * Uses Listmonk v6 public subscription form endpoint (/subscription/form)
+ * which requires list UUIDs (not numeric IDs) and no authentication.
  *
- * CLOUDFLARE PAGES ENV VARS (set per project in dashboard):
- *   LISTMONK_URL      = https://mail.firestick.io
- *   LISTMONK_API_KEY  = YWRtaW46ZmlyZXN0aWNrMjAyNg==
+ * LISTMONK LIST UUIDs (mail.firestick.io):
+ *   6  → 1574cfb0-e6d2-4e02-b7db-684b252f7178  DepoHire Newsletter
+ *   30 → 1c82963b-310b-4af5-bf89-a7fb96132dd8  DepoHire Leads
+ *   31 → 4f72411e-2d6c-4ddb-af06-674b502393d7  DepoHire Blog
+ *   33 → b8c38467-94a1-4e6a-aeb4-c14a72bd11a8  DepoHire Provider Interest
+ *   34 → c7be263f-1308-4b7a-a65e-594809e728ad  Lead Magnet Downloads
  *
- * SOURCE → LIST ID ROUTING:
+ * CLOUDFLARE PAGES ENV VARS (set per project in Cloudflare dashboard):
+ *   LISTMONK_URL  = https://mail.firestick.io
+ *
+ * SOURCE → LIST UUID ROUTING:
  *   city-quote-form      → 30 (DepoHire Leads)
  *   listing-quote-form   → 30 (DepoHire Leads)
  *   blog-sidebar         → 31 (DepoHire Blog)
  *   exit-intent          → 34 (Lead Magnet Downloads)
  *   provider-signup      → 33 (DepoHire Provider Interest)
+ *   advertise-form       → 33 (DepoHire Provider Interest)
  *   default              → 6  (DepoHire Newsletter)
  */
 
 interface Env {
   LISTMONK_URL: string;
-  LISTMONK_API_KEY: string;
 }
 
-// Route source → list ID
-const SOURCE_TO_LIST: Record<string, number> = {
-  'city-quote-form':    30,
-  'listing-quote-form': 30,
-  'blog-sidebar':       31,
-  'exit-intent':        34,
-  'provider-signup':    33,
+// Source → list UUID mapping (lists must be type='public' in Listmonk)
+const SOURCE_TO_UUID: Record<string, string> = {
+  'city-quote-form':    '1c82963b-310b-4af5-bf89-a7fb96132dd8', // list 30
+  'listing-quote-form': '1c82963b-310b-4af5-bf89-a7fb96132dd8', // list 30
+  'blog-sidebar':       '4f72411e-2d6c-4ddb-af06-674b502393d7', // list 31
+  'exit-intent':        'c7be263f-1308-4b7a-a65e-594809e728ad', // list 34
+  'provider-signup':    'b8c38467-94a1-4e6a-aeb4-c14a72bd11a8', // list 33
+  'advertise-form':     'b8c38467-94a1-4e6a-aeb4-c14a72bd11a8', // list 33
 };
-const DEFAULT_LIST = 6; // DepoHire Newsletter
+const DEFAULT_UUID = '1574cfb0-e6d2-4e02-b7db-684b252f7178'; // list 6 — DepoHire Newsletter
 
 export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   const cors = {
@@ -47,63 +47,61 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   };
 
   try {
-    const body = await request.json() as Record<string, string>;
-    const { email, name, city, source, caseType, tags: extraTags } = body;
+    const contentType = request.headers.get('Content-Type') || '';
+
+    let email = '', name = '', source = '';
+
+    if (contentType.includes('application/json')) {
+      const body = await request.json() as Record<string, string>;
+      email  = body.email  || '';
+      name   = body.name   || '';
+      source = body.source || '';
+    } else {
+      // application/x-www-form-urlencoded (from advertise page)
+      const formData = await request.formData();
+      email  = (formData.get('email')  as string) || '';
+      name   = (formData.get('name')   as string) || '';
+      source = (formData.get('source') as string) || '';
+    }
 
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return new Response(JSON.stringify({ ok: false, error: 'Invalid email' }), { status: 400, headers: cors });
     }
 
     const base = env.LISTMONK_URL?.replace(/\/$/, '');
-    const apiKey = env.LISTMONK_API_KEY;
-
-    if (!base || !apiKey) {
-      console.error('Missing LISTMONK_URL or LISTMONK_API_KEY');
+    if (!base) {
+      console.error('Missing LISTMONK_URL');
       return new Response(JSON.stringify({ ok: false, error: 'Server config error' }), { status: 500, headers: cors });
     }
 
-    const listId = SOURCE_TO_LIST[source] ?? DEFAULT_LIST;
+    const listUUID = SOURCE_TO_UUID[source] ?? DEFAULT_UUID;
 
-    // Build tags
-    const tags: string[] = [`source:${source || 'web'}`, 'domain:depohire'];
-    if (city) tags.push(`city:${city.toLowerCase().replace(/\s+/g, '-')}`);
-    if (caseType) tags.push(`case-type:${caseType}`);
-    if (extraTags) tags.push(...extraTags.split(',').map((t: string) => t.trim()).filter(Boolean));
-
-    const res = await fetch(`${base}/api/subscribers`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Basic ${apiKey}`,
-      },
-      body: JSON.stringify({
-        email,
-        name: name || email.split('@')[0],
-        status: 'enabled',
-        lists: [listId],
-        attribs: {
-          city: city || '',
-          source: source || 'web',
-          case_type: caseType || '',
-          domain: 'depohire',
-        },
-        preconfirm_subscriptions: true,
-        tags,
-      }),
+    // Use the public /subscription/form endpoint — no auth required in Listmonk v6
+    const payload = new URLSearchParams({
+      email,
+      name: name || email.split('@')[0],
+      l: listUUID,
     });
 
-    // 409 = already subscribed — still a success
-    if (res.status === 409) {
-      return new Response(JSON.stringify({ ok: true, already: true }), { headers: cors });
+    const res = await fetch(`${base}/subscription/form`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: payload.toString(),
+    });
+
+    const responseText = await res.text();
+
+    // Public form returns HTML — check for success/duplicate indicators
+    const isAlreadySubscribed = responseText.toLowerCase().includes('already subscribed')
+      || responseText.toLowerCase().includes('unsubscribed');
+    const isSuccess = res.ok || responseText.toLowerCase().includes('subscribed successfully') || isAlreadySubscribed;
+
+    if (isSuccess) {
+      return new Response(JSON.stringify({ ok: true, already: isAlreadySubscribed }), { headers: cors });
     }
 
-    if (!res.ok) {
-      const err = await res.text();
-      console.error('Listmonk error:', err);
-      return new Response(JSON.stringify({ ok: false, error: 'Subscription failed' }), { status: 500, headers: cors });
-    }
-
-    return new Response(JSON.stringify({ ok: true }), { headers: cors });
+    console.error('Listmonk subscription error:', res.status, responseText.slice(0, 200));
+    return new Response(JSON.stringify({ ok: false, error: 'Subscription failed' }), { status: 500, headers: cors });
 
   } catch (err) {
     console.error('Subscribe function error:', err);

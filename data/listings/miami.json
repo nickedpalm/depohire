@@ -22,7 +22,7 @@
     ],
     "years_experience": null,
     "claimed": false,
-    "featured": false,
+    "featured": true,
     "source": "perplexity",
     "scraped_at": "2026-02-27 05:22:35",
     "sentiment": {
@@ -128,7 +128,7 @@
     ],
     "years_experience": null,
     "claimed": false,
-    "featured": false,
+    "featured": true,
     "source": "perplexity",
     "scraped_at": "2026-02-27 05:22:35",
     "sentiment": null

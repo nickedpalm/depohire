@@ -129,7 +129,7 @@
     ],
     "years_experience": null,
     "claimed": false,
-    "featured": false,
+    "featured": true,
     "source": "perplexity",
     "scraped_at": "2026-02-27 06:03:26",
     "sentiment": null
@@ -210,7 +210,7 @@
     ],
     "years_experience": null,
     "claimed": false,
-    "featured": false,
+    "featured": true,
     "source": "perplexity",
     "scraped_at": "2026-02-27 06:03:26",
     "sentiment": null
