@@ -178,6 +178,268 @@ const addons = [
       </div>
     </div>
 
+    {/* ─── Live Preview Section ─────────────────────────────────── */}
+    <div class="mb-14" id="preview-section">
+      <div class="text-center mb-8">
+        <h2 class="text-2xl font-bold text-default mb-2">See What Your Listing Looks Like</h2>
+        <p class="text-muted text-sm">Toggle between a standard and featured listing — click to open the full preview.</p>
+      </div>
+
+      {/* Tab switcher */}
+      <div class="flex justify-center gap-2 mb-6">
+        <button id="tab-standard" class="preview-tab px-4 py-2 rounded-lg text-sm font-semibold border border-gray-300 text-gray-600 hover:border-primary-400 hover:text-primary-700 transition" data-tab="standard">Standard Listing</button>
+        <button id="tab-featured" class="preview-tab px-4 py-2 rounded-lg text-sm font-semibold border-2 border-primary-500 bg-primary-50 text-primary-700 transition" data-tab="featured">⭐ Featured Listing</button>
+      </div>
+
+      {/* Card previews — side by side on desktop, single on mobile */}
+      <div class="relative max-w-2xl mx-auto">
+
+        {/* Standard card preview */}
+        <div id="preview-standard" class="hidden">
+          <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition group" onclick="openLightbox('standard')">
+            <div class="p-5">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <h3 class="font-bold text-gray-900 text-lg leading-tight">Elliott Reporting</h3>
+                  <p class="text-sm text-gray-500 mt-0.5">Colorado Springs, CO</p>
+                </div>
+                <div class="flex-shrink-0 text-right">
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">Standard</span>
+                </div>
+              </div>
+              <p class="text-sm text-gray-600 mt-3 line-clamp-2">Full-service reporting firm offering court reporter services, legal videography, and video conferencing in Colorado Springs.</p>
+              <div class="flex flex-wrap gap-1.5 mt-3">
+                <span class="text-xs bg-gray-50 border border-gray-200 text-gray-600 px-2 py-0.5 rounded-full">Legal Videography</span>
+                <span class="text-xs bg-gray-50 border border-gray-200 text-gray-600 px-2 py-0.5 rounded-full">Court Reporting</span>
+                <span class="text-xs bg-gray-50 border border-gray-200 text-gray-600 px-2 py-0.5 rounded-full">Video Conferencing</span>
+              </div>
+              <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between">
+                <span class="text-xs text-gray-400">elliottreporting.com</span>
+                <span class="text-xs text-accent-600 font-medium group-hover:underline">View listing →</span>
+              </div>
+            </div>
+            <div class="bg-gray-50 px-5 py-2.5 text-xs text-center text-gray-400">Click to see full listing page</div>
+          </div>
+          <p class="text-center text-xs text-muted mt-3">Sorted alphabetically among all providers in city · No lead routing</p>
+        </div>
+
+        {/* Featured card preview */}
+        <div id="preview-featured">
+          <div class="bg-white rounded-2xl border-2 border-primary-400 shadow-lg overflow-hidden cursor-pointer hover:shadow-xl transition group" onclick="openLightbox('featured')">
+            <div class="bg-primary-600 px-5 py-2 flex items-center gap-2">
+              <svg class="w-3.5 h-3.5 text-yellow-300" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+              <span class="text-xs font-bold text-white tracking-wide uppercase">Featured Provider</span>
+            </div>
+            <div class="p-5">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <h3 class="font-bold text-gray-900 text-lg leading-tight">Acme Legal Video Services</h3>
+                  <p class="text-sm text-gray-500 mt-0.5">Colorado Springs, CO · <span class="text-green-600 font-medium">Open now</span></p>
+                </div>
+                <div class="flex-shrink-0 text-right">
+                  <div class="flex items-center gap-0.5">
+                    {[...Array(5)].map((_, i) => (
+                      <svg class="w-3.5 h-3.5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                    ))}
+                    <span class="text-xs text-gray-500 ml-1">4.9 (28)</span>
+                  </div>
+                </div>
+              </div>
+              <p class="text-sm text-gray-600 mt-3 line-clamp-2">CLVS-certified videographer with 15+ years serving litigation attorneys across Colorado. Remote deposition specialists. Same-day availability.</p>
+              <div class="flex flex-wrap gap-1.5 mt-3">
+                <span class="text-xs bg-accent-50 border border-accent-200 text-accent-700 px-2 py-0.5 rounded-full font-medium">✓ CLVS Certified</span>
+                <span class="text-xs bg-gray-50 border border-gray-200 text-gray-600 px-2 py-0.5 rounded-full">Remote Depositions</span>
+                <span class="text-xs bg-gray-50 border border-gray-200 text-gray-600 px-2 py-0.5 rounded-full">Same-Day Available</span>
+                <span class="text-xs bg-gray-50 border border-gray-200 text-gray-600 px-2 py-0.5 rounded-full">Exhibit Handling</span>
+              </div>
+              <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between">
+                <span class="text-sm font-semibold text-primary-700">📞 (719) 555-0182</span>
+                <span class="text-xs text-accent-600 font-semibold group-hover:underline">View listing + Request Quote →</span>
+              </div>
+            </div>
+            <div class="bg-primary-50 px-5 py-2.5 text-xs text-center text-primary-600 font-medium">Click to see full listing page preview</div>
+          </div>
+          <p class="text-center text-xs text-muted mt-3">Pinned first in results · Quote requests emailed to you automatically</p>
+        </div>
+      </div>
+    </div>
+
+    {/* ─── Lightbox ────────────────────────────────────────────── */}
+    <div id="listing-lightbox" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm" role="dialog" aria-modal="true">
+      <div class="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl">
+
+        {/* Close button */}
+        <button onclick="closeLightbox()" class="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+
+        {/* Standard listing full preview */}
+        <div id="lightbox-standard" class="hidden">
+          <div class="bg-gray-50 px-6 py-3 border-b border-gray-200 rounded-t-2xl">
+            <p class="text-xs text-gray-400 font-mono">depohire.com/listing/elliott-reporting-colorado-springs/</p>
+          </div>
+          <div class="p-6">
+            <nav class="text-xs text-gray-400 mb-4">Home › Colorado Springs › <span class="text-gray-600">Elliott Reporting</span></nav>
+            <div class="flex items-start gap-4 mb-6">
+              <div class="w-14 h-14 rounded-xl bg-gray-100 flex items-center justify-center text-gray-400 font-bold text-xl flex-shrink-0">E</div>
+              <div class="flex-1">
+                <h2 class="text-xl font-bold text-gray-900">Elliott Reporting</h2>
+                <p class="text-sm text-gray-500">Colorado Springs, CO</p>
+                <div class="flex gap-2 mt-2">
+                  <a href="#" class="text-xs border border-gray-300 rounded-lg px-3 py-1 text-gray-600 hover:border-primary-400 transition">Visit Website</a>
+                </div>
+              </div>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4 mb-5">
+              <h3 class="text-sm font-semibold text-gray-700 mb-1">About</h3>
+              <p class="text-sm text-gray-600">Full-service reporting firm offering court reporter services, legal videography, and video conferencing in Colorado Springs.</p>
+            </div>
+            <div class="mb-5">
+              <h3 class="text-sm font-semibold text-gray-700 mb-2">Services</h3>
+              <div class="flex flex-wrap gap-1.5">
+                <span class="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">Legal Videography</span>
+                <span class="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">Court Reporting</span>
+                <span class="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">Video Conferencing</span>
+              </div>
+            </div>
+            <div class="rounded-xl border border-gray-200 p-5">
+              <h3 class="text-sm font-semibold text-gray-900 mb-3">Request a Quote from Elliott Reporting</h3>
+              <div class="space-y-2.5">
+                <input class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-400" placeholder="Your Name" disabled />
+                <input class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-400" placeholder="Email Address" disabled />
+                <button class="w-full bg-primary-600 text-white rounded-lg py-2 text-sm font-semibold opacity-80">Send Request to Elliott Reporting</button>
+              </div>
+            </div>
+            <div class="mt-6 rounded-xl border border-dashed border-gray-300 p-4 text-center">
+              <p class="text-xs text-gray-400">Is this your business? <a href="/advertise/" class="text-primary-600 underline">Claim this listing</a></p>
+            </div>
+          </div>
+          <div class="border-t border-gray-100 bg-amber-50 px-6 py-4">
+            <p class="text-sm text-amber-800 font-medium text-center">👆 This is a standard listing. <a href="/advertise/" class="underline font-bold">Upgrade to Featured for $79/mo</a> to add your photo, phone, reviews, CLVS badge, and automatic lead routing.</p>
+          </div>
+        </div>
+
+        {/* Featured listing full preview */}
+        <div id="lightbox-featured" class="hidden">
+          <div class="bg-gray-50 px-6 py-3 border-b border-gray-200 rounded-t-2xl">
+            <p class="text-xs text-gray-400 font-mono">depohire.com/listing/acme-legal-video-colorado-springs/</p>
+          </div>
+          <div class="p-6">
+            <nav class="text-xs text-gray-400 mb-4">Home › Colorado Springs › <span class="text-gray-600">Acme Legal Video Services</span></nav>
+            {/* Featured header */}
+            <div class="flex items-start gap-4 mb-5">
+              <div class="w-14 h-14 rounded-xl bg-primary-100 flex items-center justify-center text-primary-600 font-bold text-xl flex-shrink-0">A</div>
+              <div class="flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h2 class="text-xl font-bold text-gray-900">Acme Legal Video Services</h2>
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary-600 text-white text-xs font-bold">
+                    <svg class="w-3 h-3 text-yellow-300" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                    Featured
+                  </span>
+                </div>
+                <p class="text-sm text-gray-500 mt-0.5">Colorado Springs, CO</p>
+                <div class="flex items-center gap-1 mt-1">
+                  {[...Array(5)].map((_, i) => (
+                    <svg class="w-3.5 h-3.5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                  ))}
+                  <span class="text-xs text-gray-500 ml-1">4.9 · 28 reviews</span>
+                </div>
+                <div class="flex gap-2 mt-2 flex-wrap">
+                  <a href="#" class="text-xs bg-primary-600 text-white rounded-lg px-3 py-1 hover:bg-primary-700 transition">📞 (719) 555-0182</a>
+                  <a href="#" class="text-xs border border-gray-300 rounded-lg px-3 py-1 text-gray-600 hover:border-primary-400 transition">Visit Website</a>
+                  <a href="#" class="text-xs border border-primary-300 rounded-lg px-3 py-1 text-primary-700 hover:bg-primary-50 transition">Book Online</a>
+                </div>
+              </div>
+            </div>
+            {/* Trust bar */}
+            <div class="flex flex-wrap gap-2 mb-5">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-green-50 border border-green-200 text-xs font-semibold text-green-700">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                CLVS Certified
+              </span>
+              <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-xs font-semibold text-blue-700">15+ Years Experience</span>
+              <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-purple-50 border border-purple-200 text-xs font-semibold text-purple-700">Remote Depo Specialist</span>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4 mb-5">
+              <h3 class="text-sm font-semibold text-gray-700 mb-1">About</h3>
+              <p class="text-sm text-gray-600">CLVS-certified videographer with 15+ years serving litigation attorneys across Colorado. We specialize in remote and in-person depositions, expert witness recording, and same-day video delivery. Available 7 days a week with 24-hour notice.</p>
+            </div>
+            <div class="mb-5">
+              <h3 class="text-sm font-semibold text-gray-700 mb-2">Services</h3>
+              <div class="flex flex-wrap gap-1.5">
+                {['Remote Depositions', 'Expert Witness', 'Trial Documentation', 'Exhibit Handling', 'Video Sync', 'Same-Day Delivery'].map(s => (
+                  <span class="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">{s}</span>
+                ))}
+              </div>
+            </div>
+            {/* Quote form */}
+            <div class="rounded-xl border-2 border-primary-200 bg-primary-50 p-5">
+              <h3 class="text-sm font-semibold text-gray-900 mb-3">Request a Quote from Acme Legal Video Services</h3>
+              <div class="grid grid-cols-2 gap-2 mb-2">
+                <input class="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-400" placeholder="Your Name" disabled />
+                <input class="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-400" placeholder="Email" disabled />
+              </div>
+              <div class="grid grid-cols-2 gap-2 mb-3">
+                <select class="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-400 bg-white" disabled><option>Case Type</option></select>
+                <input class="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-400" placeholder="Preferred Date" disabled />
+              </div>
+              <button class="w-full bg-primary-600 text-white rounded-lg py-2 text-sm font-semibold">Send Request to Acme Legal Video →</button>
+              <p class="text-xs text-gray-400 mt-2 text-center">Quote request emailed directly to provider · No middleman</p>
+            </div>
+          </div>
+          <div class="border-t border-gray-100 bg-primary-50 px-6 py-4">
+            <p class="text-sm text-primary-800 font-medium text-center">✅ This is a Featured listing. <a href="/advertise/" class="underline font-bold">Get yours for $79/month →</a></p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <script>
+      // Tab switching
+      document.querySelectorAll('.preview-tab').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tab = (btn as HTMLElement).dataset.tab;
+          document.querySelectorAll('.preview-tab').forEach(b => {
+            b.classList.remove('border-primary-500', 'bg-primary-50', 'text-primary-700', 'border-2');
+            b.classList.add('border-gray-300', 'text-gray-600');
+          });
+          btn.classList.add('border-primary-500', 'bg-primary-50', 'text-primary-700', 'border-2');
+          btn.classList.remove('border-gray-300');
+          document.getElementById('preview-standard')?.classList.toggle('hidden', tab !== 'standard');
+          document.getElementById('preview-featured')?.classList.toggle('hidden', tab !== 'featured');
+        });
+      });
+
+      // Lightbox
+      function openLightbox(type: string) {
+        const lb = document.getElementById('listing-lightbox');
+        document.getElementById('lightbox-standard')?.classList.toggle('hidden', type !== 'standard');
+        document.getElementById('lightbox-featured')?.classList.toggle('hidden', type !== 'featured');
+        lb?.classList.remove('hidden');
+        lb?.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeLightbox() {
+        const lb = document.getElementById('listing-lightbox');
+        lb?.classList.add('hidden');
+        lb?.classList.remove('flex');
+        document.body.style.overflow = '';
+      }
+      // Close on backdrop click
+      document.getElementById('listing-lightbox')?.addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) closeLightbox();
+      });
+      // Close on Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeLightbox();
+      });
+
+      // Make functions global
+      (window as any).openLightbox = openLightbox;
+      (window as any).closeLightbox = closeLightbox;
+    </script>
+
     {/* ─── Why it's worth it ──────────────────────────────────── */}
     <div class="bg-gradient-to-br from-primary-900 to-primary-700 rounded-2xl p-8 text-white mb-14">
       <h2 class="text-xl font-bold mb-6 text-center">The Math Is Simple</h2>
