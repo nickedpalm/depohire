@@ -137,12 +137,12 @@ if (hasExperience) tabs.push({ id: 'experience', label: 'Experience' });
     />
   )}
 
-  <!-- Map -->
-  <div class="card overflow-hidden">
-    <div id="listing-map" class="h-64 w-full" data-lat={listing.lat} data-lng={listing.lng} data-name={listing.name}></div>
-  </div>
-
-  {!listing.claimed && <ClaimBanner listingName={listing.name} />}
+  {/* Map — lazy loaded, below the fold, after tabs and sentiment */}
+  {listing.lat && listing.lat !== 0 && (
+    <div class="card overflow-hidden mt-2">
+      <div id="listing-map" class="h-56 w-full" data-lat={listing.lat} data-lng={listing.lng} data-name={listing.name}></div>
+    </div>
+  )}
 </div>
 
 <script is:inline>
