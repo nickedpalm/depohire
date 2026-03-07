@@ -1,16 +1,199 @@
 ---
 interface Props {
   listingName: string;
+  listingSlug: string;
 }
 
-const { listingName } = Astro.props;
+const { listingName, listingSlug } = Astro.props;
 ---
-<div class="bg-amber-50 border border-amber-200 rounded-xl p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-  <div class="flex-1">
-    <h3 class="font-semibold text-amber-900">Is this your business?</h3>
-    <p class="text-sm text-amber-700 mt-1">Claim your listing to update information, respond to reviews, and manage your profile on our directory.</p>
+
+<div
+  id="claim-banner"
+  class="bg-amber-50 border border-amber-200 rounded-xl p-5"
+  data-listing-name={listingName}
+  data-listing-slug={listingSlug}
+>
+  {/* ── Default state: prompt ── */}
+  <div id="claim-prompt" class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+    <div class="flex-1">
+      <h3 class="font-semibold text-amber-900">Is this your business?</h3>
+      <p class="text-sm text-amber-700 mt-1">Claim your listing to update your info, add photos, and respond to quote requests directly.</p>
+    </div>
+    <button
+      id="claim-open-btn"
+      type="button"
+      class="shrink-0 inline-flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white font-semibold text-sm px-4 py-2.5 rounded-lg transition-colors"
+    >
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/>
+      </svg>
+      Claim This Listing
+    </button>
   </div>
-  <a href={`mailto:claims@example.com?subject=Claim: ${encodeURIComponent(listingName)}`} class="btn-primary bg-amber-600 hover:bg-amber-700 whitespace-nowrap no-underline">
-    Claim Listing
-  </a>
+
+  {/* ── Expanded form ── */}
+  <div id="claim-form-wrap" class="hidden mt-4 pt-4 border-t border-amber-200">
+    <p class="text-sm font-semibold text-amber-900 mb-3">Tell us how to reach you — we'll verify and activate your listing within 1 business day.</p>
+    <form id="claim-form" class="grid grid-cols-1 sm:grid-cols-2 gap-3" novalidate>
+      <input type="hidden" name="source" value="claim-listing" />
+      <input type="hidden" name="listingName" id="claim-listing-name" value={listingName} />
+      <input type="hidden" name="listingSlug" id="claim-listing-slug" value={listingSlug} />
+
+      <div class="sm:col-span-2">
+        <label class="block text-xs font-semibold text-amber-800 mb-1" for="claim-name">Your Name</label>
+        <input
+          id="claim-name"
+          name="name"
+          type="text"
+          placeholder="Jane Smith"
+          autocomplete="name"
+          required
+          class="w-full rounded-lg border border-amber-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 placeholder:text-gray-400"
+        />
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-amber-800 mb-1" for="claim-email">Business Email</label>
+        <input
+          id="claim-email"
+          name="email"
+          type="email"
+          placeholder="you@yourbusiness.com"
+          autocomplete="email"
+          required
+          class="w-full rounded-lg border border-amber-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 placeholder:text-gray-400"
+        />
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-amber-800 mb-1" for="claim-phone">Business Phone</label>
+        <input
+          id="claim-phone"
+          name="phone"
+          type="tel"
+          placeholder="(555) 000-0000"
+          autocomplete="tel"
+          class="w-full rounded-lg border border-amber-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 placeholder:text-gray-400"
+        />
+      </div>
+
+      <div class="sm:col-span-2 flex flex-col sm:flex-row items-start sm:items-center gap-3 mt-1">
+        <button
+          id="claim-submit-btn"
+          type="submit"
+          class="inline-flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white font-semibold text-sm px-5 py-2.5 rounded-lg transition-colors disabled:opacity-60"
+        >
+          <span id="claim-submit-label">Submit Claim</span>
+          <svg id="claim-spinner" class="hidden w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+          </svg>
+        </button>
+        <button
+          id="claim-cancel-btn"
+          type="button"
+          class="text-sm text-amber-700 hover:underline"
+        >
+          Cancel
+        </button>
+        <p id="claim-error" class="hidden text-xs text-red-600 font-medium"></p>
+      </div>
+    </form>
+  </div>
+
+  {/* ── Success state ── */}
+  <div id="claim-success" class="hidden">
+    <div class="flex items-start gap-3">
+      <div class="shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mt-0.5">
+        <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
+        </svg>
+      </div>
+      <div>
+        <p class="font-semibold text-amber-900">Claim request received!</p>
+        <p class="text-sm text-amber-700 mt-1">We'll verify your ownership and activate your listing within 1 business day. Check your email for next steps.</p>
+      </div>
+    </div>
+  </div>
 </div>
+
+<script>
+  const banner       = document.getElementById('claim-banner')!;
+  const prompt       = document.getElementById('claim-prompt')!;
+  const formWrap     = document.getElementById('claim-form-wrap')!;
+  const form         = document.getElementById('claim-form') as HTMLFormElement;
+  const successDiv   = document.getElementById('claim-success')!;
+  const openBtn      = document.getElementById('claim-open-btn')!;
+  const cancelBtn    = document.getElementById('claim-cancel-btn')!;
+  const submitBtn    = document.getElementById('claim-submit-btn') as HTMLButtonElement;
+  const submitLabel  = document.getElementById('claim-submit-label')!;
+  const spinner      = document.getElementById('claim-spinner')!;
+  const errorEl      = document.getElementById('claim-error')!;
+
+  openBtn.addEventListener('click', () => {
+    formWrap.classList.remove('hidden');
+    openBtn.classList.add('hidden');
+    document.getElementById('claim-name')?.focus();
+  });
+
+  cancelBtn.addEventListener('click', () => {
+    formWrap.classList.add('hidden');
+    openBtn.classList.remove('hidden');
+    errorEl.classList.add('hidden');
+    form.reset();
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorEl.classList.add('hidden');
+
+    const data = new FormData(form);
+    const email = (data.get('email') as string).trim();
+    const name  = (data.get('name')  as string).trim();
+
+    if (!name) { showError('Please enter your name.'); return; }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showError('Please enter a valid email.'); return; }
+
+    setLoading(true);
+
+    try {
+      const res = await fetch('/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          source:      'claim-listing',
+          name,
+          email,
+          phone:       (data.get('phone') as string).trim(),
+          listingName: (data.get('listingName') as string),
+          listingSlug: (data.get('listingSlug') as string),
+        }),
+      });
+
+      const json = await res.json() as { ok: boolean; error?: string };
+
+      if (json.ok) {
+        prompt.classList.add('hidden');
+        formWrap.classList.add('hidden');
+        successDiv.classList.remove('hidden');
+      } else {
+        showError(json.error || 'Something went wrong. Please try again.');
+      }
+    } catch {
+      showError('Network error. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  });
+
+  function showError(msg: string) {
+    errorEl.textContent = msg;
+    errorEl.classList.remove('hidden');
+  }
+
+  function setLoading(loading: boolean) {
+    submitBtn.disabled = loading;
+    submitLabel.textContent = loading ? 'Submitting…' : 'Submit Claim';
+    spinner.classList.toggle('hidden', !loading);
+  }
+</script>

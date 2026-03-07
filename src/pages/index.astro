@@ -1,7 +1,7 @@
 ---
 import PageLayout from '~/layouts/PageLayout.astro';
 import SearchBar from '~/components/directory/SearchBar.astro';
-import CityGrid from '~/components/directory/CityGrid.astro';
+import HomeMap from '~/components/directory/HomeMap.astro';
 import StateList from '~/components/directory/StateList.astro';
 import ListingCard from '~/components/directory/ListingCard.astro';
 import config from '~/config';
@@ -23,7 +23,7 @@ const featuredPros = allListings
 const citiesWithCounts = citiesData
   .map(c => ({ ...c, listingCount: cityCounts[c.slug] || 0 }))
   .sort((a, b) => b.listingCount - a.listingCount || b.population - a.population)
-  .slice(0, 25);
+  .slice(0, 40);
 
 const stateMap = new Map<string, { stateSlug: string; stateName: string; state: string; cityCount: number; listingCount: number }>();
 for (const city of citiesData) {
@@ -149,7 +149,7 @@ const metadata = {
     </div>
   </div>
 
-  <CityGrid cities={citiesWithCounts} title={`Find a Deposition Videographer Near You`} />
+  <HomeMap cities={citiesWithCounts} totalCities={totalCities} totalStates={totalStates} />
 
   {/* Featured Professionals */}
   {featuredPros.length > 0 && (

@@ -80,14 +80,9 @@ const metadata = { title, description };
 
       <h2>Contact Us</h2>
       <p>
-        Have a question, correction, or want to claim your listing?
-        Email us at <a href={`mailto:${config.contactEmail}`}>{config.contactEmail}</a>.
+        Have a question, correction, listing claim, or advertising inquiry?<br />
+        Reach us at <a href={`mailto:${config.contactEmail}`}>{config.contactEmail}</a> — we respond within one business day.
       </p>
-      <ul>
-        <li><strong>Listing corrections:</strong> <a href={`mailto:corrections@${config.domain}`}>corrections@{config.domain}</a></li>
-        <li><strong>Claim your listing:</strong> <a href={`mailto:claims@${config.domain}`}>claims@{config.domain}</a></li>
-        <li><strong>Advertising inquiries:</strong> <a href={`mailto:advertise@${config.domain}`}>advertise@{config.domain}</a></li>
-      </ul>
     </div>
   </div>
   <script type="application/ld+json" set:html={JSON.stringify(schema)} />

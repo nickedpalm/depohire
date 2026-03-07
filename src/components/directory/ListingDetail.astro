@@ -143,6 +143,13 @@ if (hasExperience) tabs.push({ id: 'experience', label: 'Experience' });
       <div id="listing-map" class="h-56 w-full" data-lat={listing.lat} data-lng={listing.lng} data-name={listing.name}></div>
     </div>
   )}
+
+  {/* Claim banner — only shown for unclaimed listings */}
+  {!listing.claimed && (
+    <div class="mt-6">
+      <ClaimBanner listingName={listing.name} listingSlug={listing.slug} />
+    </div>
+  )}
 </div>
 
 <script is:inline>

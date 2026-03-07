@@ -38,6 +38,7 @@ const SOURCE_TO_UUID: Record<string, string> = {
   'exit-intent':        'c7be263f-1308-4b7a-a65e-594809e728ad', // list 34
   'provider-signup':    'b8c38467-94a1-4e6a-aeb4-c14a72bd11a8', // list 33
   'advertise-form':     'b8c38467-94a1-4e6a-aeb4-c14a72bd11a8', // list 33
+  'claim-listing':      'b8c38467-94a1-4e6a-aeb4-c14a72bd11a8', // list 33
 };
 const DEFAULT_UUID = '1574cfb0-e6d2-4e02-b7db-684b252f7178'; // list 6 — DepoHire Newsletter
 
@@ -50,7 +51,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   try {
     const contentType = request.headers.get('Content-Type') || '';
 
-    let email = '', name = '', source = '', providerEmail = '', listingName = '', caseType = '', preferredDate = '', details = '', city = '';
+    let email = '', name = '', source = '', providerEmail = '', listingName = '', listingSlug = '', caseType = '', preferredDate = '', details = '', city = '', phone = '';
 
     if (contentType.includes('application/json')) {
       const body = await request.json() as Record<string, string>;
@@ -59,10 +60,12 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       source        = body.source        || '';
       providerEmail = body.providerEmail || '';
       listingName   = body.listingName   || '';
+      listingSlug   = body.listingSlug   || '';
       caseType      = body.caseType      || '';
       preferredDate = body.preferredDate || '';
       details       = body.details       || '';
       city          = body.city          || '';
+      phone         = body.phone         || '';
     } else {
       // application/x-www-form-urlencoded (from advertise page)
       const formData = await request.formData();
@@ -110,6 +113,18 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     const isSuccess = res.ok || responseText.toLowerCase().includes('subscribed successfully') || isAlreadySubscribed;
 
     if (isSuccess) {
+      // Fire admin notification for claim requests
+      if (source === 'claim-listing' && env.RESEND_API_KEY) {
+        await sendClaimNotification({
+          resendKey: env.RESEND_API_KEY,
+          claimerName: name,
+          claimerEmail: email,
+          claimerPhone: phone,
+          listingName,
+          listingSlug,
+        });
+      }
+
       // Fire transactional emails for listing quote requests
       if (source === 'listing-quote-form' && providerEmail && env.RESEND_API_KEY) {
         await sendTransactionalEmails({
@@ -144,6 +159,68 @@ export const onRequestOptions: PagesFunction = async () =>
       'Access-Control-Allow-Headers': 'Content-Type',
     },
   });
+
+// ─── Claim listing admin notification ──────────────────────────────────────
+
+interface ClaimPayload {
+  resendKey: string;
+  claimerName: string;
+  claimerEmail: string;
+  claimerPhone: string;
+  listingName: string;
+  listingSlug: string;
+}
+
+async function sendClaimNotification(p: ClaimPayload): Promise<void> {
+  const listingUrl = `https://depohire.com/listing/${p.listingSlug}/`;
+  const html = `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #1a1a2e; margin: 0; padding: 0; background: #f5f5f5; }
+  .wrap { max-width: 520px; margin: 32px auto; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+  .header { background: #0d2d5e; padding: 20px 28px; }
+  .header h1 { color: #fff; margin: 0; font-size: 18px; font-weight: 700; }
+  .body { padding: 24px 28px; }
+  .row { margin-bottom: 10px; }
+  .label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: #94a3b8; letter-spacing: .05em; margin-bottom: 2px; }
+  .value { font-size: 14px; color: #1a1a2e; }
+  .cta { display: inline-block; background: #0d2d5e; color: #fff !important; text-decoration: none; border-radius: 8px; padding: 10px 20px; font-size: 14px; font-weight: 600; margin-top: 16px; }
+</style></head>
+<body>
+<div class="wrap">
+  <div class="header"><h1>&#128274; New Listing Claim</h1></div>
+  <div class="body">
+    <div class="row"><div class="label">Listing</div><div class="value"><a href="${listingUrl}">${p.listingName}</a></div></div>
+    <div class="row"><div class="label">Claimer Name</div><div class="value">${p.claimerName}</div></div>
+    <div class="row"><div class="label">Email</div><div class="value"><a href="mailto:${p.claimerEmail}">${p.claimerEmail}</a></div></div>
+    <div class="row"><div class="label">Phone</div><div class="value">${p.claimerPhone || 'Not provided'}</div></div>
+    <a class="cta" href="${listingUrl}">View Listing &rarr;</a>
+    <p style="font-size:12px;color:#94a3b8;margin-top:16px;">To verify: reply to their email or call. Then set <code>claimed: true</code> in the listing JSON and redeploy.</p>
+  </div>
+</div>
+</body></html>`;
+
+  try {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${p.resendKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: 'DepoHire Claims <contact@depohire.com>',
+        to: ['contact@depohire.com'],
+        reply_to: p.claimerEmail,
+        subject: `Claim request: ${p.listingName}`,
+        html,
+      }),
+    });
+    if (!res.ok) {
+      const body = await res.json();
+      console.error('Resend claim notification error:', body);
+    }
+  } catch (err) {
+    console.error('sendClaimNotification error:', err);
+  }
+}
 
 // ─── Transactional email via Resend ─────────────────────────────────────────
 
