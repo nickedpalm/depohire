@@ -1,0 +1,245 @@
+---
+import PageLayout from '~/layouts/PageLayout.astro';
+import Breadcrumbs from '~/components/directory/Breadcrumbs.astro';
+import config from '~/config';
+
+const title = `Advertising Pricing — ${config.name}`;
+const description = `Simple, transparent pricing for deposition videographers who want to reach attorneys actively hiring. Featured listings start at $79/month. No setup fees.`;
+const metadata = { title, description };
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: title,
+  description,
+  url: `${config.siteUrl}/pricing/`,
+};
+
+const plans = [
+  {
+    name: 'Basic Listing',
+    price: 0,
+    period: 'Free',
+    badge: null,
+    description: 'Get found. Show up in city search results with your core info.',
+    cta: { label: 'Claim Your Listing', href: '/advertise/' },
+    features: [
+      'Listed in your city directory',
+      'Business name, address & phone',
+      'Link to your website',
+      'Standard sort order (alphabetical)',
+    ],
+    notIncluded: [
+      'Featured badge or top placement',
+      'Lead routing to your inbox',
+      'City guide mention',
+    ],
+    highlight: false,
+  },
+  {
+    name: 'Featured',
+    price: 79,
+    period: '/month',
+    badge: 'Most Popular',
+    description: 'Pin to the top of your city. Get leads routed directly to you.',
+    cta: { label: 'Get Started', href: '/advertise/?plan=featured' },
+    features: [
+      'Pinned to top of city results',
+      '"Featured" badge on your card',
+      'Quote requests emailed to you',
+      'Extended bio + full service list',
+      'Direct link to your booking page',
+      'Monthly impressions report',
+    ],
+    notIncluded: [
+      'City guide mention (blog post)',
+      'Multi-city coverage',
+    ],
+    highlight: true,
+  },
+  {
+    name: 'City Pro',
+    price: 149,
+    period: '/month',
+    badge: 'Best Value',
+    description: 'Own your market. Top listing + editorial mention + newsletter.',
+    cta: { label: 'Get Started', href: '/advertise/?plan=citypro' },
+    features: [
+      'Everything in Featured',
+      'Named in "Best in [City]" guide post',
+      'Dofollow backlink to your site',
+      'Sponsor slot in monthly attorney email',
+      'Priority support & setup',
+      'Quarterly performance review',
+    ],
+    notIncluded: [],
+    highlight: false,
+  },
+];
+
+const addons = [
+  { name: 'Additional City', price: '$49/mo each', desc: 'Expand your featured listing to adjacent metros.' },
+  { name: 'Newsletter Spot (one-time)', price: '$99', desc: 'Solo sponsor placement in our next attorney email send.' },
+  { name: 'City Guide Mention (one-time)', price: '$149', desc: 'Named editorial mention in an existing city guide post.' },
+];
+---
+
+<PageLayout metadata={metadata}>
+  <Fragment slot="announcement"><span></span></Fragment>
+
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <Breadcrumbs crumbs={[{ label: 'Advertising Pricing' }]} />
+
+    {/* ─── Header ────────────────────────────────────────────── */}
+    <div class="text-center mb-12">
+      <p class="text-xs font-semibold uppercase tracking-widest text-accent-600 mb-3">For Deposition Videographers</p>
+      <h1 class="text-3xl sm:text-4xl font-bold text-default leading-tight mb-4">
+        Simple, Transparent Pricing
+      </h1>
+      <p class="text-lg text-muted max-w-2xl mx-auto">
+        Reach litigation attorneys at the moment they're searching for a provider in your city. No long-term contracts. Cancel anytime.
+      </p>
+    </div>
+
+    {/* ─── Pricing Cards ─────────────────────────────────────── */}
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-14">
+      {plans.map((plan) => (
+        <div class={`relative rounded-2xl border-2 p-7 flex flex-col ${plan.highlight ? 'border-primary-500 bg-primary-50 shadow-lg shadow-primary-100' : 'border-gray-200 bg-white'}`}>
+
+          {plan.badge && (
+            <span class={`absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full text-xs font-bold tracking-wide ${plan.highlight ? 'bg-primary-600 text-white' : 'bg-amber-400 text-amber-900'}`}>
+              {plan.badge}
+            </span>
+          )}
+
+          <div class="mb-5">
+            <h2 class={`font-bold text-lg mb-1 ${plan.highlight ? 'text-primary-900' : 'text-default'}`}>{plan.name}</h2>
+            <div class="flex items-baseline gap-1 mb-2">
+              {plan.price === 0 ? (
+                <span class="text-3xl font-extrabold text-default">Free</span>
+              ) : (
+                <>
+                  <span class="text-3xl font-extrabold text-default">${plan.price}</span>
+                  <span class="text-muted text-sm">{plan.period}</span>
+                </>
+              )}
+            </div>
+            <p class="text-sm text-muted leading-snug">{plan.description}</p>
+          </div>
+
+          <ul class="space-y-2.5 mb-6 flex-1">
+            {plan.features.map((f) => (
+              <li class="flex items-start gap-2 text-sm text-default">
+                <svg class="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                </svg>
+                {f}
+              </li>
+            ))}
+            {plan.notIncluded.map((f) => (
+              <li class="flex items-start gap-2 text-sm text-gray-400">
+                <svg class="w-4 h-4 text-gray-300 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+                {f}
+              </li>
+            ))}
+          </ul>
+
+          <a
+            href={plan.cta.href}
+            class={`w-full text-center py-2.5 rounded-xl text-sm font-semibold transition ${
+              plan.highlight
+                ? 'bg-primary-600 hover:bg-primary-700 text-white'
+                : plan.price === 0
+                  ? 'border border-gray-300 hover:border-primary-400 text-default hover:text-primary-700'
+                  : 'bg-amber-400 hover:bg-amber-500 text-amber-900'
+            }`}
+          >
+            {plan.cta.label}
+          </a>
+        </div>
+      ))}
+    </div>
+
+    {/* ─── A la carte add-ons ─────────────────────────────────── */}
+    <div class="mb-14">
+      <h2 class="text-xl font-bold text-default mb-4">À La Carte Add-Ons</h2>
+      <div class="grid sm:grid-cols-3 gap-4">
+        {addons.map(({ name, price, desc }) => (
+          <div class="rounded-xl border border-gray-200 bg-white p-5">
+            <div class="flex items-start justify-between gap-2 mb-2">
+              <h3 class="font-semibold text-default text-sm leading-tight">{name}</h3>
+              <span class="text-xs font-bold text-accent-700 bg-accent-50 border border-accent-200 px-2 py-0.5 rounded-full flex-shrink-0">{price}</span>
+            </div>
+            <p class="text-xs text-muted leading-relaxed">{desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {/* ─── Why it's worth it ──────────────────────────────────── */}
+    <div class="bg-gradient-to-br from-primary-900 to-primary-700 rounded-2xl p-8 text-white mb-14">
+      <h2 class="text-xl font-bold mb-6 text-center">The Math Is Simple</h2>
+      <div class="grid sm:grid-cols-3 gap-6 text-center">
+        <div>
+          <p class="text-4xl font-extrabold text-primary-200 mb-1">$200–400</p>
+          <p class="text-sm text-primary-200 leading-snug">Average revenue from a single deposition job</p>
+        </div>
+        <div>
+          <p class="text-4xl font-extrabold text-primary-200 mb-1">1 job</p>
+          <p class="text-sm text-primary-200 leading-snug">Is all it takes to cover a year of a Featured listing</p>
+        </div>
+        <div>
+          <p class="text-4xl font-extrabold text-primary-200 mb-1">$0</p>
+          <p class="text-sm text-primary-200 leading-snug">Setup fees. No contracts. Cancel anytime.</p>
+        </div>
+      </div>
+      <div class="text-center mt-8">
+        <a href="/advertise/" class="inline-flex items-center gap-2 bg-white text-primary-800 font-semibold px-6 py-3 rounded-xl hover:bg-primary-50 transition text-sm">
+          Get Started — It Takes 2 Minutes →
+        </a>
+      </div>
+    </div>
+
+    {/* ─── FAQ ────────────────────────────────────────────────── */}
+    <div>
+      <h2 class="text-xl font-bold text-default mb-6 text-center">Common Questions</h2>
+      <div class="grid sm:grid-cols-2 gap-5 max-w-4xl mx-auto">
+        {[
+          {
+            q: 'Is there a setup fee or contract?',
+            a: 'No setup fee, no annual contract. You pay month-to-month and can cancel anytime with 30 days notice.',
+          },
+          {
+            q: 'How do leads reach me?',
+            a: 'Quote requests submitted through your listing page are emailed directly to you — name, email, case type, and date. You follow up on your own timeline.',
+          },
+          {
+            q: 'How fast does my listing go live?',
+            a: 'Featured listings go live within 2–3 business days of signup and payment. Basic listings can take up to a week.',
+          },
+          {
+            q: 'Can I be featured in multiple cities?',
+            a: 'Yes — each additional city is $49/month. Firms covering regional metro areas often list in 2–3 cities.',
+          },
+          {
+            q: 'Do I need to be CLVS certified?',
+            a: 'Preferred but not required. We review all applicants for professionalism and legal videography experience. CLVS gets you a badge on your listing.',
+          },
+          {
+            q: 'What if my city isn\'t listed yet?',
+            a: 'Request it on the advertise form. We\'ll create the city page and feature you as the first provider — often the strongest position to be in.',
+          },
+        ].map(({ q, a }) => (
+          <div class="bg-white rounded-xl border border-gray-200 p-5">
+            <h3 class="font-semibold text-default mb-1.5 text-sm">{q}</h3>
+            <p class="text-sm text-muted leading-relaxed">{a}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+</PageLayout>
