@@ -2,6 +2,7 @@
 import { Icon } from 'astro-icon/components';
 import { SITE } from '~/utils/astrowind-config';
 import { getHomePermalink } from '~/utils/permalinks';
+import Logo from '~/components/Logo.astro';
 
 interface Link {
   text?: string;
@@ -34,10 +35,7 @@ const { socialLinks = [], secondaryLinks = [], links = [], footNote = '', theme 
     <div class="grid grid-cols-12 gap-4 gap-y-8 sm:gap-8 py-8 md:py-12">
       <div class="col-span-12 lg:col-span-4">
         <div class="mb-2">
-          <a class="inline-flex items-center gap-2" href={getHomePermalink()}>
-            <img src="/logo.png" alt={SITE?.name || 'Depo Hire'} class="h-8 w-auto" />
-            <span class="font-heading font-bold text-lg text-primary-900 dark:text-white">Depo Hire</span>
-          </a>
+          <Logo />
         </div>
         <div class="text-sm text-muted flex gap-1">
           {
