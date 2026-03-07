@@ -1,15 +1,8 @@
 ---
-import { SITE } from '~/utils/astrowind-config';
+// DepoHire two-tone wordmark — no image dependency
 ---
 
-<div class="flex items-center gap-2">
-  <img
-    src="/logo.png"
-    alt={SITE?.name || 'Depo Hire'}
-    class="h-8 md:h-10 w-auto"
-  />
-  <div class="hidden sm:flex flex-col leading-tight">
-    <span class="font-heading font-bold text-sm md:text-base tracking-wide text-primary-900">DEPO HIRE</span>
-    <span class="text-[9px] md:text-[10px] tracking-[0.15em] uppercase text-muted font-medium">Deposition Videographer Directory</span>
-  </div>
-</div>
+<a href="/" class="flex items-center gap-0 no-underline group" aria-label="DepoHire home">
+  <span class="font-heading font-extrabold text-xl md:text-2xl tracking-tight text-[#0d2d5e] group-hover:opacity-90 transition-opacity leading-none">Depo</span><span class="font-heading font-extrabold text-xl md:text-2xl tracking-tight text-[#0ea5e9] group-hover:opacity-90 transition-opacity leading-none">Hire</span>
+  <span class="hidden sm:inline-block ml-2.5 text-[9px] md:text-[10px] tracking-[0.12em] uppercase text-slate-400 font-medium self-end pb-0.5 leading-none">Deposition Directory</span>
+</a>
