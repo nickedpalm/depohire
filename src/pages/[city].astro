@@ -28,21 +28,20 @@ const { Content } = content ? await render(content) : { Content: null };
 const heroImage = content?.data?.image;
 const imageCredit = content?.data?.imageCredit;
 
-// Featured listings first, then by rating
 const featured = allListings.filter(l => l.featured);
 const regular = allListings.filter(l => !l.featured).sort((a, b) => (b.rating || 0) - (a.rating || 0));
 const listings = [...featured, ...regular];
-
-const pins = listings.filter(l => l.lat && l.lat !== 0).map(l => ({ lat: l.lat, lng: l.lng, name: l.name, slug: l.slug }));
+const firstFeatured = featured[0];
 
 const currentYear = new Date().getFullYear();
-const title = `Best ${config.name} in ${cityInfo.city}, ${cityInfo.state} (${currentYear})`;
-const metaDescription = `Find the best ${config.primaryKeyword}s in ${cityInfo.city}, ${cityInfo.state}. Compare ${listings.length} professionals, read reviews, and request quotes. Updated ${currentYear}.`;
+// SEO title stays keyword-rich — but H1 will be conversational
+const seoTitle = `Best ${config.primaryKeyword}s in ${cityInfo.city}, ${cityInfo.state} (${currentYear})`;
+const metaDescription = `Find the best ${config.primaryKeyword}s in ${cityInfo.city}, ${cityInfo.state}. Compare ${listings.length} verified professionals, see certifications, and request quotes. Updated ${currentYear}.`;
 
 const schema = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
-  name: title,
+  name: seoTitle,
   description: metaDescription,
   numberOfItems: listings.length,
   itemListElement: listings.map((l, i) => ({
@@ -63,7 +62,7 @@ const schema = {
   })),
 };
 
-const metadata = { title, description: metaDescription };
+const metadata = { title: seoTitle, description: metaDescription };
 ---
 <PageLayout metadata={metadata}>
   <Fragment slot="announcement"><span></span></Fragment>
@@ -88,13 +87,19 @@ const metadata = { title, description: metaDescription };
       </div>
     )}
 
-    <h1 class="text-3xl font-bold text-default mb-2">{title}</h1>
+    {/* ─── Real headline (not the SEO title) ───────────────── */}
+    <h1 class="text-3xl font-bold text-default mb-2">
+      Hiring a deposition videographer in {cityInfo.city}?
+    </h1>
+    <p class="text-muted text-base mb-6 max-w-2xl">
+      Here are {listings.length} verified provider{listings.length !== 1 ? 's' : ''} serving {cityInfo.city}, {cityInfo.stateName}. Check credentials, read reviews, and submit a quote request directly — no phone tag required.
+    </p>
 
-    {/* Social proof bar */}
-    <div class="flex flex-wrap items-center gap-x-5 gap-y-2 mb-8 text-sm text-muted">
+    {/* ─── Social proof bar ────────────────────────────────── */}
+    <div class="flex flex-wrap items-center gap-x-5 gap-y-2 mb-6 text-sm text-muted">
       <span class="flex items-center gap-1.5">
         <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-accent-600"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        <strong class="font-semibold text-default">{listings.length}</strong> verified {config.primaryKeyword}{listings.length !== 1 ? 's' : ''}
+        <strong class="font-semibold text-default">{listings.length}</strong> verified provider{listings.length !== 1 ? 's' : ''}
       </span>
       {featured.length > 0 && (
         <span class="flex items-center gap-1.5">
@@ -112,22 +117,23 @@ const metadata = { title, description: metaDescription };
       </span>
     </div>
 
-    {/* Why Local Matters — replaces map */}
+    {/* ─── Why local matters — reframed as attorney guidance ── */}
     <div class="grid grid-cols-3 gap-3 mb-8">
-      <div class="bg-accent-50 border border-accent-100 rounded-xl p-4 text-center">
-        <p class="text-2xl font-bold text-accent-700 font-heading">$100–300</p>
-        <p class="text-xs text-accent-600 mt-1 leading-tight">added to your bill when a Denver-based provider travels to {cityInfo.city}</p>
+      <div class="bg-red-50 border border-red-100 rounded-xl p-4 text-center">
+        <p class="text-2xl font-bold text-red-700 font-heading">$100–300</p>
+        <p class="text-xs text-red-600 mt-1 leading-tight">extra your client pays when an out-of-market provider travels to {cityInfo.city}</p>
       </div>
       <div class="bg-green-50 border border-green-100 rounded-xl p-4 text-center">
         <p class="text-2xl font-bold text-green-700 font-heading">2–3×</p>
-        <p class="text-xs text-green-600 mt-1 leading-tight">faster booking with a local provider vs. out-of-market</p>
+        <p class="text-xs text-green-600 mt-1 leading-tight">faster booking turnaround with a local provider vs. out-of-market</p>
       </div>
       <div class="bg-amber-50 border border-amber-100 rounded-xl p-4 text-center">
         <p class="text-2xl font-bold text-amber-700 font-heading">CLVS</p>
-        <p class="text-xs text-amber-600 mt-1 leading-tight">look for this cert — the NCRA gold standard for legal video</p>
+        <p class="text-xs text-amber-600 mt-1 leading-tight">the NCRA gold standard — look for this badge before you book</p>
       </div>
     </div>
 
+    {/* ─── Listings ─────────────────────────────────────────── */}
     {listings.length > 0 ? (
       <div data-pagefind-body>
         {featured.length > 0 && (
@@ -153,7 +159,7 @@ const metadata = { title, description: metaDescription };
     ) : (
       <div class="text-center py-12 text-muted">
         <p>No {config.primaryKeyword}s listed in {cityInfo.city} yet.</p>
-        <p class="mt-2 text-sm">Know a {config.primaryKeyword} here? <a href="mailto:submit@example.com">Submit a listing</a></p>
+        <p class="mt-2 text-sm">Are you a provider here? <a href="/advertise/" class="text-accent-600 hover:underline font-medium">Get listed →</a></p>
       </div>
     )}
 
@@ -163,39 +169,48 @@ const metadata = { title, description: metaDescription };
       </div>
     )}
 
-    {/* Mid-page CTA */}
+    {/* ─── Mid-page CTA ─────────────────────────────────────── */}
     <div class="my-10 bg-[#0d2d5e] rounded-2xl px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-6">
       <div>
-        <p class="text-white font-heading font-bold text-xl mb-1">Ready to find a {config.primaryKeyword}?</p>
-        <p class="text-blue-200 text-sm">Compare all verified providers in {cityInfo.city} — free, no sign-up required.</p>
+        <p class="text-white font-bold text-xl mb-1">Ready to request a quote?</p>
+        <p class="text-blue-200 text-sm">Submit directly from any listing — name, case type, and date. No phone tag.</p>
       </div>
-      <a
-        href={`/search?q=${encodeURIComponent(cityInfo.city)}`}
-        class="flex-shrink-0 inline-flex items-center gap-2 bg-[#0ea5e9] hover:bg-sky-400 text-white font-semibold text-sm px-6 py-3 rounded-lg transition-colors"
-      >
-        Get a Quote
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
-      </a>
+      {firstFeatured ? (
+        <a
+          href={`/listing/${firstFeatured.slug}/#quote`}
+          class="flex-shrink-0 inline-flex items-center gap-2 bg-[#0ea5e9] hover:bg-sky-400 text-white font-semibold text-sm px-6 py-3 rounded-lg transition-colors"
+        >
+          Request a Quote
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+        </a>
+      ) : (
+        <a
+          href={`/${cityInfo.slug}/#listings`}
+          class="flex-shrink-0 inline-flex items-center gap-2 bg-[#0ea5e9] hover:bg-sky-400 text-white font-semibold text-sm px-6 py-3 rounded-lg transition-colors"
+        >
+          View All Providers
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+        </a>
+      )}
     </div>
 
+    {/* ─── FAQ — specific and useful ────────────────────────── */}
     <FAQAccordion faqs={[
       {
-        question: `How much does a ${config.primaryKeyword} cost in ${cityInfo.city}?`,
-        answer: `${config.primaryKeyword.charAt(0).toUpperCase() + config.primaryKeyword.slice(1)} rates in ${cityInfo.city} typically range from ${config.jobValue || '$300-2,000'} depending on the scope, duration, and specific services required. Request quotes from multiple providers to compare pricing.`,
+        question: `How do I know if a videographer in ${cityInfo.city} is qualified?`,
+        answer: `Look for CLVS (Certified Legal Video Specialist) certification from NCRA — it's the industry gold standard and requires ongoing education. Beyond that, check for experience in your specific case type, reviews from other attorneys, and whether they have professional-grade equipment. All of this is visible on individual listing pages here.`,
       },
       {
-        question: `How many ${config.primaryKeyword}s are listed in ${cityInfo.city}?`,
-        answer: `We currently list ${listings.length} verified ${config.primaryKeyword}${listings.length !== 1 ? 's' : ''} serving the ${cityInfo.city}, ${cityInfo.stateName} area. Our directory is updated regularly as new professionals are verified.`,
+        question: `How much does a deposition videographer cost in ${cityInfo.city}?`,
+        answer: `Rates in ${cityInfo.city} typically range from ${config.jobValue} depending on session length, services required (real-time streaming, same-day delivery, video sync), and travel. Always get at least two quotes before booking — use the quote form on any listing to request pricing directly from the provider.`,
       },
       {
-        question: `What should I look for when hiring a ${config.primaryKeyword} in ${cityInfo.city}?`,
-        answer: `Key factors include ${config.certifications.length > 0 ? `certifications (like ${config.certifications[0]}), ` : ''}experience in your specific type of case, equipment quality, turnaround time, and client reviews. We recommend comparing at least 2-3 providers.`,
+        question: `How many verified videographers are there in ${cityInfo.city}?`,
+        answer: `We currently list ${listings.length} verified ${config.primaryKeyword}${listings.length !== 1 ? 's' : ''} serving the ${cityInfo.city}, ${cityInfo.stateName} area. Listings are reviewed for accuracy and updated regularly.`,
       },
       {
-        question: `Are ${config.primaryKeyword}s in ${cityInfo.city} certified?`,
-        answer: config.certifications.length > 0
-          ? `Some ${config.primaryKeyword}s in ${cityInfo.city} hold certifications such as ${config.certifications.join(' and ')}. Look for the credentials badge on individual listings for verified certifications.`
-          : `Certification requirements vary by state. Check individual listings for professional credentials and qualifications.`,
+        question: `What's the difference between a featured and standard listing?`,
+        answer: `Featured providers are pinned to the top of results and have passed our quality review. They include extended bios, full service lists, certifications, and direct quote routing. Standard listings show basic contact info. Both are real businesses — featured providers have simply invested in more complete profiles.`,
       },
     ]} />
 

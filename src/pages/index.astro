@@ -15,19 +15,16 @@ const totalListings = allListings.length;
 const totalCities = Object.keys(cityCounts).length;
 const totalStates = Object.keys(stateCounts).length;
 
-// Top 6 highest-rated listings with reviews
 const featuredPros = allListings
   .filter(l => l.review_count > 0 && l.rating >= 4)
   .sort((a, b) => b.rating - a.rating || b.review_count - a.review_count)
   .slice(0, 6);
 
-// Cities with listings first, then by population
 const citiesWithCounts = citiesData
   .map(c => ({ ...c, listingCount: cityCounts[c.slug] || 0 }))
   .sort((a, b) => b.listingCount - a.listingCount || b.population - a.population)
   .slice(0, 25);
 
-// Aggregate states
 const stateMap = new Map<string, { stateSlug: string; stateName: string; state: string; cityCount: number; listingCount: number }>();
 for (const city of citiesData) {
   const existing = stateMap.get(city.state);
@@ -67,59 +64,100 @@ const metadata = {
 ---
 <PageLayout metadata={metadata}>
   <Fragment slot="announcement"><span></span></Fragment>
-  <SearchBar size="hero" />
 
-  {/* Stakes subhead */}
-  <div class="max-w-2xl mx-auto px-4 text-center -mt-4 mb-2">
-    <p class="text-sm md:text-base text-muted">
-      The wrong hire can compromise your deposition. Find <strong class="text-gray-700">CLVS-certified professionals</strong> in your city — free, no sign-up required.
+  {/* ─── Hero: Stakes first ──────────────────────────────────── */}
+  <div class="max-w-3xl mx-auto px-4 text-center pt-10 pb-4">
+    <p class="text-xs font-semibold uppercase tracking-widest text-accent-600 mb-3">Free to search · No account needed</p>
+    <h1 class="text-3xl sm:text-4xl font-bold text-default leading-tight mb-4">
+      A bad deposition videographer<br class="hidden sm:block" /> can sink your case.
+    </h1>
+    <p class="text-lg text-muted max-w-2xl mx-auto mb-6">
+      DepoHire is the only directory built specifically for litigation attorneys. Find <strong class="text-gray-700">CLVS-certified professionals</strong> in your city — with verified credentials, real reviews, and direct quote requests.
     </p>
   </div>
 
-  {/* Value Proposition — above-the-fold hero block */}
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <div class="text-center mb-10">
-      <h2 class="font-heading font-bold text-3xl md:text-4xl text-gray-900 mb-3">
-        Your deposition videographer search just got easier.
+  {/* ─── Search bar ──────────────────────────────────────────── */}
+  <SearchBar size="hero" />
+
+  {/* ─── Social proof bar ────────────────────────────────────── */}
+  <div class="max-w-3xl mx-auto px-4 mb-10">
+    <div class="bg-primary-50 border border-primary-100 rounded-2xl px-6 py-4 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-center">
+      <div>
+        <span class="text-2xl font-extrabold text-primary-700">{totalStates}+</span>
+        <span class="text-sm text-muted ml-1.5">states</span>
+      </div>
+      <div class="hidden sm:block w-px h-6 bg-primary-200"></div>
+      <div>
+        <span class="text-2xl font-extrabold text-primary-700">{totalCities}+</span>
+        <span class="text-sm text-muted ml-1.5">cities covered</span>
+      </div>
+      <div class="hidden sm:block w-px h-6 bg-primary-200"></div>
+      <div>
+        <span class="text-2xl font-extrabold text-primary-700">{totalListings}+</span>
+        <span class="text-sm text-muted ml-1.5">verified providers</span>
+      </div>
+      <div class="hidden sm:block w-px h-6 bg-primary-200"></div>
+      <div>
+        <span class="text-2xl font-extrabold text-primary-700">100%</span>
+        <span class="text-sm text-muted ml-1.5">free to search</span>
+      </div>
+    </div>
+  </div>
+
+  {/* ─── Value prop: outcomes not features ───────────────────── */}
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+    <div class="text-center mb-8">
+      <h2 class="font-bold text-2xl md:text-3xl text-gray-900 mb-2">
+        Everything you need to hire with confidence.
       </h2>
-      <p class="text-lg text-muted max-w-2xl mx-auto">
-        DepoHire is the only directory built specifically for legal professionals who need to find qualified deposition videographers — fast, in any city, with real information about each provider.
+      <p class="text-muted max-w-xl mx-auto text-sm">
+        Don't rely on referrals or LinkedIn. DepoHire gives you the information attorneys actually need before booking.
       </p>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
       <div class="card p-6">
-        <div class="text-3xl mb-3">📍</div>
-        <h3 class="font-heading font-semibold text-lg text-gray-900 mb-1">Search by city</h3>
-        <p class="text-sm text-muted">We cover 50+ major cities across the US. Find vetted providers in your jurisdiction in seconds.</p>
+        <div class="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center mb-3">
+          <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        </div>
+        <h3 class="font-semibold text-lg text-gray-900 mb-1">Know they're certified before you call</h3>
+        <p class="text-sm text-muted">CLVS certification is the NCRA gold standard for legal video. We surface it on every listing so you're not guessing.</p>
       </div>
       <div class="card p-6">
-        <div class="text-3xl mb-3">⭐</div>
-        <h3 class="font-heading font-semibold text-lg text-gray-900 mb-1">See featured providers</h3>
-        <p class="text-sm text-muted">Featured listings include full contact info, specializations, and court certification details.</p>
+        <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center mb-3">
+          <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <h3 class="font-semibold text-lg text-gray-900 mb-1">Get a quote in under 2 minutes</h3>
+        <p class="text-sm text-muted">Submit a quote request directly from any listing page. Name, case type, date — the provider handles the rest.</p>
       </div>
       <div class="card p-6">
-        <div class="text-3xl mb-3">📋</div>
-        <h3 class="font-heading font-semibold text-lg text-gray-900 mb-1">Download our free checklist</h3>
-        <p class="text-sm text-muted">The <a href="/downloads/deposition-hiring-checklist.pdf" class="text-accent-600 hover:underline font-medium">Deposition Hiring Checklist</a> covers everything you need to evaluate a videographer before booking.</p>
+        <div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center mb-3">
+          <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        </div>
+        <h3 class="font-semibold text-lg text-gray-900 mb-1">Local providers, no travel surcharges</h3>
+        <p class="text-sm text-muted">Out-of-market providers add $100–300 in travel fees. DepoHire surfaces local options first so your client doesn't absorb that cost.</p>
       </div>
     </div>
 
     {/* Primary CTA */}
-    <div class="text-center mt-10">
+    <div class="text-center">
       <a href="/search" class="inline-flex items-center gap-2 bg-accent-600 hover:bg-accent-700 text-white font-semibold text-base px-8 py-3.5 rounded-lg shadow-md hover:shadow-lg transition-all">
         Find a Videographer in Your City
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
       </a>
-      <p class="text-xs text-muted mt-2">50+ cities · Free to search · No account needed</p>
+      <p class="text-xs text-muted mt-2">Free to search · No account needed · {totalCities}+ cities</p>
     </div>
   </div>
 
-  <CityGrid cities={citiesWithCounts} title={`Find ${config.name} Near You`} />
+  <CityGrid cities={citiesWithCounts} title={`Find a Deposition Videographer Near You`} />
 
   {/* Featured Professionals */}
   {featuredPros.length > 0 && (
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <h2 class="text-2xl font-heading font-bold text-center mb-6">Featured Professionals</h2>
+      <div class="text-center mb-6">
+        <h2 class="text-2xl font-bold mb-1">Featured Professionals</h2>
+        <p class="text-sm text-muted">These providers have earned top placement through verified credentials and client reviews.</p>
+      </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {featuredPros.map(listing => (
           <ListingCard
@@ -143,21 +181,19 @@ const metadata = {
 
   <StateList states={states} />
 
-  {/* Trust stats */}
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
-      <div class="p-5">
-        <p class="text-3xl font-heading font-bold text-accent-600">{totalStates}+</p>
-        <p class="text-sm text-muted mt-1">States Covered</p>
+  {/* ─── Checklist CTA ───────────────────────────────────────── */}
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="bg-gray-50 border border-gray-200 rounded-2xl p-8 flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
+      <div class="w-14 h-14 rounded-xl bg-accent-100 flex items-center justify-center flex-shrink-0">
+        <svg class="w-7 h-7 text-accent-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
       </div>
-      <div class="p-5">
-        <p class="text-3xl font-heading font-bold text-accent-600">Updated {new Date().getFullYear()}</p>
-        <p class="text-sm text-muted mt-1">Data Verified Regularly</p>
+      <div class="flex-1">
+        <h3 class="font-bold text-xl text-gray-900 mb-1">Free: The Deposition Hiring Checklist</h3>
+        <p class="text-sm text-muted">Everything you need to evaluate a videographer before booking — equipment, certifications, turnaround time, and red flags to watch for.</p>
       </div>
-      <div class="p-5">
-        <p class="text-3xl font-heading font-bold text-accent-600">100%</p>
-        <p class="text-sm text-muted mt-1">Free to Search</p>
-      </div>
+      <a href="/downloads/deposition-hiring-checklist.pdf" class="flex-shrink-0 inline-flex items-center gap-2 bg-accent-600 hover:bg-accent-700 text-white font-semibold text-sm px-5 py-2.5 rounded-lg transition">
+        Download Free →
+      </a>
     </div>
   </div>
 

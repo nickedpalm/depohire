@@ -23,7 +23,7 @@ interface Props {
 const { slug, name, city, state, rating, review_count, phone, certifications = [], services = [], description, sentiment, featured = false } = Astro.props;
 const shortDesc = description && description.length > 120 ? description.slice(0, 120) + '...' : description;
 ---
-<a href={`/listing/${slug}/`} class={`card block p-5 no-underline group ${featured ? 'ring-2 ring-amber-400 bg-amber-50/30' : ''}`}>
+<a href={`/listing/${slug}/`} class={`card block p-5 no-underline group ${featured ? 'ring-2 ring-primary-400 bg-primary-50/20' : ''}`}>
   <div class="flex items-start justify-between gap-3">
     <InitialsAvatar name={name} size="sm" />
     <div class="flex-1 min-w-0">
@@ -31,6 +31,7 @@ const shortDesc = description && description.length > 120 ? description.slice(0,
         <h3 class="font-semibold text-gray-900 group-hover:text-accent-600 truncate">{name}</h3>
         {featured && <FeaturedBadge size="sm" />}
       </div>
+      {featured && <p class="text-xs text-primary-600 font-medium mt-0.5">Pinned · Featured</p>}
       <p class="text-sm text-gray-500 mt-0.5">{city}, {state}</p>
     </div>
     <div class="flex flex-col items-end gap-1">
