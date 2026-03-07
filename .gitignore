@@ -9,3 +9,5 @@ verticals/*/dist/
 verticals/*/.astro/
 __pycache__/
 *.pyc
+scripts/run_enrich.sh
+dist-functions-patch/
