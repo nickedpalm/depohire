@@ -7,7 +7,7 @@
  *   <QuoteForm city={cityInfo.city} state={cityInfo.state} citySlug={cityInfo.slug} />
  *
  * Usage on listing pages — drop after <ListingDetail />:
- *   <QuoteForm city={cityInfo?.city} state={listing.state} listingName={listing.name} listingSlug={listing.slug} mode="listing" />
+ *   <QuoteForm city={cityInfo?.city} state={listing.state} listingName={listing.name} listingSlug={listing.slug} providerEmail={listing.email} mode="listing" />
  */
 
 import config from '~/config';
@@ -18,10 +18,11 @@ interface Props {
   citySlug?: string;
   listingName?: string;
   listingSlug?: string;
+  providerEmail?: string;
   mode?: 'city' | 'listing';
 }
 
-const { city, state, citySlug, listingName, listingSlug, mode = 'city' } = Astro.props;
+const { city, state, citySlug, listingName, listingSlug, providerEmail, mode = 'city' } = Astro.props;
 
 const isCity = mode === 'city';
 const formId = `quote-form-${citySlug || listingSlug || 'default'}`;
@@ -59,7 +60,7 @@ const formId = `quote-form-${citySlug || listingSlug || 'default'}`;
   </div>
 
   <!-- Form -->
-  <form class="quote-form mt-5 space-y-3" data-city={city} data-source={isCity ? 'city-quote-form' : 'listing-quote-form'}>
+  <form class="quote-form mt-5 space-y-3" data-city={city} data-source={isCity ? 'city-quote-form' : 'listing-quote-form'} data-provider-email={providerEmail || ''} data-listing-name={listingName || ''}>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
       <div>
@@ -171,6 +172,10 @@ const formId = `quote-form-${citySlug || listingSlug || 'default'}`;
             city: form.dataset.city || '',
             source: form.dataset.source || 'quote-form',
             caseType: data.caseType || '',
+            preferredDate: (data.preferredDate as string) || '',
+            details: (data.details as string) || '',
+            providerEmail: form.dataset.providerEmail || '',
+            listingName: form.dataset.listingName || '',
           }),
         });
 
