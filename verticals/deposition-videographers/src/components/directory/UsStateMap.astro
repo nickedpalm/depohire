@@ -1,0 +1,64 @@
+---
+import statesPathData from '~/data/us-states-paths.json';
+import citiesData from '~/data/cities.json';
+import { getListingCountByCity } from '~/lib/listings';
+import config from '~/config';
+
+const cityCounts = getListingCountByCity();
+
+// Aggregate listing counts by state
+const stateCountMap: Record<string, number> = {};
+const stateSlugMap: Record<string, string> = {};
+for (const city of citiesData) {
+  const count = cityCounts[city.slug] || 0;
+  const stateName = city.stateName || city.state;
+  stateCountMap[stateName] = (stateCountMap[stateName] || 0) + count;
+  if (!stateSlugMap[stateName]) {
+    stateSlugMap[stateName] = city.stateSlug;
+  }
+}
+
+function getFillClass(count: number): string {
+  if (count === 0) return 'fill-gray-100 stroke-gray-300 stroke-1 hover:fill-primary-400 hover:stroke-primary-500 transition-colors cursor-pointer';
+  if (count <= 4) return 'fill-primary-100 stroke-primary-200 stroke-1 hover:fill-primary-400 hover:stroke-primary-500 transition-colors cursor-pointer';
+  if (count <= 8) return 'fill-primary-300 stroke-primary-400 stroke-1 hover:fill-primary-500 hover:stroke-primary-600 transition-colors cursor-pointer';
+  return 'fill-primary-500 stroke-primary-600 stroke-1 hover:fill-primary-700 hover:stroke-primary-800 transition-colors cursor-pointer';
+}
+---
+
+<div class="w-full">
+  <svg viewBox="0 0 960 600" class="w-full h-auto" role="img" aria-label="US Map showing videographer coverage by state">
+    {statesPathData.map((state: { name: string; d: string }) => {
+      const count = stateCountMap[state.name] || 0;
+      const slug = stateSlugMap[state.name];
+      const href = slug ? `/states/${slug}/` : '#';
+      return (
+        <a href={href}>
+          <path d={state.d} class={getFillClass(count)}>
+            <title>{state.name}: {count} {config.primaryKeyword}{count !== 1 ? 's' : ''}</title>
+          </path>
+        </a>
+      );
+    })}
+  </svg>
+
+  <div class="flex flex-wrap items-center justify-center gap-4 mt-4 pt-4 border-t border-gray-100">
+    <span class="text-xs text-gray-500 font-medium">Providers per state:</span>
+    <span class="flex items-center gap-1.5 text-xs text-gray-600">
+      <span class="inline-block w-3 h-3 rounded-sm bg-gray-200 border border-gray-300"></span>
+      None yet
+    </span>
+    <span class="flex items-center gap-1.5 text-xs text-gray-600">
+      <span class="inline-block w-3 h-3 rounded-sm bg-primary-100 border border-primary-200"></span>
+      1–4
+    </span>
+    <span class="flex items-center gap-1.5 text-xs text-gray-600">
+      <span class="inline-block w-3 h-3 rounded-sm bg-primary-300 border border-primary-400"></span>
+      5–8
+    </span>
+    <span class="flex items-center gap-1.5 text-xs text-gray-600">
+      <span class="inline-block w-3 h-3 rounded-sm bg-primary-500 border border-primary-600"></span>
+      9+
+    </span>
+  </div>
+</div>

@@ -1,0 +1,25 @@
+[
+  {
+    "slug": "american-legal-video-mesa",
+    "name": "American Legal Video",
+    "city": "mesa",
+    "state": "AZ",
+    "address": "1106 N Gilbert Rd, Mesa, AZ 85203, USA",
+    "lat": 33.4355561,
+    "lng": -111.7884351,
+    "phone": "",
+    "website": "",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "",
+    "certifications": [],
+    "services": [],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "google_maps",
+    "scraped_at": "2026-03-14 01:07:25",
+    "sentiment": null
+  }
+]

@@ -7,7 +7,8 @@ import citiesData from '~/data/cities.json';
 import { getAllListings, getListingCountByCity, getListingCountByState } from '~/lib/listings';
 
 const currentYear = new Date().getFullYear();
-const title = `${config.primaryKeyword.charAt(0).toUpperCase() + config.primaryKeyword.slice(1)} Industry Statistics (${currentYear})`;
+const capitalizedKeyword = config.primaryKeyword.replace(/\b\w/g, c => c.toUpperCase());
+const title = `${capitalizedKeyword} Industry Statistics (${currentYear})`;
 const description = `Data-driven overview of the ${config.primaryKeyword} industry: providers by state, average ratings, coverage maps, and market insights.`;
 
 const listings = getAllListings();

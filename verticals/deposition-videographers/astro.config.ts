@@ -13,7 +13,7 @@ import { readingTimeRemarkPlugin, responsiveTablesRehypePlugin, lazyImagesRehype
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-  site: 'https://example.com',
+  site: 'https://depohire.com',
 
   output: 'static',
 

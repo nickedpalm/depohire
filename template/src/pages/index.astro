@@ -38,21 +38,38 @@ for (const city of citiesData) {
 }
 const states = Array.from(stateMap.values()).sort((a, b) => a.stateName.localeCompare(b.stateName));
 
-const schema = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  name: config.name,
-  url: config.siteUrl,
-  description: config.description,
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: `${config.siteUrl}/search/?q={search_term_string}`,
-    'query-input': 'required name=search_term_string',
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: config.name,
+    url: config.siteUrl,
+    description: config.description,
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: `${config.siteUrl}/search/?q={search_term_string}`,
+      'query-input': 'required name=search_term_string',
+    },
   },
-};
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: config.name,
+    url: config.siteUrl,
+    description: config.description,
+    foundingDate: `${config.foundedYear}`,
+    contactPoint: {
+      '@type': 'ContactPoint',
+      email: config.contactEmail,
+      contactType: 'customer service',
+    },
+    sameAs: [],
+  },
+];
 
+const currentYear = new Date().getFullYear();
 const metadata = {
-  title: config.name,
+  title: `Find Certified ${config.name} Near You (${currentYear})`,
   ignoreTitleTemplate: true,
   description: config.description,
 };
@@ -114,5 +131,5 @@ const metadata = {
     </div>
   </div>
 
-  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  {schema.map(s => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
 </PageLayout>

@@ -3,6 +3,7 @@ import PageLayout from '~/layouts/PageLayout.astro';
 import SearchBar from '~/components/directory/SearchBar.astro';
 import CityGrid from '~/components/directory/CityGrid.astro';
 import StateList from '~/components/directory/StateList.astro';
+import UsStateMap from '~/components/directory/UsStateMap.astro';
 import config from '~/config';
 import citiesData from '~/data/cities.json';
 import { getListingCountByCity, getListingCountByState, getAllListings } from '~/lib/listings';
@@ -38,81 +39,130 @@ for (const city of citiesData) {
 }
 const states = Array.from(stateMap.values()).sort((a, b) => a.stateName.localeCompare(b.stateName));
 
-const schema = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  name: config.name,
-  url: config.siteUrl,
-  description: config.description,
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: `${config.siteUrl}/search/?q={search_term_string}`,
-    'query-input': 'required name=search_term_string',
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: config.name,
+    url: config.siteUrl,
+    description: config.description,
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: `${config.siteUrl}/search/?q={search_term_string}`,
+      'query-input': 'required name=search_term_string',
+    },
   },
-};
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: config.name,
+    url: config.siteUrl,
+    description: config.description,
+    foundingDate: `${config.foundedYear}`,
+    contactPoint: {
+      '@type': 'ContactPoint',
+      email: config.contactEmail,
+      contactType: 'customer service',
+    },
+    sameAs: [],
+  },
+];
 
+const currentYear = new Date().getFullYear();
 const metadata = {
-  title: config.name,
+  title: `Find Certified ${config.name} Near You (${currentYear})`,
   ignoreTitleTemplate: true,
   description: config.description,
 };
 ---
 <PageLayout metadata={metadata}>
   <Fragment slot="announcement"><span></span></Fragment>
-  <SearchBar size="hero" />
 
-  {/* StoryBrand: Problem → Guide → Plan → Action */}
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    {totalListings > 0 ? (
-      <div class="text-center mb-8">
-        <p class="text-lg text-muted max-w-2xl mx-auto">
-          Stop cold-calling firms and guessing who's qualified.
-          We've verified <span class="font-bold text-default">{totalListings}</span> {config.primaryKeyword}s
-          across <span class="font-bold text-default">{totalCities}</span> cities
-          so you can compare, read real reviews, and request quotes — in minutes.
-        </p>
-        <div class="flex items-center justify-center gap-6 mt-4 text-sm text-muted">
-          <span class="flex items-center gap-1.5">
-            <svg class="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.06l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg>
-            Verified listings
-          </span>
-          <span class="flex items-center gap-1.5">
-            <svg class="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.06l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg>
-            Real reviews
-          </span>
-          <span class="flex items-center gap-1.5">
-            <svg class="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.06l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg>
-            Free quotes
-          </span>
-        </div>
-      </div>
-    ) : (
-      <div class="text-center mb-8">
-        <p class="text-lg text-muted">{config.tagline}</p>
-      </div>
-    )}
+  {/* Hero tagline */}
+  <div class="max-w-3xl mx-auto px-4 text-center pt-10 pb-4">
+    <p class="text-xs font-semibold uppercase tracking-widest text-primary-600 mb-3">Free to search &middot; No account needed</p>
+    <h1 class="text-3xl sm:text-4xl font-bold text-default leading-tight mb-4">
+      A bad deposition videographer<br class="hidden sm:block" /> can sink your case.
+    </h1>
+    <p class="text-lg text-muted max-w-2xl mx-auto mb-6">
+      DepoHire is the only directory built specifically for litigation attorneys. Find <strong class="text-gray-700">CLVS-certified professionals</strong> in your city — with verified credentials, real reviews, and direct quote requests.
+    </p>
   </div>
 
-  <CityGrid cities={citiesWithCounts} title={`Find ${config.name} Near You`} />
-  <StateList states={states} />
+  <SearchBar size="hero" />
 
-  {/* Trust signals */}
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
-      <div class="p-5">
-        <p class="text-2xl font-bold text-primary">{totalStates}+</p>
-        <p class="text-sm text-muted mt-1">States Covered</p>
+  {/* Stats banner */}
+  <div class="max-w-3xl mx-auto px-4 mb-10">
+    <div class="bg-primary-50 border border-primary-100 rounded-2xl px-6 py-4 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-center">
+      <div>
+        <span class="text-2xl font-extrabold text-primary-700">{totalStates}+</span>
+        <span class="text-sm text-muted ml-1.5">states</span>
       </div>
-      <div class="p-5">
-        <p class="text-2xl font-bold text-primary">Updated {new Date().getFullYear()}</p>
-        <p class="text-sm text-muted mt-1">Data Verified Regularly</p>
+      <div class="hidden sm:block w-px h-6 bg-primary-200"></div>
+      <div>
+        <span class="text-2xl font-extrabold text-primary-700">{totalCities}+</span>
+        <span class="text-sm text-muted ml-1.5">cities covered</span>
       </div>
-      <div class="p-5">
-        <p class="text-2xl font-bold text-primary">100%</p>
-        <p class="text-sm text-muted mt-1">Free to Search</p>
+      <div class="hidden sm:block w-px h-6 bg-primary-200"></div>
+      <div>
+        <span class="text-2xl font-extrabold text-primary-700">{totalListings}+</span>
+        <span class="text-sm text-muted ml-1.5">verified providers</span>
+      </div>
+      <div class="hidden sm:block w-px h-6 bg-primary-200"></div>
+      <div>
+        <span class="text-2xl font-extrabold text-primary-700">100%</span>
+        <span class="text-sm text-muted ml-1.5">free to search</span>
       </div>
     </div>
   </div>
 
-  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  {/* Benefits cards */}
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="card p-6">
+        <div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center mb-3">
+          <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        </div>
+        <h3 class="font-semibold text-lg text-gray-900 mb-1">CLVS certification, front and center</h3>
+        <p class="text-sm text-muted">CLVS certification is the NCRA gold standard for legal video. We surface it on every listing so you're not guessing.</p>
+      </div>
+      <div class="card p-6">
+        <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center mb-3">
+          <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <h3 class="font-semibold text-lg text-gray-900 mb-1">Get a quote in under 2 minutes</h3>
+        <p class="text-sm text-muted">Submit a quote request directly from any listing page. Name, case type, date — the provider handles the rest.</p>
+      </div>
+      <div class="card p-6">
+        <div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center mb-3">
+          <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        </div>
+        <h3 class="font-semibold text-lg text-gray-900 mb-1">Local providers, no travel surcharges</h3>
+        <p class="text-sm text-muted">Out-of-market providers add $100–300 in travel fees. DepoHire surfaces local options first so your client doesn't absorb that cost.</p>
+      </div>
+    </div>
+  </div>
+
+  {/* Coverage section with map */}
+  <section class="py-14 bg-gradient-to-b from-white to-primary-50/40">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-6">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Coverage across the country</h2>
+        <p class="text-muted text-sm max-w-xl mx-auto">
+          Find verified deposition videographers in <strong class="text-gray-700">{totalCities}+ cities</strong> across <strong class="text-gray-700">{totalStates} states</strong>. Click any state to browse providers near you.
+        </p>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-6 mb-6">
+        <div class="relative max-w-3xl mx-auto">
+          <UsStateMap />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CityGrid cities={citiesWithCounts} title={`Find ${config.name} Near You`} />
+  <StateList states={states} />
+
+  {schema.map(s => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
 </PageLayout>

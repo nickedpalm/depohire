@@ -81,72 +81,50 @@
     "sentiment": null
   },
   {
-    "slug": "taffy-productions-albuquerque",
-    "name": "Taffy Productions",
+    "slug": "taffy-productions-video-depositions-legal-video-albuquerque",
+    "name": "Taffy Productions Video Depositions & Legal Video",
     "city": "albuquerque",
     "state": "NM",
-    "address": "",
-    "lat": 35.0841034,
-    "lng": -106.650985,
+    "address": "4015 San Andres Ave NE, Albuquerque, NM 87110, USA",
+    "lat": 35.125989,
+    "lng": -106.5986083,
     "phone": "",
-    "website": "https://taffyproductions.com",
+    "website": "",
     "email": "",
     "rating": 0,
     "review_count": 0,
-    "description": "Provides video deposition services in Albuquerque and Santa Fe, New Mexico, as a legal video production company.",
+    "description": "",
     "certifications": [],
-    "services": [
-      "video depositions",
-      "legal video production"
-    ],
+    "services": [],
     "years_experience": null,
     "claimed": false,
     "featured": false,
-    "source": "perplexity",
-    "scraped_at": "2026-02-27 05:59:48",
+    "source": "google_maps",
+    "scraped_at": "2026-03-14 01:07:20",
     "sentiment": null
   },
   {
-    "slug": "trattel-court-reporting-albuquerque",
-    "name": "Trattel Court Reporting",
+    "slug": "trattel-court-reporting-videography-albuquerque",
+    "name": "Trattel Court Reporting & Videography",
     "city": "albuquerque",
     "state": "NM",
-    "address": "",
-    "lat": 35.0841034,
-    "lng": -106.650985,
+    "address": "609 12th St NW, Albuquerque, NM 87102, USA",
+    "lat": 35.0927342,
+    "lng": -106.6599478,
     "phone": "",
-    "website": "https://trattel.com",
+    "website": "",
     "email": "",
-    "rating": 0,
-    "review_count": 0,
-    "description": "Offers full-service legal video solutions including certified deposition videographers, video syncing, and multimedia support across New Mexico.",
+    "rating": 4.7,
+    "review_count": 13,
+    "description": "",
     "certifications": [],
-    "services": [
-      "certified deposition videography",
-      "video syncing",
-      "video conferencing"
-    ],
+    "services": [],
     "years_experience": null,
     "claimed": false,
     "featured": false,
-    "source": "perplexity",
-    "scraped_at": "2026-02-27 05:59:48",
-    "sentiment": {
-      "label": "positive",
-      "score": 0.75,
-      "keywords": [
-        "certified deposition videography",
-        "video syncing",
-        "video conferencing"
-      ],
-      "highlights": [
-        {
-          "text": "Trattel is reliable, flexible, and efficient. Their services save our office valuable time and resources.",
-          "sentiment": "positive"
-        }
-      ],
-      "summary": "Offers full-service legal video solutions including certified deposition videographers, video syncing, and multimedia support across New Mexico."
-    }
+    "source": "google_maps",
+    "scraped_at": "2026-03-14 01:07:20",
+    "sentiment": null
   },
   {
     "slug": "veritext-albuquerque",

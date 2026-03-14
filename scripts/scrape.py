@@ -66,9 +66,16 @@ def load_config(config_path: str) -> dict:
         return yaml.safe_load(f)
 
 
-def load_cities(city_filter: str | None = None) -> list[dict]:
-    """Load cities from the template cities.json."""
-    cities_path = PROJECT_ROOT / "template" / "src" / "data" / "cities.json"
+def load_cities(vertical: str = None, city_filter: str | None = None) -> list[dict]:
+    """Load cities from the vertical's cities.json, falling back to template."""
+    if vertical:
+        vertical_cities = PROJECT_ROOT / "verticals" / vertical / "src" / "data" / "cities.json"
+        if vertical_cities.exists():
+            cities_path = vertical_cities
+        else:
+            cities_path = PROJECT_ROOT / "template" / "src" / "data" / "cities.json"
+    else:
+        cities_path = PROJECT_ROOT / "template" / "src" / "data" / "cities.json"
     with open(cities_path) as f:
         cities = json.load(f)
     if city_filter:
@@ -224,7 +231,7 @@ def main():
     args = parser.parse_args()
 
     config = load_config(args.config)
-    cities = load_cities(args.city)
+    cities = load_cities(vertical=config["slug"], city_filter=args.city)
     conn = get_db(config["slug"])
 
     print(f"Scraping {config['name']} — {len(cities)} cities")

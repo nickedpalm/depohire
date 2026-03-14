@@ -1,5 +1,28 @@
 [
   {
+    "slug": "bridges-legal-video-virginia-beach",
+    "name": "Bridges Legal Video",
+    "city": "virginia-beach",
+    "state": "VA",
+    "address": "1001 Minden Rd, Virginia Beach, VA 23464, USA",
+    "lat": 36.80984309999999,
+    "lng": -76.16244329999999,
+    "phone": "",
+    "website": "",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "",
+    "certifications": [],
+    "services": [],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "google_maps",
+    "scraped_at": "2026-03-14 01:07:35",
+    "sentiment": null
+  },
+  {
     "slug": "halasz-reporting-video-virginia-beach",
     "name": "Halasz Reporting & Video",
     "city": "virginia-beach",

@@ -54,6 +54,54 @@
     "sentiment": null
   },
   {
+    "slug": "kansas-city-legal-video-llc-kansas-city",
+    "name": "Kansas City Legal Video, LLC",
+    "city": "kansas-city",
+    "state": "MO",
+    "address": "3901 NE 57th Terrace, Kansas City, MO 64119, USA",
+    "lat": 39.1975075,
+    "lng": -94.5341308,
+    "phone": "",
+    "website": "",
+    "email": "",
+    "rating": 5.0,
+    "review_count": 2,
+    "description": "Locally owned and operated independent legal videography firm specializing in video depositions, serving Kansas City Metro area, Missouri, Kansas, and nationally.",
+    "certifications": [],
+    "services": [
+      "video depositions"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "google_maps",
+    "scraped_at": "2026-03-14 01:07:27",
+    "sentiment": null
+  },
+  {
+    "slug": "metropolitan-court-reporters-conference-meeting-space-kansas-city",
+    "name": "Metropolitan Court Reporters Conference & Meeting Space",
+    "city": "kansas-city",
+    "state": "MO",
+    "address": "2300 Main St Ste 900, Kansas City, MO 64108, USA",
+    "lat": 39.0858853,
+    "lng": -94.5848109,
+    "phone": "",
+    "website": "",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "",
+    "certifications": [],
+    "services": [],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "google_maps",
+    "scraped_at": "2026-03-14 01:07:27",
+    "sentiment": null
+  },
+  {
     "slug": "norris-legal-video-llc-kansas-city",
     "name": "Norris Legal Video, LLC",
     "city": "kansas-city",
@@ -161,5 +209,97 @@
     "source": "perplexity",
     "scraped_at": "2026-02-27 05:23:50",
     "sentiment": null
+  },
+  {
+    "slug": "tbc-video-kansas-city",
+    "name": "TBC Video",
+    "city": "kansas-city",
+    "state": "KS",
+    "address": "415 SE Douglas St suite a, Lee's Summit, MO 64063, USA",
+    "lat": 38.91009529999999,
+    "lng": -94.3741318,
+    "phone": "",
+    "website": "https://www.tbcvideo.com",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "",
+    "certifications": [],
+    "services": [],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-14 01:07:27",
+    "sentiment": null
+  },
+  {
+    "slug": "the-cooper-group-court-reporting-videography-kansas-city",
+    "name": "The Cooper Group Court Reporting & Videography",
+    "city": "kansas-city",
+    "state": "MO",
+    "address": "800 E 101st Terrace #350, Kansas City, MO 64131, USA",
+    "lat": 38.9440193,
+    "lng": -94.5810609,
+    "phone": "",
+    "website": "",
+    "email": "",
+    "rating": 1.0,
+    "review_count": 1,
+    "description": "",
+    "certifications": [],
+    "services": [],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "google_maps",
+    "scraped_at": "2026-03-14 01:07:27",
+    "sentiment": null
+  },
+  {
+    "slug": "wright-video-productions-kansas-city",
+    "name": "Wright Video Productions",
+    "city": "kansas-city",
+    "state": "KS",
+    "address": "",
+    "lat": 0,
+    "lng": 0,
+    "phone": "",
+    "website": "https://www.wrightvp.com",
+    "email": "",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Sole proprietorship video production company offering legal videography including video depositions, with over 15 years of experience serving greater Kansas City.",
+    "certifications": [],
+    "services": [
+      "video depositions",
+      "editing",
+      "video presentation"
+    ],
+    "years_experience": null,
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-14 00:37:01",
+    "sentiment": {
+      "label": "positive",
+      "score": 0.75,
+      "keywords": [
+        "video depositions",
+        "editing",
+        "video presentation"
+      ],
+      "highlights": [
+        {
+          "text": "Chris and Wright Video Productions was AMAZING! I decided to get a videographer last minute and it was the best money I have ever spent!",
+          "sentiment": "positive"
+        },
+        {
+          "text": "We hired Wright Video Productions to do a live production... They did a great job in putting together the final product, on time and on budget. A plea",
+          "sentiment": "positive"
+        }
+      ],
+      "summary": "Sole proprietorship video production company offering legal videography including video depositions, with over 15 years of experience serving greater Kansas City."
+    }
   }
 ]

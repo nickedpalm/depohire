@@ -12,8 +12,8 @@ const pillar = allPosts.find(p => p.data.tags.includes('pillar'));
 const posts = allPosts.filter(p => p !== pillar);
 
 const metadata = {
-  title: `Blog | ${config.name}`,
-  description: `Articles and guides about ${config.primaryKeyword}s.`,
+  title: 'Expert Insights & Guides',
+  description: `Expert guides on hiring ${config.primaryKeyword}s — costs, certifications, city guides, and industry trends.`,
 };
 ---
 <PageLayout metadata={metadata}>

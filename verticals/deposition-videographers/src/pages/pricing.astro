@@ -1,0 +1,287 @@
+---
+import PageLayout from '~/layouts/PageLayout.astro';
+import FAQAccordion from '~/components/directory/FAQAccordion.astro';
+import config from '~/config';
+
+const metadata = {
+  title: 'Pricing',
+  description: `Get featured in the #1 deposition videographer directory. Plans start at $79/month. No setup fees, no contracts.`,
+};
+---
+<PageLayout metadata={metadata}>
+  <Fragment slot="announcement"><span></span></Fragment>
+
+  <!-- Hero -->
+  <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8 text-center">
+    <h1 class="text-4xl md:text-5xl font-bold text-default leading-tight">
+      Attorneys in your city are searching for a videographer <em>right now.</em>
+    </h1>
+    <p class="mt-4 text-xl text-muted max-w-3xl mx-auto">
+      Without a Featured listing, they find your competitor first. With one, the call comes to you.
+    </p>
+    <p class="mt-3 text-muted max-w-2xl mx-auto">
+      DepoHire is the only directory built specifically for deposition videographers. No clutter. No competing categories. Just attorneys who need exactly what you offer.
+    </p>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-10 max-w-3xl mx-auto">
+      <div class="text-center">
+        <p class="text-2xl font-bold text-primary">50+</p>
+        <p class="text-sm text-muted">cities covered</p>
+      </div>
+      <div class="text-center">
+        <p class="text-2xl font-bold text-primary">1,000+</p>
+        <p class="text-sm text-muted">monthly attorney searches</p>
+      </div>
+      <div class="text-center">
+        <p class="text-2xl font-bold text-primary">2–3</p>
+        <p class="text-sm text-muted">featured slots per city max</p>
+      </div>
+      <div class="text-center">
+        <p class="text-2xl font-bold text-primary">$0</p>
+        <p class="text-sm text-muted">setup fees, ever</p>
+      </div>
+    </div>
+
+    <p class="mt-6 text-sm text-amber-700 bg-amber-50 inline-block px-4 py-2 rounded-lg">
+      Limited availability: We cap Featured listings at 2–3 per city to protect the value of each placement. If your city is full, you'll be added to the waitlist.
+    </p>
+  </section>
+
+  <!-- Pricing Tiers -->
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      <!-- Basic -->
+      <div class="card p-6 flex flex-col">
+        <h3 class="text-xl font-bold text-default">Basic Listing</h3>
+        <div class="mt-4 mb-6">
+          <span class="text-4xl font-extrabold text-default">Free</span>
+        </div>
+        <ul class="space-y-3 text-sm text-muted flex-1">
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Listed in your city directory
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Business name, address & phone
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Link to your website
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-gray-300 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            <span class="text-gray-400">Alphabetical sort order</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-gray-300 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            <span class="text-gray-400">No top placement</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-gray-300 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            <span class="text-gray-400">No lead routing</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-gray-300 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            <span class="text-gray-400">No editorial mention or backlink</span>
+          </li>
+        </ul>
+        <a href="/advertise/" class="btn-outline w-full text-center mt-6 no-underline">Claim Free Listing</a>
+      </div>
+
+      <!-- Featured -->
+      <div class="card p-6 flex flex-col border-2 border-primary relative">
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full">Most Popular</div>
+        <h3 class="text-xl font-bold text-default">Featured Listing</h3>
+        <p class="text-sm text-muted mt-1">Attorneys in your city see <strong>you first</strong>. Leads route directly to your inbox.</p>
+        <div class="mt-4 mb-6">
+          <span class="text-4xl font-extrabold text-default">$79</span>
+          <span class="text-muted">/month</span>
+        </div>
+        <ul class="space-y-3 text-sm flex-1">
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Pinned to #1 in your city results
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            "Featured" badge — stands out immediately
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Quote requests emailed directly to you
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Extended bio + full service list
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Direct link to your booking page
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            CLVS certification badge (if applicable)
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Monthly impressions report
+          </li>
+        </ul>
+        <a href="/advertise/" class="btn-primary w-full text-center mt-6 no-underline">Get Featured — $79/mo &rarr;</a>
+        <p class="text-xs text-muted text-center mt-2">No credit card needed to apply &middot; Goes live in 2–3 days</p>
+      </div>
+
+      <!-- City Pro -->
+      <div class="card p-6 flex flex-col relative">
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-green-700 text-white text-xs font-bold px-3 py-1 rounded-full">Best Value</div>
+        <h3 class="text-xl font-bold text-default">City Pro</h3>
+        <p class="text-sm text-muted mt-1">Own your market. Top listing + editorial SEO + newsletter placement.</p>
+        <div class="mt-4 mb-6">
+          <span class="text-4xl font-extrabold text-default">$149</span>
+          <span class="text-muted">/month</span>
+        </div>
+        <ul class="space-y-3 text-sm flex-1">
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Everything in Featured
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Named in our "Best in [City]" guide
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Dofollow backlink to your website
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Sponsor slot in monthly attorney email
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Priority onboarding & support
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Quarterly performance review call
+          </li>
+        </ul>
+        <a href="/advertise/" class="btn-primary w-full text-center mt-6 no-underline">Get City Pro — $149/mo &rarr;</a>
+        <p class="text-xs text-muted text-center mt-2">Additional cities $49/mo each</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROI Section -->
+  <section class="bg-gray-50 py-12">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl font-bold text-default">One job pays for a full year.</h2>
+      <p class="mt-4 text-lg text-muted max-w-2xl mx-auto">
+        The average deposition job pays $200–400. A Featured listing costs $79/month — or $948/year. One booked job from DepoHire and you're profitable for the rest of the year.
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-8 max-w-2xl mx-auto">
+        <div>
+          <p class="text-3xl font-bold text-primary">$200–400</p>
+          <p class="text-sm text-muted">Avg. revenue per deposition job</p>
+        </div>
+        <div>
+          <p class="text-3xl font-bold text-primary">1 job</p>
+          <p class="text-sm text-muted">Covers your listing for 3–5 months</p>
+        </div>
+        <div>
+          <p class="text-3xl font-bold text-primary">$0</p>
+          <p class="text-sm text-muted">Setup fee. No contracts. Cancel anytime.</p>
+        </div>
+      </div>
+      <a href="/advertise/" class="btn-primary inline-block mt-8 no-underline">Claim Your Featured Spot &rarr;</a>
+      <p class="text-xs text-muted mt-2">No credit card needed to apply</p>
+    </div>
+  </section>
+
+  <!-- Listing Comparison -->
+  <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <h2 class="text-3xl font-bold text-default text-center mb-2">See exactly what attorneys see</h2>
+    <p class="text-muted text-center mb-8">Toggle between a standard and featured listing. Click either card to see the full page.</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Standard -->
+      <div class="card p-6 opacity-75">
+        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Standard Listing</p>
+        <h3 class="font-bold text-default">Elliott Reporting</h3>
+        <p class="text-sm text-muted">Colorado Springs, CO</p>
+        <p class="text-sm text-muted mt-3">Full-service reporting firm offering court reporter services, legal videography, and video conferencing in Colorado Springs.</p>
+        <div class="flex flex-wrap gap-1.5 mt-3">
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-gray-100 text-gray-600">Legal Videography</span>
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-gray-100 text-gray-600">Court Reporting</span>
+        </div>
+        <p class="text-xs text-gray-400 mt-4">Sorted alphabetically &middot; #7 of 12</p>
+        <div class="mt-4 border-t pt-4">
+          <p class="text-xs text-red-400">No badge &middot; No quote routing &middot; No top placement &middot; Invisible to most attorneys</p>
+        </div>
+      </div>
+
+      <!-- Featured -->
+      <div class="card p-6 border-2 border-primary">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-primary text-white">Featured</span>
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">CLVS Certified</span>
+        </div>
+        <h3 class="font-bold text-default">Acme Legal Video Services</h3>
+        <p class="text-sm text-muted">Colorado Springs, CO &middot; Open now</p>
+        <p class="text-sm text-yellow-600 mt-1">4.9 (28 reviews)</p>
+        <p class="text-sm mt-3">CLVS-certified videographer with 15+ years serving litigation attorneys across Colorado. Remote deposition specialists. Same-day availability.</p>
+        <div class="flex flex-wrap gap-1.5 mt-3">
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-primary-50 text-primary-700">Remote Depositions</span>
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-primary-50 text-primary-700">Same-Day Available</span>
+        </div>
+        <p class="text-sm font-medium mt-3">(719) 555-0182</p>
+        <div class="mt-4 border-t pt-4">
+          <p class="text-xs text-green-600">Pinned #1 &middot; Quote requests land in your inbox &middot; CLVS badge builds trust</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <h2 class="text-2xl font-bold text-default mb-6 text-center">Common Questions</h2>
+    <FAQAccordion faqs={[
+      {
+        question: 'Is there a setup fee or contract?',
+        answer: 'No setup fee, no annual contract. Month-to-month, cancel anytime with 30 days notice.',
+      },
+      {
+        question: 'How do leads reach me?',
+        answer: 'Quote requests are emailed directly to you — name, email, case type, and date. You follow up on your own timeline. No middleman.',
+      },
+      {
+        question: 'How fast does my listing go live?',
+        answer: 'Featured listings go live within 2–3 business days of approval. We review each applicant to protect listing quality.',
+      },
+      {
+        question: 'Can I be featured in multiple cities?',
+        answer: 'Yes — each additional city is $49/month. Firms covering regional areas commonly list in 2–3 cities.',
+      },
+      {
+        question: 'Do I need to be CLVS certified?',
+        answer: 'Preferred but not required. CLVS gets you a verified badge on your listing, which increases attorney trust.',
+      },
+      {
+        question: "What if my city isn't listed yet?",
+        answer: "Request it when you apply. We'll build the city page and feature you as the first provider — the strongest position available.",
+      },
+    ]} />
+  </section>
+
+  <!-- Final CTA -->
+  <section class="bg-primary text-white py-12 text-center">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6">
+      <h2 class="text-3xl font-bold">Ready to start getting attorney leads?</h2>
+      <p class="mt-4 text-lg opacity-90">Fill out the advertise form — it takes 2 minutes. We'll confirm availability in your city and follow up within one business day.</p>
+      <a href="/advertise/" class="inline-block mt-6 bg-white text-primary font-semibold px-8 py-3 rounded-lg no-underline hover:bg-gray-100 transition-colors">Apply for a Featured Listing &rarr;</a>
+      <p class="text-sm mt-3 opacity-80">No credit card needed &middot; Goes live in 2–3 business days &middot; Cancel anytime</p>
+    </div>
+  </section>
+</PageLayout>

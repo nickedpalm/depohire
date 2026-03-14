@@ -24,6 +24,22 @@ export async function getStaticPaths() {
 
 const { cityInfo, content } = Astro.props;
 const allListings = getListingsForCity(cityInfo.slug);
+
+// Find nearby cities by geographic distance
+function haversineDistance(lat1: number, lng1: number, lat2: number, lng2: number) {
+  const R = 3959; // miles
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat/2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng/2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+import { getListingCountByCity } from '~/lib/listings';
+const cityCounts = getListingCountByCity();
+const nearbyCities = citiesData
+  .filter(c => c.slug !== cityInfo.slug && (cityCounts[c.slug] || 0) > 0)
+  .map(c => ({ ...c, distance: haversineDistance(cityInfo.lat, cityInfo.lng, c.lat, c.lng), listingCount: cityCounts[c.slug] || 0 }))
+  .sort((a, b) => a.distance - b.distance)
+  .slice(0, 5);
 const { Content } = content ? await render(content) : { Content: null };
 const heroImage = content?.data?.image;
 const imageCredit = content?.data?.imageCredit;
@@ -88,8 +104,44 @@ const metadata = { title, description: metaDescription };
       </div>
     )}
 
-    <h1 class="text-3xl font-bold text-default mb-2">{title}</h1>
-    <p class="text-muted mb-8">{listings.length} {config.primaryKeyword}{listings.length !== 1 ? 's' : ''} found in {cityInfo.city}</p>
+    <h1 class="text-3xl font-bold text-default mb-2">
+      Hiring a {config.primaryKeyword} in {cityInfo.city}?
+    </h1>
+    <p class="text-muted text-base mb-6 max-w-2xl">
+      Here {listings.length === 1 ? 'is' : 'are'} {listings.length} verified provider{listings.length !== 1 ? 's' : ''} serving {cityInfo.city}, {cityInfo.stateName || cityInfo.state}. Check credentials, read reviews, and submit a quote request directly — no phone tag required.
+    </p>
+
+    {/* Metrics bar */}
+    <div class="flex flex-wrap items-center gap-x-5 gap-y-2 mb-6 text-sm text-muted">
+      <span class="flex items-center gap-1.5">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary-600"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        <strong class="font-semibold text-default">{listings.length}</strong> verified provider{listings.length !== 1 ? 's' : ''}
+      </span>
+      <span class="flex items-center gap-1.5">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-500"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        Verified listings
+      </span>
+      <span class="flex items-center gap-1.5 ml-auto text-xs">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        Updated {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+      </span>
+    </div>
+
+    {/* Stat cards */}
+    <div class="grid grid-cols-3 gap-3 mb-8">
+      <div class="bg-red-50 border border-red-100 rounded-xl p-4 text-center">
+        <p class="text-2xl font-bold text-red-700 font-heading">$100–300</p>
+        <p class="text-xs text-red-600 mt-1 leading-tight">extra your client pays when an out-of-market provider travels to {cityInfo.city}</p>
+      </div>
+      <div class="bg-green-50 border border-green-100 rounded-xl p-4 text-center">
+        <p class="text-2xl font-bold text-green-700 font-heading">2–3&times;</p>
+        <p class="text-xs text-green-600 mt-1 leading-tight">faster booking turnaround with a local provider vs. out-of-market</p>
+      </div>
+      <div class="bg-amber-50 border border-amber-100 rounded-xl p-4 text-center">
+        <p class="text-2xl font-bold text-amber-700 font-heading">CLVS</p>
+        <p class="text-xs text-amber-600 mt-1 leading-tight">the NCRA gold standard — look for this badge before you book</p>
+      </div>
+    </div>
 
     {pins.length > 0 && (
       <div class="mb-8">
@@ -154,6 +206,20 @@ const metadata = { title, description: metaDescription };
     ]} />
 
     <RelatedContent city={cityInfo.city} state={cityInfo.state} citySlug={cityInfo.slug} />
+
+    {nearbyCities.length > 0 && (
+      <div class="mt-10">
+        <h2 class="text-xl font-bold text-default mb-4">Also Serving Nearby Cities</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+          {nearbyCities.map(c => (
+            <a href={`/${c.slug}/`} class="block bg-white rounded-lg border border-gray-200 p-3 no-underline hover:border-primary hover:shadow-sm transition-all text-center">
+              <p class="font-semibold text-sm text-default">{c.city}</p>
+              <p class="text-xs text-muted mt-0.5">{c.listingCount} provider{c.listingCount !== 1 ? 's' : ''}</p>
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
 
     <p class="text-xs text-muted mt-8">
       Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}

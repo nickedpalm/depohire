@@ -4,6 +4,8 @@ import Breadcrumbs from '~/components/directory/Breadcrumbs.astro';
 import AuthorBox from '~/components/directory/AuthorBox.astro';
 import RelatedContent from '~/components/directory/RelatedContent.astro';
 import config from '~/config';
+import citiesData from '~/data/cities.json';
+import { getListingCountByCity } from '~/lib/listings';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -17,6 +19,15 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await render(post);
 const { title, description, pubDate, author = config.editorialAuthor.name, tags = [], hub, image: heroImage, imageCredit } = post.data;
+
+// Resolve hub title to actual post slug for breadcrumb link
+let hubHref: string | undefined;
+if (hub) {
+  const allPosts = await getCollection('blog');
+  const hubPost = allPosts.find(p => p.data.title === hub);
+  hubHref = hubPost ? `/blog/${hubPost.id}/` : undefined;
+}
+
 const formattedDate = pubDate ? pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
 const body = post.body || '';
 const wordCount = body.split(/\s+/).length;
@@ -48,6 +59,14 @@ const schema = {
 };
 
 const metadata = { title, description };
+
+// Top cities for internal linking CTA
+const cityCounts = getListingCountByCity();
+const topCities = citiesData
+  .map(c => ({ ...c, count: cityCounts[c.slug] || 0 }))
+  .filter(c => c.count > 0)
+  .sort((a, b) => b.count - a.count)
+  .slice(0, 6);
 ---
 <PageLayout metadata={metadata}>
   <Fragment slot="announcement"><span></span></Fragment>
@@ -57,7 +76,7 @@ const metadata = { title, description };
         <div class="max-w-3xl mx-auto px-4 sm:px-6">
           <Breadcrumbs crumbs={[
             { label: 'Blog', href: '/blog/' },
-            ...(hub ? [{ label: hub, href: `/blog/${hub.toLowerCase().replace(/\s+/g, '-')}/` }] : []),
+            ...(hub && hubHref ? [{ label: hub, href: hubHref }] : []),
             { label: title },
           ]} />
         </div>
@@ -119,6 +138,21 @@ const metadata = { title, description };
       </div>
 
       <div class="mx-auto px-4 sm:px-6 max-w-3xl">
+        {topCities.length > 0 && (
+          <div class="bg-blue-50 rounded-xl p-6 mt-8 mb-6">
+            <h3 class="text-lg font-bold text-default mb-3">Find {config.name} Near You</h3>
+            <div class="flex flex-wrap gap-2">
+              {topCities.map(c => (
+                <a href={`/${c.slug}/`} class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-white border border-blue-200 text-primary no-underline hover:bg-blue-100 transition-colors">
+                  {c.city} <span class="text-muted ml-1 text-xs">({c.count})</span>
+                </a>
+              ))}
+              <a href="/states/all/" class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-primary text-white no-underline hover:opacity-90 transition-opacity">
+                All Cities &rarr;
+              </a>
+            </div>
+          </div>
+        )}
         <AuthorBox />
         <RelatedContent currentSlug={Astro.url.pathname} />
       </div>

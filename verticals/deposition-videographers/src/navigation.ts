@@ -11,7 +11,7 @@ export const headerData = {
       href: getPermalink('/states/all'),
     },
     {
-      text: 'Blog',
+      text: 'Expert Insights',
       href: getBlogPermalink(),
     },
     {
@@ -22,8 +22,14 @@ export const headerData = {
       text: 'About',
       href: getPermalink('/about'),
     },
+    {
+      text: 'Advertise',
+      href: getPermalink('/advertise'),
+    },
   ],
-  actions: [],
+  actions: [
+    { text: 'View Pricing', href: getPermalink('/pricing') },
+  ],
 };
 
 export const footerData = {
@@ -39,8 +45,15 @@ export const footerData = {
     {
       title: 'Resources',
       links: [
-        { text: 'Blog', href: getBlogPermalink() },
+        { text: 'Expert Insights', href: getBlogPermalink() },
         { text: 'Editorial Guidelines', href: getPermalink('/editorial-guidelines') },
+      ],
+    },
+    {
+      title: 'For Providers',
+      links: [
+        { text: 'Advertise', href: getPermalink('/advertise') },
+        { text: 'Pricing', href: getPermalink('/pricing') },
       ],
     },
     {

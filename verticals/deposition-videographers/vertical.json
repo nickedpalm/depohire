@@ -1,8 +1,8 @@
 {
   "name": "Deposition Videographers",
   "slug": "deposition-videographers",
-  "domain": "depositionvideographers.com",
-  "siteUrl": "https://depositionvideographers.com",
+  "domain": "depohire.com",
+  "siteUrl": "https://depohire.com",
   "tagline": "Find certified deposition videographers near you",
   "description": "The most comprehensive directory of deposition videographers in the United States",
   "jobValue": "$500-2,000+ per session",
@@ -25,7 +25,7 @@
     "equipment"
   ],
   "cityPagePromptContext": "Deposition videographers record legal depositions on video for use\nas evidence in court proceedings. They operate specialized equipment,\nensure proper legal formatting, and often provide real-time streaming\nand expedited delivery. Attorneys hire them for civil litigation,\npersonal injury cases, and corporate disputes.\n",
-  "contactEmail": "contact@depositionvideographers.com",
+  "contactEmail": "contact@depohire.com",
   "editorialAuthor": {
     "name": "Nick Palmer",
     "title": "Founder & Lead Researcher",

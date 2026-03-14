@@ -24,6 +24,22 @@ export async function getStaticPaths() {
 
 const { cityInfo, content } = Astro.props;
 const allListings = getListingsForCity(cityInfo.slug);
+
+// Find nearby cities by geographic distance
+function haversineDistance(lat1: number, lng1: number, lat2: number, lng2: number) {
+  const R = 3959; // miles
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat/2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng/2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+import { getListingCountByCity } from '~/lib/listings';
+const cityCounts = getListingCountByCity();
+const nearbyCities = citiesData
+  .filter(c => c.slug !== cityInfo.slug && (cityCounts[c.slug] || 0) > 0)
+  .map(c => ({ ...c, distance: haversineDistance(cityInfo.lat, cityInfo.lng, c.lat, c.lng), listingCount: cityCounts[c.slug] || 0 }))
+  .sort((a, b) => a.distance - b.distance)
+  .slice(0, 5);
 const { Content } = content ? await render(content) : { Content: null };
 const heroImage = content?.data?.image;
 const imageCredit = content?.data?.imageCredit;
@@ -154,6 +170,20 @@ const metadata = { title, description: metaDescription };
     ]} />
 
     <RelatedContent city={cityInfo.city} state={cityInfo.state} citySlug={cityInfo.slug} />
+
+    {nearbyCities.length > 0 && (
+      <div class="mt-10">
+        <h2 class="text-xl font-bold text-default mb-4">Also Serving Nearby Cities</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+          {nearbyCities.map(c => (
+            <a href={`/${c.slug}/`} class="block bg-white rounded-lg border border-gray-200 p-3 no-underline hover:border-primary hover:shadow-sm transition-all text-center">
+              <p class="font-semibold text-sm text-default">{c.city}</p>
+              <p class="text-xs text-muted mt-0.5">{c.listingCount} provider{c.listingCount !== 1 ? 's' : ''}</p>
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
 
     <p class="text-xs text-muted mt-8">
       Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
