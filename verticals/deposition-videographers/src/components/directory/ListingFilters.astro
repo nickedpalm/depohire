@@ -1,0 +1,127 @@
+---
+interface Props {
+  totalCount: number;
+}
+const { totalCount } = Astro.props;
+---
+<div class="flex flex-wrap items-center gap-2 mb-4" id="listing-filters">
+  <span class="text-sm text-gray-500 mr-1">Filter:</span>
+  <button
+    type="button"
+    class="filter-pill px-3 py-1 rounded-full text-xs font-medium border transition-colors bg-white border-gray-200 text-gray-600 hover:border-primary-300"
+    data-filter="has-reviews"
+    aria-pressed="false"
+  >
+    Has Reviews
+  </button>
+  <button
+    type="button"
+    class="filter-pill px-3 py-1 rounded-full text-xs font-medium border transition-colors bg-white border-gray-200 text-gray-600 hover:border-primary-300"
+    data-filter="clvs"
+    aria-pressed="false"
+  >
+    CLVS Certified
+  </button>
+  <button
+    type="button"
+    class="filter-pill px-3 py-1 rounded-full text-xs font-medium border transition-colors bg-white border-gray-200 text-gray-600 hover:border-primary-300"
+    data-filter="rating-4"
+    aria-pressed="false"
+  >
+    4+ Stars
+  </button>
+
+  <div class="ml-auto flex items-center gap-2">
+    <label for="sort-select" class="text-xs text-gray-500">Sort:</label>
+    <select id="sort-select" class="text-xs border border-gray-200 rounded-lg px-2 py-1 bg-white text-gray-700 focus:ring-primary-500 focus:border-primary-500">
+      <option value="default">Default</option>
+      <option value="rating-desc">Rating (high to low)</option>
+      <option value="reviews-desc">Most Reviews</option>
+      <option value="name-asc">Name (A-Z)</option>
+    </select>
+  </div>
+</div>
+<p class="text-xs text-gray-400 mb-4" id="filter-count">
+  Showing <span id="visible-count">{totalCount}</span> of {totalCount} providers
+</p>
+
+<script is:inline>
+  function initFilters() {
+    const container = document.getElementById('listing-filters');
+    if (!container || container.dataset.init) return;
+    container.dataset.init = 'true';
+
+    const pills = container.querySelectorAll('.filter-pill');
+    const sortSelect = document.getElementById('sort-select');
+    const visibleCount = document.getElementById('visible-count');
+    const grid = document.querySelector('[data-listing-grid]');
+    if (!grid) return;
+
+    function applyFilters() {
+      const activeFilters = [];
+      pills.forEach(p => {
+        if (p.getAttribute('aria-pressed') === 'true') {
+          activeFilters.push(p.dataset.filter);
+        }
+      });
+
+      const cards = grid.querySelectorAll('[data-listing-card]');
+      let shown = 0;
+
+      cards.forEach(card => {
+        let visible = true;
+
+        for (const f of activeFilters) {
+          if (f === 'has-reviews' && card.dataset.hasReviews !== 'true') visible = false;
+          if (f === 'clvs' && card.dataset.clvs !== 'true') visible = false;
+          if (f === 'rating-4' && parseFloat(card.dataset.rating) < 4) visible = false;
+        }
+
+        card.style.display = visible ? '' : 'none';
+        if (visible) shown++;
+      });
+
+      if (visibleCount) visibleCount.textContent = shown;
+    }
+
+    function applySort() {
+      const sortVal = sortSelect?.value || 'default';
+      const cards = Array.from(grid.querySelectorAll('[data-listing-card]'));
+
+      cards.sort((a, b) => {
+        if (sortVal === 'rating-desc') return parseFloat(b.dataset.rating) - parseFloat(a.dataset.rating);
+        if (sortVal === 'reviews-desc') return parseInt(b.dataset.reviewCount) - parseInt(a.dataset.reviewCount);
+        if (sortVal === 'name-asc') return a.dataset.name.localeCompare(b.dataset.name);
+        return 0; // default order
+      });
+
+      cards.forEach(card => grid.appendChild(card));
+    }
+
+    pills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        const pressed = pill.getAttribute('aria-pressed') === 'true';
+        pill.setAttribute('aria-pressed', !pressed);
+        pill.classList.toggle('bg-primary-100', !pressed);
+        pill.classList.toggle('border-primary-300', !pressed);
+        pill.classList.toggle('text-primary-700', !pressed);
+        pill.classList.toggle('bg-white', pressed);
+        pill.classList.toggle('border-gray-200', pressed);
+        pill.classList.toggle('text-gray-600', pressed);
+        applyFilters();
+      });
+    });
+
+    sortSelect?.addEventListener('change', () => {
+      applySort();
+      applyFilters();
+    });
+  }
+
+  document.addEventListener('astro:page-load', initFilters);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initFilters);
+  } else {
+    initFilters();
+  }
+</script>

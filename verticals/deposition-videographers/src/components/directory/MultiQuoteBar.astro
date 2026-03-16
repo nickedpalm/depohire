@@ -1,0 +1,254 @@
+---
+const API_URL = 'https://api.depohire.com/api/leads';
+---
+<!-- Floating bar when providers are selected -->
+<div
+  id="multi-quote-bar"
+  class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-lg transform translate-y-full transition-transform duration-300 ease-in-out"
+  data-api-url={API_URL}
+>
+  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+    <p class="text-sm text-gray-700">
+      <span id="mq-count" class="font-bold text-primary-600">0</span> provider<span id="mq-plural">s</span> selected
+    </p>
+    <div class="flex items-center gap-3">
+      <button type="button" id="mq-clear" class="text-sm text-gray-500 hover:text-gray-700">Clear</button>
+      <button type="button" id="mq-submit" class="btn-primary py-2 px-5 text-sm">
+        Request Quotes
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div id="mq-modal" class="fixed inset-0 z-[60] hidden">
+  <div class="fixed inset-0 bg-black/50" id="mq-backdrop"></div>
+  <div class="fixed inset-0 flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto relative">
+      <div class="p-6">
+        <button type="button" id="mq-close" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+
+        <h2 class="text-xl font-bold text-gray-900 mb-1">Request Quotes</h2>
+        <p class="text-sm text-gray-500 mb-4">Your request will be sent to <span id="mq-provider-count" class="font-semibold">0</span> providers:</p>
+
+        <div id="mq-provider-list" class="space-y-1 mb-4"></div>
+
+        <form id="mq-form" class="space-y-4">
+          <!-- Honeypot -->
+          <div class="absolute -left-[9999px]" aria-hidden="true">
+            <input type="text" name="company_url" tabindex="-1" autocomplete="off" />
+          </div>
+          <div>
+            <label for="mq-name" class="block text-sm font-medium text-gray-700">Your Name</label>
+            <input type="text" id="mq-name" name="attorney_name" required class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-3 py-2 border" />
+          </div>
+          <div>
+            <label for="mq-email" class="block text-sm font-medium text-gray-700">Email</label>
+            <input type="email" id="mq-email" name="attorney_email" required class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-3 py-2 border" />
+          </div>
+          <div>
+            <label for="mq-phone" class="block text-sm font-medium text-gray-700">Phone <span class="text-gray-400">(optional)</span></label>
+            <input type="tel" id="mq-phone" name="attorney_phone" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-3 py-2 border" />
+          </div>
+          <div>
+            <label for="mq-details" class="block text-sm font-medium text-gray-700">Case Details</label>
+            <textarea id="mq-details" name="case_details" rows="3" placeholder="Date, location, type of proceeding..." class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-3 py-2 border"></textarea>
+          </div>
+          <button type="submit" id="mq-send" class="btn-primary w-full justify-center">
+            Send to All Selected Providers
+          </button>
+          <p class="text-xs text-gray-400 text-center">Free, no obligation. Providers respond directly to your email.</p>
+        </form>
+
+        <!-- Success -->
+        <div id="mq-success" class="hidden text-center py-6">
+          <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900">Quotes Requested!</h3>
+          <p class="text-sm text-gray-600 mt-1" id="mq-success-msg"></p>
+          <button type="button" id="mq-done" class="btn-primary mt-4 px-6">Done</button>
+        </div>
+
+        <!-- Error -->
+        <div id="mq-error" class="hidden bg-red-50 border border-red-200 rounded-lg p-3 mt-3">
+          <p class="text-sm text-red-700" id="mq-error-msg"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  function initMultiQuote() {
+    const bar = document.getElementById('multi-quote-bar');
+    const modal = document.getElementById('mq-modal');
+    if (!bar || !modal || bar.dataset.init) return;
+    bar.dataset.init = 'true';
+
+    const apiUrl = bar.dataset.apiUrl;
+    let selected = [];
+
+    function getCity() {
+      // Try to get city from page context
+      const h1 = document.querySelector('h1');
+      const match = h1?.textContent?.match(/in (.+)\?/);
+      return match ? match[1] : '';
+    }
+
+    function updateBar() {
+      const count = selected.length;
+      document.getElementById('mq-count').textContent = count;
+      document.getElementById('mq-plural').textContent = count === 1 ? '' : 's';
+
+      if (count > 0) {
+        bar.classList.remove('translate-y-full');
+        document.getElementById('sticky-cta')?.classList.add('translate-y-full');
+      } else {
+        bar.classList.add('translate-y-full');
+        document.getElementById('sticky-cta')?.classList.remove('translate-y-full');
+      }
+    }
+
+    function updateModal() {
+      const list = document.getElementById('mq-provider-list');
+      document.getElementById('mq-provider-count').textContent = selected.length;
+      list.innerHTML = selected.map(p =>
+        `<div class="flex items-center gap-2 text-sm"><span class="w-2 h-2 rounded-full bg-primary-500"></span><span class="text-gray-700">${p.name}</span></div>`
+      ).join('');
+    }
+
+    // Listen for checkbox changes (delegated)
+    document.addEventListener('change', (e) => {
+      if (!e.target.matches('.select-quote-checkbox')) return;
+
+      const cb = e.target;
+      const provider = {
+        name: cb.dataset.providerName,
+        email: cb.dataset.providerEmail,
+        slug: cb.dataset.providerSlug,
+      };
+
+      if (cb.checked) {
+        if (selected.length >= 5) {
+          cb.checked = false;
+          alert('You can select up to 5 providers at a time.');
+          return;
+        }
+        selected.push(provider);
+      } else {
+        selected = selected.filter(p => p.slug !== provider.slug);
+      }
+      updateBar();
+    });
+
+    // Clear button
+    document.getElementById('mq-clear').addEventListener('click', () => {
+      selected = [];
+      document.querySelectorAll('.select-quote-checkbox').forEach(cb => cb.checked = false);
+      updateBar();
+    });
+
+    // Open modal
+    document.getElementById('mq-submit').addEventListener('click', () => {
+      updateModal();
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    });
+
+    // Close modal
+    function closeModal() {
+      modal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+    document.getElementById('mq-close').addEventListener('click', closeModal);
+    document.getElementById('mq-backdrop').addEventListener('click', closeModal);
+    document.getElementById('mq-done')?.addEventListener('click', () => {
+      closeModal();
+      selected = [];
+      document.querySelectorAll('.select-quote-checkbox').forEach(cb => cb.checked = false);
+      updateBar();
+      // Reset form
+      document.getElementById('mq-form').classList.remove('hidden');
+      document.getElementById('mq-success').classList.add('hidden');
+    });
+
+    // Submit form
+    document.getElementById('mq-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const btn = document.getElementById('mq-send');
+      const errorDiv = document.getElementById('mq-error');
+      errorDiv.classList.add('hidden');
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+
+      const data = {
+        attorney_name: form.attorney_name.value,
+        attorney_email: form.attorney_email.value,
+        attorney_phone: form.attorney_phone.value,
+        case_details: form.case_details.value,
+        city: getCity(),
+        honeypot: form.company_url.value,
+        providers: selected,
+      };
+
+      try {
+        const resp = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        if (!resp.ok) {
+          const err = await resp.json().catch(() => ({}));
+          throw new Error(err.detail || 'Request failed');
+        }
+        const result = await resp.json();
+        form.classList.add('hidden');
+        const successDiv = document.getElementById('mq-success');
+        document.getElementById('mq-success-msg').textContent =
+          `Your request was sent to ${result.emailed || selected.length} provider${selected.length !== 1 ? 's' : ''}. They'll respond directly to your email.`;
+        successDiv.classList.remove('hidden');
+      } catch (err) {
+        document.getElementById('mq-error-msg').textContent = err.message;
+        errorDiv.classList.remove('hidden');
+        btn.disabled = false;
+        btn.textContent = 'Send to All Selected Providers';
+      }
+    });
+
+    // Expose for sticky CTA
+    window._openMultiQuoteModal = () => {
+      if (selected.length === 0) {
+        // No providers selected — just open modal, they can still submit
+        // Add all visible providers as default
+        const cards = document.querySelectorAll('[data-listing-card]:not([style*="display: none"])');
+        const topProviders = Array.from(cards).slice(0, 3);
+        selected = topProviders.map(card => ({
+          name: card.dataset.providerName,
+          email: card.dataset.providerEmail,
+          slug: card.dataset.providerSlug,
+        }));
+        topProviders.forEach(card => {
+          const cb = card.querySelector('.select-quote-checkbox');
+          if (cb) cb.checked = true;
+        });
+        updateBar();
+      }
+      updateModal();
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    };
+  }
+
+  document.addEventListener('astro:page-load', initMultiQuote);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMultiQuote);
+  } else {
+    initMultiQuote();
+  }
+</script>
