@@ -3,32 +3,24 @@ import { getPermalink, getBlogPermalink } from './utils/permalinks';
 export const headerData = {
   links: [
     {
-      text: 'Search',
+      text: 'Find Providers',
       href: getPermalink('/search'),
     },
     {
-      text: 'Browse States',
+      text: 'Browse by State',
       href: getPermalink('/states/all'),
     },
     {
-      text: 'Expert Insights',
+      text: 'Blog',
       href: getBlogPermalink(),
-    },
-    {
-      text: 'Statistics',
-      href: getPermalink('/statistics'),
     },
     {
       text: 'About',
       href: getPermalink('/about'),
     },
-    {
-      text: 'Advertise',
-      href: getPermalink('/advertise'),
-    },
   ],
   actions: [
-    { text: 'View Pricing', href: getPermalink('/pricing') },
+    { text: 'List Your Business', href: getPermalink('/advertise') },
   ],
 };
 
@@ -45,7 +37,8 @@ export const footerData = {
     {
       title: 'Resources',
       links: [
-        { text: 'Expert Insights', href: getBlogPermalink() },
+        { text: 'Blog', href: getBlogPermalink() },
+        { text: 'Statistics', href: getPermalink('/statistics') },
         { text: 'Editorial Guidelines', href: getPermalink('/editorial-guidelines') },
       ],
     },
