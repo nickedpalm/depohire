@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build && npx pagefind --site dist && rm -f dist/_worker.js && npx wrangler pages functions build ../../functions --outfile dist/_worker.js --output-routes-path dist/_routes.json",
+    "build": "astro build && npx pagefind --site dist && npx wrangler pages functions build _functions --outfile dist/_worker.js",
     "preview": "astro preview"
   },
   "dependencies": {
