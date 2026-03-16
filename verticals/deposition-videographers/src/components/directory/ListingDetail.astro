@@ -74,7 +74,7 @@ const completenessPercent = Math.round((completedCount / completenessItems.lengt
         <h3 class="font-bold text-amber-900 text-sm">Is this your business?</h3>
         <p class="text-sm text-amber-700 mt-0.5">Claim your free listing to update info, respond to quote requests, and appear higher in results.</p>
       </div>
-      <a href={`mailto:claims@depohire.com?subject=Claim: ${encodeURIComponent(listing.name)}&body=I'd like to claim my listing on DepoHire.%0A%0ABusiness: ${encodeURIComponent(listing.name)}%0ACity: ${encodeURIComponent(cityDisplay)}, ${stateDisplay}%0A%0APlease send me verification instructions.`}
+      <a href={`/provider/login?listing=${listing.slug}`}
         class="bg-gray-900 text-white px-5 py-2.5 rounded-lg text-sm font-semibold no-underline hover:bg-gray-800 transition-colors whitespace-nowrap">
         Claim Listing — Free
       </a>
@@ -224,7 +224,7 @@ const completenessPercent = Math.round((completedCount / completenessItems.lengt
           ))}
         </div>
         <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white pointer-events-none"></div>
-        <a href={`mailto:claims@depohire.com?subject=Claim: ${encodeURIComponent(listing.name)}`}
+        <a href={`/provider/login?listing=${listing.slug}`}
           class="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 bg-gray-900 text-white px-5 py-2.5 rounded-lg text-sm font-semibold no-underline shadow-lg">
           Claim to Add Photos
         </a>
@@ -241,7 +241,7 @@ const completenessPercent = Math.round((completedCount / completenessItems.lengt
           <div class="h-3 bg-gray-100 rounded-full" style="width:40%"></div>
         </div>
         <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white pointer-events-none"></div>
-        <a href={`mailto:claims@depohire.com?subject=Claim: ${encodeURIComponent(listing.name)}`}
+        <a href={`/provider/login?listing=${listing.slug}`}
           class="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 bg-gray-900 text-white px-5 py-2.5 rounded-lg text-sm font-semibold no-underline shadow-lg">
           Claim to Add Details
         </a>
@@ -258,7 +258,7 @@ const completenessPercent = Math.round((completedCount / completenessItems.lengt
           <div class="h-3 bg-gray-100 rounded-full" style="width:40%"></div>
         </div>
         <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white pointer-events-none"></div>
-        <a href={`mailto:claims@depohire.com?subject=Claim: ${encodeURIComponent(listing.name)}`}
+        <a href={`/provider/login?listing=${listing.slug}`}
           class="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 bg-gray-900 text-white px-5 py-2.5 rounded-lg text-sm font-semibold no-underline shadow-lg">
           Claim to Collect Reviews
         </a>
