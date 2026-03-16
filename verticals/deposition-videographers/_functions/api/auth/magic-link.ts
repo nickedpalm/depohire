@@ -84,9 +84,11 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       },
       body: JSON.stringify({
         subscriber_email: email,
+        template_id: 6,
         subject: 'Your DepoHire login link',
         body: emailBody,
         content_type: 'html',
+        data: {},
         messenger: 'email',
         from_email: 'DepoHire <noreply@depohire.com>',
       }),
