@@ -70,7 +70,7 @@ const metadata = { title, description };
 ---
 <PageLayout metadata={metadata}>
   <Fragment slot="announcement"><span></span></Fragment>
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8" data-pagefind-body>
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8" data-pagefind-body>
     <Breadcrumbs crumbs={[
       { label: cityInfo?.stateName || listing.state, href: `/states/${cityInfo?.stateSlug || 'all'}/` },
       { label: cityInfo?.city || listing.city, href: `/locations/${cityInfo?.stateSlug || 'all'}/${listing.city}/` },
