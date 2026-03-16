@@ -2,20 +2,24 @@
 import PageLayout from '~/layouts/PageLayout.astro';
 import config from '~/config';
 import citiesData from '~/data/cities.json';
-import { getListingCountByCity } from '~/lib/listings';
+import { getListingCountByCity, getAllListings } from '~/lib/listings';
 import { getCollection } from 'astro:content';
 
 const metadata = {
-  title: 'Search Directory',
-  description: `Search the ${config.name} directory.`,
+  title: 'Find a Deposition Videographer',
+  description: `Search ${config.name} — 1,000+ verified deposition videographers across 67 cities. Filter by city, credentials, and services.`,
 };
 
 const cityCounts = getListingCountByCity();
+const allListings = getAllListings();
+const totalProviders = allListings.length;
+const totalCities = Object.keys(cityCounts).length;
+
 const topCities = citiesData
   .map(c => ({ ...c, count: cityCounts[c.slug] || 0 }))
   .filter(c => c.count > 0)
-  .sort((a, b) => b.count - a.count)
-  .slice(0, 6);
+  .sort((a, b) => b.count - a.count);
+const topCitiesDisplay = topCities.slice(0, 9);
 
 const posts = await getCollection('blog');
 const recentPosts = posts
@@ -25,46 +29,112 @@ const recentPosts = posts
 ---
 <PageLayout metadata={metadata}>
   <Fragment slot="announcement"><span></span></Fragment>
+
+  <!-- Hero -->
+  <div class="bg-gradient-to-br from-primary-600 to-primary-800 text-white py-10 sm:py-14">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-3">Find a Deposition Videographer</h1>
+      <p class="text-primary-100 text-lg sm:text-xl max-w-2xl mx-auto mb-6">
+        Search {totalProviders.toLocaleString()}+ verified providers across {totalCities} cities. Every listing includes credentials, services, and direct contact.
+      </p>
+      <div class="max-w-xl mx-auto">
+        <div id="search" class="min-h-[56px]"></div>
+      </div>
+      <p class="text-primary-200 text-sm mt-3">
+        Search by provider name, city, service, or keyword — or <a href="/states/all/" class="text-white underline hover:no-underline">browse by state</a>
+      </p>
+    </div>
+  </div>
+
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <h1 class="text-3xl font-bold text-default mb-6">Search</h1>
-    <div id="search" class="min-h-[200px]"></div>
+    <!-- Search results appear here via Pagefind -->
+    <div id="search-results-area"></div>
 
     <!-- Empty state: shown when no search query -->
-    <div id="search-empty-state" class="mt-8">
-      <div class="mb-10">
-        <h2 class="text-xl font-bold text-default mb-4">Top Legal Markets</h2>
-        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {topCities.map(c => (
-            <a href={`/locations/${c.stateSlug}/${c.slug}/`} class="block bg-white rounded-xl border border-gray-200 p-4 no-underline hover:border-primary hover:shadow-sm transition-all text-center">
-              <p class="font-semibold text-default">{c.city}</p>
-              <p class="text-sm text-muted mt-0.5">{c.state}</p>
-              <p class="text-xs text-primary-600 font-medium mt-1">{c.count} providers</p>
-            </a>
-          ))}
+    <div id="search-empty-state">
+
+      <!-- How it works -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12 mt-4">
+        <div class="text-center px-4">
+          <div class="w-12 h-12 bg-primary-50 rounded-xl flex items-center justify-center mx-auto mb-3">
+            <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          </div>
+          <h3 class="font-semibold text-default mb-1">Search or Browse</h3>
+          <p class="text-sm text-muted">Type a city, zip code, or provider name above — or browse by state to see all providers near you.</p>
+        </div>
+        <div class="text-center px-4">
+          <div class="w-12 h-12 bg-primary-50 rounded-xl flex items-center justify-center mx-auto mb-3">
+            <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          </div>
+          <h3 class="font-semibold text-default mb-1">Compare Providers</h3>
+          <p class="text-sm text-muted">Review credentials, certifications, services offered, and real client reviews side by side.</p>
+        </div>
+        <div class="text-center px-4">
+          <div class="w-12 h-12 bg-primary-50 rounded-xl flex items-center justify-center mx-auto mb-3">
+            <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          </div>
+          <h3 class="font-semibold text-default mb-1">Request a Quote</h3>
+          <p class="text-sm text-muted">Submit a quote request directly from any listing page — the provider gets your details instantly.</p>
         </div>
       </div>
 
+      <!-- Top cities -->
+      <div class="mb-10">
+        <h2 class="text-xl font-bold text-default mb-1">Top Legal Markets</h2>
+        <p class="text-sm text-muted mb-4">Cities with the most deposition videographers on our platform.</p>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          {topCitiesDisplay.map(c => (
+            <a href={`/locations/${c.stateSlug}/${c.slug}/`} class="flex items-center justify-between bg-white rounded-xl border border-gray-200 px-4 py-3 no-underline hover:border-primary hover:shadow-sm transition-all group">
+              <div>
+                <p class="font-semibold text-default group-hover:text-primary-600">{c.city}</p>
+                <p class="text-sm text-muted">{c.state}</p>
+              </div>
+              <span class="text-sm font-medium text-primary-600 bg-primary-50 px-2.5 py-1 rounded-full">{c.count}</span>
+            </a>
+          ))}
+        </div>
+        <div class="text-center mt-4">
+          <a href="/states/all/" class="text-sm text-primary font-medium hover:underline">View all {totalCities} cities &rarr;</a>
+        </div>
+      </div>
+
+      <!-- Recent posts -->
       {recentPosts.length > 0 && (
         <div>
-          <h2 class="text-xl font-bold text-default mb-4">Recent Industry Insights</h2>
+          <h2 class="text-xl font-bold text-default mb-1">Industry Insights</h2>
+          <p class="text-sm text-muted mb-4">Guides and analysis for attorneys hiring deposition videographers.</p>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {recentPosts.map(post => (
-              <a href={`/blog/${post.id}/`} class="block bg-white rounded-xl border border-gray-200 p-4 no-underline hover:border-primary hover:shadow-sm transition-all">
+              <a href={`/blog/${post.id}/`} class="block bg-white rounded-xl border border-gray-200 p-5 no-underline hover:border-primary hover:shadow-sm transition-all">
                 <p class="font-semibold text-default text-sm leading-snug">{post.data.title}</p>
                 {post.data.description && (
                   <p class="text-xs text-muted mt-2 line-clamp-2">{post.data.description}</p>
                 )}
                 {post.data.pubDate && (
-                  <p class="text-xs text-gray-400 mt-2">{post.data.pubDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                  <p class="text-xs text-gray-400 mt-3">{post.data.pubDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
                 )}
               </a>
             ))}
+          </div>
+          <div class="text-center mt-4">
+            <a href="/blog/" class="text-sm text-primary font-medium hover:underline">Read more on our blog &rarr;</a>
           </div>
         </div>
       )}
     </div>
   </div>
   <link href="/pagefind/pagefind-ui.css" rel="stylesheet" />
+  <style>
+    /* Move Pagefind results below hero into the results area */
+    #search .pagefind-ui__search-input {
+      font-size: 1.1rem;
+      padding: 0.875rem 1rem;
+      border-radius: 0.5rem;
+    }
+    #search .pagefind-ui__search-clear {
+      top: calc(50% - 10px);
+    }
+  </style>
   <script is:inline>
     function initPagefind() {
       const el = document.getElementById('search');
@@ -72,6 +142,7 @@ const recentPosts = posts
       el.dataset.pagefindInit = 'true';
 
       const emptyState = document.getElementById('search-empty-state');
+      const resultsArea = document.getElementById('search-results-area');
 
       function setup() {
         if (typeof PagefindUI === 'undefined') return false;
@@ -80,6 +151,7 @@ const recentPosts = posts
           element: '#search',
           showSubResults: true,
           showImages: false,
+          resetStyles: false,
         });
         const params = new URLSearchParams(window.location.search);
         const q = params.get('q');

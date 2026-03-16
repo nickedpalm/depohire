@@ -4,7 +4,7 @@ import Breadcrumbs from '~/components/directory/Breadcrumbs.astro';
 import CityGrid from '~/components/directory/CityGrid.astro';
 import config from '~/config';
 import citiesData from '~/data/cities.json';
-import { getListingCountByCity } from '~/lib/listings';
+import { getListingCountByCity, getAllListings } from '~/lib/listings';
 
 export function getStaticPaths() {
   const stateMap = new Map<string, { stateSlug: string; stateName: string; state: string }>();
@@ -34,6 +34,7 @@ export function getStaticPaths() {
 
 const { stateName, stateAbbr, isAll } = Astro.props;
 const cityCounts = getListingCountByCity();
+const allListings = getAllListings();
 
 const filteredCities = isAll
   ? citiesData
@@ -43,21 +44,98 @@ const citiesWithCounts = filteredCities
   .map(c => ({ slug: c.slug, stateSlug: c.stateSlug, city: c.city, state: c.state, listingCount: cityCounts[c.slug] || 0 }))
   .sort((a, b) => b.listingCount - a.listingCount || a.city.localeCompare(b.city));
 
-const title = isAll ? `Browse ${config.name} by State` : `${config.name} in ${stateName}`;
+const totalProviders = isAll ? allListings.length : citiesWithCounts.reduce((sum, c) => sum + c.listingCount, 0);
+const citiesWithProviders = citiesWithCounts.filter(c => c.listingCount > 0).length;
+
+// For "all" view, group states alphabetically with provider counts
+const stateGroups = isAll ? (() => {
+  const stateMap = new Map<string, { name: string; slug: string; abbr: string; cityCount: number; providerCount: number }>();
+  for (const city of citiesData) {
+    const existing = stateMap.get(city.state) || { name: city.stateName, slug: city.stateSlug, abbr: city.state, cityCount: 0, providerCount: 0 };
+    existing.cityCount++;
+    existing.providerCount += cityCounts[city.slug] || 0;
+    stateMap.set(city.state, existing);
+  }
+  return Array.from(stateMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+})() : [];
+
+const title = isAll ? `Browse Deposition Videographers by State` : `Deposition Videographers in ${stateName}`;
 const description = isAll
-  ? `Browse ${config.primaryKeyword}s across all 50 US states.`
-  : `Find ${config.primaryKeyword}s in ${stateName}. Browse ${filteredCities.length} cities.`;
+  ? `Browse ${allListings.length.toLocaleString()}+ ${config.primaryKeyword}s across ${new Set(citiesData.map(c => c.state)).size} states. Find verified providers in your city.`
+  : `Find ${config.primaryKeyword}s in ${stateName}. Browse ${filteredCities.length} cities with ${totalProviders} providers.`;
 
 const metadata = { title, description };
 ---
 <PageLayout metadata={metadata}>
   <Fragment slot="announcement"><span></span></Fragment>
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <Breadcrumbs crumbs={isAll ? [{ label: 'All States' }] : [
-      { label: 'All States', href: '/states/all/' },
-      { label: stateName },
-    ]} />
 
-    <CityGrid cities={citiesWithCounts} title={title} />
+  <!-- Hero -->
+  <div class="bg-gray-50 border-b border-gray-200 py-8 sm:py-10">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <Breadcrumbs crumbs={isAll ? [{ label: 'All States' }] : [
+        { label: 'All States', href: '/states/all/' },
+        { label: stateName },
+      ]} />
+
+      <h1 class="text-3xl sm:text-4xl font-bold text-default mt-2">{title}</h1>
+      <p class="text-muted text-lg mt-2 max-w-2xl">
+        {isAll
+          ? `${allListings.length.toLocaleString()} verified providers across ${citiesWithProviders} cities in ${stateGroups.length} states. Click any state or city to see local listings.`
+          : `${totalProviders} verified providers across ${filteredCities.length} ${filteredCities.length === 1 ? 'city' : 'cities'} in ${stateName}. Click a city to view providers and request quotes.`
+        }
+      </p>
+      <div class="flex gap-6 mt-4">
+        <div>
+          <span class="text-2xl font-bold text-primary">{totalProviders.toLocaleString()}</span>
+          <span class="text-sm text-muted ml-1">providers</span>
+        </div>
+        <div>
+          <span class="text-2xl font-bold text-primary">{isAll ? stateGroups.length : filteredCities.length}</span>
+          <span class="text-sm text-muted ml-1">{isAll ? 'states' : 'cities'}</span>
+        </div>
+        {!isAll && citiesWithProviders > 0 && (
+          <div>
+            <span class="text-2xl font-bold text-primary">{citiesWithProviders}</span>
+            <span class="text-sm text-muted ml-1">with providers</span>
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    {isAll ? (
+      <!-- State directory grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+        {stateGroups.map(s => (
+          <a href={`/states/${s.slug}/`} class="card p-4 no-underline hover:border-primary-300 hover:shadow-sm transition-all group">
+            <div class="flex items-center justify-between">
+              <span class="font-semibold text-gray-900 group-hover:text-primary-600">{s.name}</span>
+              <span class="text-xs font-medium text-gray-400">{s.abbr}</span>
+            </div>
+            <div class="flex items-center gap-3 mt-1.5 text-sm text-muted">
+              <span>{s.cityCount} {s.cityCount === 1 ? 'city' : 'cities'}</span>
+              {s.providerCount > 0 && (
+                <span class="text-primary-600 font-medium">{s.providerCount} providers</span>
+              )}
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <!-- Then show all cities below -->
+      <div class="mt-12 border-t border-gray-200 pt-8">
+        <CityGrid cities={citiesWithCounts} title="All Cities" />
+      </div>
+    ) : (
+      <CityGrid cities={citiesWithCounts} title={`Cities in ${stateName}`} />
+    )}
+
+    <!-- CTA -->
+    <div class="bg-primary-50 rounded-xl p-6 mt-10 text-center">
+      <h3 class="text-lg font-bold text-default mb-2">Are you a deposition videographer in {isAll ? 'the US' : stateName}?</h3>
+      <p class="text-sm text-muted mb-4">Get featured at the top of your city's results. Attorneys are actively searching.</p>
+      <a href="/advertise/" class="btn-primary inline-block no-underline">List Your Business &rarr;</a>
+    </div>
   </div>
 </PageLayout>
