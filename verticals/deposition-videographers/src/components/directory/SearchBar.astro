@@ -12,7 +12,7 @@ const isHero = size === 'hero';
 
 const cityCounts = getListingCountByCity();
 const citiesWithCounts = citiesData
-  .map(c => ({ slug: c.slug, city: c.city, state: c.state, lat: c.lat, lng: c.lng, count: cityCounts[c.slug] || 0 }))
+  .map(c => ({ slug: c.slug, stateSlug: c.stateSlug, city: c.city, state: c.state, lat: c.lat, lng: c.lng, count: cityCounts[c.slug] || 0 }))
   .filter(c => c.count > 0);
 ---
 <div class={isHero ? 'py-16 sm:py-24 bg-gradient-to-br from-primary-600 to-primary-800 text-white' : ''}>
@@ -74,7 +74,7 @@ const citiesWithCounts = citiesData
       } else {
         results.innerHTML = matches.map(c => {
           const dist = c.distance !== undefined ? ` <span class="text-gray-400">${Math.round(c.distance)} mi</span>` : '';
-          return `<a href="/${c.slug}/" class="flex items-center justify-between px-4 py-2.5 text-sm hover:bg-primary-50 no-underline text-gray-700 border-b border-gray-50 last:border-0">
+          return `<a href="/locations/${c.stateSlug}/${c.slug}/" class="flex items-center justify-between px-4 py-2.5 text-sm hover:bg-primary-50 no-underline text-gray-700 border-b border-gray-50 last:border-0">
             <span><strong>${c.city}</strong>, ${c.state}</span>
             <span class="text-xs text-gray-400">${c.count} providers${dist}</span>
           </a>`;
@@ -118,7 +118,7 @@ const citiesWithCounts = citiesData
         // Prepend a header
         results.innerHTML = `<div class="px-4 py-2 text-xs text-gray-500 bg-gray-50 border-b">Nearest providers to ${placeName}, ${stateAbbr} (${zip})</div>`;
         results.innerHTML += nearest.map(c =>
-          `<a href="/${c.slug}/" class="flex items-center justify-between px-4 py-2.5 text-sm hover:bg-primary-50 no-underline text-gray-700 border-b border-gray-50 last:border-0">
+          `<a href="/locations/${c.stateSlug}/${c.slug}/" class="flex items-center justify-between px-4 py-2.5 text-sm hover:bg-primary-50 no-underline text-gray-700 border-b border-gray-50 last:border-0">
             <span><strong>${c.city}</strong>, ${c.state}</span>
             <span class="text-xs text-gray-400">${c.count} providers &middot; ${Math.round(c.distance)} mi</span>
           </a>`

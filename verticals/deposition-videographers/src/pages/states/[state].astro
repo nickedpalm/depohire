@@ -40,7 +40,7 @@ const filteredCities = isAll
   : citiesData.filter(c => c.state === stateAbbr);
 
 const citiesWithCounts = filteredCities
-  .map(c => ({ slug: c.slug, city: c.city, state: c.state, listingCount: cityCounts[c.slug] || 0 }))
+  .map(c => ({ slug: c.slug, stateSlug: c.stateSlug, city: c.city, state: c.state, listingCount: cityCounts[c.slug] || 0 }))
   .sort((a, b) => b.listingCount - a.listingCount || a.city.localeCompare(b.city));
 
 const title = isAll ? `Browse ${config.name} by State` : `${config.name} in ${stateName}`;

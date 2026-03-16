@@ -33,6 +33,8 @@ export interface Listing {
   years_experience?: number;
   coverage_area?: string;
   equipment?: string[];
+  demo_reel_url?: string;
+  demo_reel_thumbnail?: string;
   claimed: boolean;
   featured: boolean;
   source: string;

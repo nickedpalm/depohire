@@ -1,17 +1,68 @@
 ---
 import PageLayout from '~/layouts/PageLayout.astro';
 import config from '~/config';
+import citiesData from '~/data/cities.json';
+import { getListingCountByCity } from '~/lib/listings';
+import { getCollection } from 'astro:content';
 
 const metadata = {
   title: 'Search Directory',
   description: `Search the ${config.name} directory.`,
 };
+
+const cityCounts = getListingCountByCity();
+const topCities = citiesData
+  .map(c => ({ ...c, count: cityCounts[c.slug] || 0 }))
+  .filter(c => c.count > 0)
+  .sort((a, b) => b.count - a.count)
+  .slice(0, 6);
+
+const posts = await getCollection('blog');
+const recentPosts = posts
+  .filter(p => p.data.pubDate)
+  .sort((a, b) => (b.data.pubDate?.getTime() || 0) - (a.data.pubDate?.getTime() || 0))
+  .slice(0, 3);
 ---
 <PageLayout metadata={metadata}>
   <Fragment slot="announcement"><span></span></Fragment>
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <h1 class="text-3xl font-bold text-default mb-6">Search</h1>
-    <div id="search" class="min-h-[400px]"></div>
+    <div id="search" class="min-h-[200px]"></div>
+
+    <!-- Empty state: shown when no search query -->
+    <div id="search-empty-state" class="mt-8">
+      <div class="mb-10">
+        <h2 class="text-xl font-bold text-default mb-4">Top Legal Markets</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          {topCities.map(c => (
+            <a href={`/locations/${c.stateSlug}/${c.slug}/`} class="block bg-white rounded-xl border border-gray-200 p-4 no-underline hover:border-primary hover:shadow-sm transition-all text-center">
+              <p class="font-semibold text-default">{c.city}</p>
+              <p class="text-sm text-muted mt-0.5">{c.state}</p>
+              <p class="text-xs text-primary-600 font-medium mt-1">{c.count} providers</p>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      {recentPosts.length > 0 && (
+        <div>
+          <h2 class="text-xl font-bold text-default mb-4">Recent Industry Insights</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {recentPosts.map(post => (
+              <a href={`/blog/${post.id}/`} class="block bg-white rounded-xl border border-gray-200 p-4 no-underline hover:border-primary hover:shadow-sm transition-all">
+                <p class="font-semibold text-default text-sm leading-snug">{post.data.title}</p>
+                {post.data.description && (
+                  <p class="text-xs text-muted mt-2 line-clamp-2">{post.data.description}</p>
+                )}
+                {post.data.pubDate && (
+                  <p class="text-xs text-gray-400 mt-2">{post.data.pubDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                )}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
   </div>
   <link href="/pagefind/pagefind-ui.css" rel="stylesheet" />
   <script is:inline>
@@ -19,6 +70,8 @@ const metadata = {
       const el = document.getElementById('search');
       if (!el || el.dataset.pagefindInit) return;
       el.dataset.pagefindInit = 'true';
+
+      const emptyState = document.getElementById('search-empty-state');
 
       function setup() {
         if (typeof PagefindUI === 'undefined') return false;
@@ -37,11 +90,25 @@ const metadata = {
             input.dispatchEvent(new Event('input', { bubbles: true }));
           }
         }
+
+        // Toggle empty state based on search input
+        const input = document.querySelector('.pagefind-ui__search-input');
+        if (input && emptyState) {
+          function toggleEmpty() {
+            if (input.value.trim().length > 0) {
+              emptyState.classList.add('hidden');
+            } else {
+              emptyState.classList.remove('hidden');
+            }
+          }
+          input.addEventListener('input', toggleEmpty);
+          toggleEmpty();
+        }
+
         return true;
       }
 
       if (!setup()) {
-        // Load pagefind-ui.js dynamically (needed for View Transitions navigation)
         const script = document.createElement('script');
         script.src = '/pagefind/pagefind-ui.js';
         script.onload = setup;

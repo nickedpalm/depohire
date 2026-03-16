@@ -29,7 +29,7 @@ const stateEntries = Object.entries(countByState).sort((a, b) => b[1] - a[1]);
 const cityEntries = Object.entries(countByCity)
   .map(([slug, count]) => {
     const city = citiesData.find(c => c.slug === slug);
-    return { slug, count, name: city?.city || slug, state: city?.state || '' };
+    return { slug, count, name: city?.city || slug, state: city?.state || '', stateSlug: city?.stateSlug || '' };
   })
   .sort((a, b) => b.count - a.count);
 
@@ -111,7 +111,7 @@ const metadata = { title, description };
           {cityEntries.slice(0, 15).map((ce, i) => (
             <div class="flex items-center gap-3">
               <span class="text-sm font-mono text-muted w-6">{i + 1}.</span>
-              <a href={`/${ce.slug}/`} class="text-sm font-semibold text-primary hover:underline no-underline flex-1 truncate">{ce.name}, {ce.state}</a>
+              <a href={`/locations/${ce.stateSlug}/${ce.slug}/`} class="text-sm font-semibold text-primary hover:underline no-underline flex-1 truncate">{ce.name}, {ce.state}</a>
               <span class="text-sm text-muted">{ce.count}</span>
             </div>
           ))}

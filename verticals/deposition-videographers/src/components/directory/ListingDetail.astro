@@ -115,7 +115,7 @@ const cityData = citiesJson.find((c: any) => c.slug === listing.city);
     <div id="listing-map" class="h-64 w-full" data-lat={listing.lat} data-lng={listing.lng} data-name={listing.name}></div>
   </div>
 
-  {!listing.claimed && <ClaimBanner listingName={listing.name} />}
+  <ClaimBanner listingName={listing.name} />
 </div>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />

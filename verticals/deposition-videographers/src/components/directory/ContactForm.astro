@@ -7,7 +7,7 @@ interface Props {
 }
 
 const { listingName, listingEmail, listingSlug = '', city = '' } = Astro.props;
-const API_URL = 'https://api.depohire.com/api/leads';
+const API_URL = '/api/leads';
 ---
 <div class="card p-6" id="contact-form-card">
   <h3 class="text-lg font-semibold text-gray-900 mb-4">Request a Quote from {listingName}</h3>

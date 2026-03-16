@@ -1,5 +1,5 @@
 ---
-const API_URL = 'https://api.depohire.com/api/leads';
+const API_URL = '/api/leads';
 ---
 <!-- Floating bar when providers are selected -->
 <div
@@ -122,26 +122,37 @@ const API_URL = 'https://api.depohire.com/api/leads';
       ).join('');
     }
 
-    // Listen for checkbox changes (delegated)
-    document.addEventListener('change', (e) => {
-      if (!e.target.matches('.select-quote-checkbox')) return;
+    // Listen for pill button clicks (delegated)
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.select-quote-btn');
+      if (!btn) return;
 
-      const cb = e.target;
       const provider = {
-        name: cb.dataset.providerName,
-        email: cb.dataset.providerEmail,
-        slug: cb.dataset.providerSlug,
+        name: btn.dataset.providerName,
+        email: btn.dataset.providerEmail,
+        slug: btn.dataset.providerSlug,
       };
 
-      if (cb.checked) {
+      const isSelected = btn.dataset.selected === 'true';
+
+      if (!isSelected) {
         if (selected.length >= 5) {
-          cb.checked = false;
           alert('You can select up to 5 providers at a time.');
           return;
         }
         selected.push(provider);
+        btn.dataset.selected = 'true';
+        btn.classList.remove('border-gray-300', 'text-gray-500', 'bg-white');
+        btn.classList.add('border-primary-600', 'bg-primary-600', 'text-white');
+        btn.querySelector('.check-icon')?.classList.remove('hidden');
+        btn.querySelector('.btn-label').textContent = 'Added';
       } else {
         selected = selected.filter(p => p.slug !== provider.slug);
+        btn.dataset.selected = 'false';
+        btn.classList.add('border-gray-300', 'text-gray-500', 'bg-white');
+        btn.classList.remove('border-primary-600', 'bg-primary-600', 'text-white');
+        btn.querySelector('.check-icon')?.classList.add('hidden');
+        btn.querySelector('.btn-label').textContent = '+ Add to Quote';
       }
       updateBar();
     });
@@ -149,7 +160,13 @@ const API_URL = 'https://api.depohire.com/api/leads';
     // Clear button
     document.getElementById('mq-clear').addEventListener('click', () => {
       selected = [];
-      document.querySelectorAll('.select-quote-checkbox').forEach(cb => cb.checked = false);
+      document.querySelectorAll('.select-quote-btn').forEach(btn => {
+          btn.dataset.selected = 'false';
+          btn.classList.add('border-gray-300', 'text-gray-500', 'bg-white');
+          btn.classList.remove('border-primary-600', 'bg-primary-600', 'text-white');
+          const icon = btn.querySelector('.check-icon'); if (icon) icon.classList.add('hidden');
+          const label = btn.querySelector('.btn-label'); if (label) label.textContent = '+ Add to Quote';
+        });
       updateBar();
     });
 
@@ -170,7 +187,13 @@ const API_URL = 'https://api.depohire.com/api/leads';
     document.getElementById('mq-done')?.addEventListener('click', () => {
       closeModal();
       selected = [];
-      document.querySelectorAll('.select-quote-checkbox').forEach(cb => cb.checked = false);
+      document.querySelectorAll('.select-quote-btn').forEach(btn => {
+          btn.dataset.selected = 'false';
+          btn.classList.add('border-gray-300', 'text-gray-500', 'bg-white');
+          btn.classList.remove('border-primary-600', 'bg-primary-600', 'text-white');
+          const icon = btn.querySelector('.check-icon'); if (icon) icon.classList.add('hidden');
+          const label = btn.querySelector('.btn-label'); if (label) label.textContent = '+ Add to Quote';
+        });
       updateBar();
       // Reset form
       document.getElementById('mq-form').classList.remove('hidden');
@@ -234,8 +257,14 @@ const API_URL = 'https://api.depohire.com/api/leads';
           slug: card.dataset.providerSlug,
         }));
         topProviders.forEach(card => {
-          const cb = card.querySelector('.select-quote-checkbox');
-          if (cb) cb.checked = true;
+          const btn = card.querySelector('.select-quote-btn');
+          if (btn) {
+            btn.dataset.selected = 'true';
+            btn.classList.remove('border-gray-300', 'text-gray-500', 'bg-white');
+            btn.classList.add('border-primary-600', 'bg-primary-600', 'text-white');
+            const icon = btn.querySelector('.check-icon'); if (icon) icon.classList.remove('hidden');
+            const label = btn.querySelector('.btn-label'); if (label) label.textContent = 'Added';
+          }
         });
         updateBar();
       }

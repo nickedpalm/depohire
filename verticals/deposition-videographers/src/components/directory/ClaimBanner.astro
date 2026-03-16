@@ -4,13 +4,39 @@ interface Props {
 }
 
 const { listingName } = Astro.props;
+const verifiedDate = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 ---
-<div class="bg-amber-50 border border-amber-200 rounded-xl p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+<!-- Verified badge (shown by default for organic traffic) -->
+<div id="verified-badge" class="flex items-center gap-2 text-sm text-green-700 bg-green-50 border border-green-200 rounded-lg px-4 py-2.5">
+  <svg class="w-5 h-5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+  <span>Last verified: <strong>{verifiedDate}</strong></span>
+</div>
+
+<!-- Claim banner (hidden, shown only with ?claim=true) -->
+<div id="claim-banner" class="hidden bg-amber-50 border border-amber-200 rounded-xl p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
   <div class="flex-1">
     <h3 class="font-semibold text-amber-900">Is this your business?</h3>
-    <p class="text-sm text-amber-700 mt-1">Claim your listing to update information, respond to reviews, and manage your profile on our directory.</p>
+    <p class="text-sm text-amber-700 mt-1">Claim your listing to update information, respond to leads instantly, and unlock premium placement in our directory.</p>
   </div>
-  <a href={`mailto:claims@example.com?subject=Claim: ${encodeURIComponent(listingName)}`} class="btn-primary bg-amber-600 hover:bg-amber-700 whitespace-nowrap no-underline">
+  <a href={`mailto:claims@depohire.com?subject=Claim: ${encodeURIComponent(listingName)}`} class="btn-primary bg-amber-600 hover:bg-amber-700 whitespace-nowrap no-underline">
     Claim Listing
   </a>
 </div>
+
+<script is:inline>
+  function initClaimBanner() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('claim') === 'true' || params.get('src') === 'provider') {
+      const badge = document.getElementById('verified-badge');
+      const banner = document.getElementById('claim-banner');
+      if (badge) badge.classList.add('hidden');
+      if (banner) banner.classList.remove('hidden');
+    }
+  }
+  document.addEventListener('astro:page-load', initClaimBanner);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initClaimBanner);
+  } else {
+    initClaimBanner();
+  }
+</script>

@@ -62,13 +62,8 @@ const schema = {
       name: c,
     })),
   } : {}),
-  ...(listing.review_count > 0 ? {
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: listing.rating,
-      reviewCount: listing.review_count,
-    },
-  } : {}),
+  // AggregateRating removed — scraped reviews cannot be used in schema.
+  // Will be re-added once native first-party review system is live.
 };
 
 const metadata = { title, description };
@@ -78,7 +73,7 @@ const metadata = { title, description };
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8" data-pagefind-body>
     <Breadcrumbs crumbs={[
       { label: cityInfo?.stateName || listing.state, href: `/states/${cityInfo?.stateSlug || 'all'}/` },
-      { label: cityInfo?.city || listing.city, href: `/${listing.city}/` },
+      { label: cityInfo?.city || listing.city, href: `/locations/${cityInfo?.stateSlug || 'all'}/${listing.city}/` },
       { label: listing.name },
     ]} />
 

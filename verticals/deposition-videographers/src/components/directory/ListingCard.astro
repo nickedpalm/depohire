@@ -20,9 +20,11 @@ interface Props {
   sentiment?: Sentiment | null;
   featured?: boolean;
   selectable?: boolean;
+  demo_reel_url?: string;
+  demo_reel_thumbnail?: string;
 }
 
-const { slug, name, city, state, rating, review_count, phone, email = '', certifications = [], services = [], description, sentiment, featured = false, selectable = false } = Astro.props;
+const { slug, name, city, state, rating, review_count, phone, email = '', certifications = [], services = [], description, sentiment, featured = false, selectable = false, demo_reel_url, demo_reel_thumbnail } = Astro.props;
 const shortDesc = description && description.length > 120 ? description.slice(0, 120) + '...' : description;
 const hasCLVS = certifications.some(c => c.toUpperCase().includes('CLVS'));
 ---
@@ -39,16 +41,18 @@ const hasCLVS = certifications.some(c => c.toUpperCase().includes('CLVS'));
   data-provider-slug={slug}
 >
   {selectable && (
-    <label class="absolute top-3 right-3 z-10 flex items-center gap-1.5 cursor-pointer select-quote-label" title="Select for multi-quote">
-      <input
-        type="checkbox"
-        class="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 select-quote-checkbox"
-        data-provider-name={name}
-        data-provider-email={email}
-        data-provider-slug={slug}
-      />
-      <span class="text-xs text-gray-400 hidden sm:inline">Compare</span>
-    </label>
+    <button
+      type="button"
+      class="absolute top-3 right-3 z-10 min-h-[44px] min-w-[44px] inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-medium border border-gray-300 text-gray-500 bg-white hover:border-primary-400 hover:text-primary-600 transition-all select-quote-btn"
+      data-selected="false"
+      data-provider-name={name}
+      data-provider-email={email}
+      data-provider-slug={slug}
+      title="Add to quote request"
+    >
+      <svg class="w-4 h-4 hidden check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+      <span class="btn-label">+ Add to Quote</span>
+    </button>
   )}
   <a href={`/listing/${slug}/`} class="no-underline group block">
     <div class="flex items-start justify-between gap-3">
@@ -83,4 +87,15 @@ const hasCLVS = certifications.some(c => c.toUpperCase().includes('CLVS'));
     </div>
     {phone && <p class="text-sm text-gray-500 mt-2">{phone}</p>}
   </a>
+  {featured && demo_reel_url && (
+    <a
+      href={demo_reel_url}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="mt-3 inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-900 text-white text-xs font-medium no-underline hover:bg-gray-800 transition-colors"
+    >
+      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      Play Demo Reel
+    </a>
+  )}
 </div>
