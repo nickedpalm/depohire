@@ -1,0 +1,102 @@
+---
+import DashboardLayout from '~/layouts/DashboardLayout.astro';
+---
+<DashboardLayout title="Quote Requests — DepoHire" activePage="quotes">
+
+  <div class="dash-topbar">
+    <div>
+      <h1>Quote Requests</h1>
+      <div class="dash-topbar-sub">Manage incoming quote requests from attorneys.</div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px">
+    <div class="dash-stat">
+      <div class="dash-stat-label">Total Requests</div>
+      <div class="dash-stat-value" id="total-quotes">—</div>
+    </div>
+    <div class="dash-stat">
+      <div class="dash-stat-label">This Month</div>
+      <div class="dash-stat-value" id="month-quotes">—</div>
+    </div>
+    <div class="dash-stat">
+      <div class="dash-stat-label">Avg Response</div>
+      <div class="dash-stat-value" style="font-size:24px">—</div>
+      <div class="dash-stat-change neutral">Coming soon</div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div style="display:flex;gap:8px;margin-bottom:20px">
+    <button class="quote-filter active" data-filter="all" style="padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;background:#1a1a2e;color:#fff;border:none;cursor:pointer">All</button>
+    <button class="quote-filter" data-filter="new" style="padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;background:#f3f4f6;color:#6b7280;border:none;cursor:pointer">New</button>
+    <button class="quote-filter" data-filter="replied" style="padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;background:#f3f4f6;color:#6b7280;border:none;cursor:pointer">Replied</button>
+  </div>
+
+  <!-- Quote list -->
+  <div class="dash-card">
+    <div id="quotes-list">
+      <div style="padding:60px;text-align:center;color:#9ca3af">
+        <p style="font-size:14px">Loading quote requests...</p>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline>
+    window.addEventListener('dash-ready', async function() {
+      var slug = window.dashState.currentSlug;
+      if (!slug) return;
+
+      try {
+        var resp = await fetch('/api/provider/leads?slug=' + slug, { credentials: 'include' });
+        var data = await resp.json();
+        var leads = data.leads || [];
+
+        document.getElementById('total-quotes').textContent = leads.length;
+
+        var now = new Date();
+        var thisMonth = leads.filter(function(l) {
+          var d = new Date(l.created_at);
+          return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+        });
+        document.getElementById('month-quotes').textContent = thisMonth.length;
+
+        var container = document.getElementById('quotes-list');
+        if (leads.length === 0) {
+          container.innerHTML = '<div style="padding:60px;text-align:center;color:#9ca3af"><p style="font-size:36px;margin-bottom:12px">&#x1f4e9;</p><p style="font-size:16px;font-weight:600">No quote requests yet</p><p style="font-size:13px;margin-top:8px">When attorneys request a quote through your listing, it will appear here.</p></div>';
+          return;
+        }
+
+        container.innerHTML = leads.map(function(lead) {
+          var initials = (lead.attorney_name || 'A').split(' ').map(function(w){return w[0]}).join('').substring(0,2).toUpperCase();
+          var date = new Date(lead.created_at);
+          var time = date.toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'});
+          var isNew = (Date.now() - date.getTime()) < 7 * 86400000;
+
+          return '<div class="dash-quote' + (isNew ? ' unread' : '') + '" style="padding:20px 22px">' +
+            '<div class="dash-quote-avatar">' + initials + '</div>' +
+            '<div style="flex:1;min-width:0">' +
+              '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px">' +
+                '<span style="font-size:14px;font-weight:600">' + escapeHtml(lead.attorney_name || 'Anonymous') + '</span>' +
+                '<span style="font-size:12px;color:#9ca3af">' + time + '</span>' +
+              '</div>' +
+              (lead.attorney_firm ? '<div style="font-size:12px;color:#6b7280;margin-bottom:4px">' + escapeHtml(lead.attorney_firm) + '</div>' : '') +
+              (lead.city ? '<div style="font-size:12px;color:#6b7280;margin-bottom:4px">' + escapeHtml(lead.city) + '</div>' : '') +
+              (lead.case_details ? '<div style="font-size:13px;color:#6b7280;line-height:1.4">' + escapeHtml(lead.case_details) + '</div>' : '') +
+              '<div style="margin-top:8px;display:flex;gap:8px;align-items:center">' +
+                (isNew ? '<span class="status-new">New</span>' : '<span class="status-replied">Viewed</span>') +
+                (lead.attorney_email ? '<a href="mailto:' + encodeURIComponent(lead.attorney_email) + '" style="font-size:12px;font-weight:600;color:#2563eb;text-decoration:none;margin-left:auto">Reply &rarr;</a>' : '') +
+              '</div>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+      } catch (err) {
+        document.getElementById('quotes-list').innerHTML = '<div style="padding:60px;text-align:center;color:#ef4444"><p>Failed to load quote requests.</p></div>';
+      }
+
+      function escapeHtml(str) { var d = document.createElement('div'); d.textContent = str || ''; return d.innerHTML; }
+    });
+  </script>
+
+</DashboardLayout>

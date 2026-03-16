@@ -1,0 +1,74 @@
+---
+import DashboardLayout from '~/layouts/DashboardLayout.astro';
+---
+<DashboardLayout title="Reviews — DepoHire" activePage="reviews">
+
+  <div class="dash-topbar">
+    <div>
+      <h1>Reviews</h1>
+      <div class="dash-topbar-sub">Manage your reviews and respond to client feedback.</div>
+    </div>
+  </div>
+
+  <!-- Review summary -->
+  <div class="dash-card" style="margin-bottom:28px">
+    <div class="dash-card-body" style="text-align:center;padding:32px">
+      <div style="font-size:48px;font-weight:800;color:#1a1a2e" id="review-rating">—</div>
+      <div id="review-stars" style="color:#f59e0b;font-size:20px;margin:8px 0"></div>
+      <div style="font-size:14px;color:#6b7280" id="review-count">Loading reviews...</div>
+    </div>
+  </div>
+
+  <!-- Reviews list -->
+  <div class="dash-card">
+    <div class="dash-card-header">
+      <h2>All Reviews</h2>
+    </div>
+    <div id="reviews-list">
+      <div style="padding:60px;text-align:center;color:#9ca3af">
+        <p style="font-size:14px">Loading...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Request review CTA -->
+  <div class="dash-card" style="margin-top:20px">
+    <div class="dash-card-body" style="text-align:center;padding:32px">
+      <div style="font-size:36px;margin-bottom:8px">&#x2b50;</div>
+      <h3 style="font-size:16px;font-weight:700;margin-bottom:4px">Want more reviews?</h3>
+      <p style="font-size:13px;color:#6b7280;margin-bottom:16px">Share your listing link with past clients and ask them to leave a review.</p>
+      <div style="display:flex;align-items:center;gap:8px;max-width:400px;margin:0 auto">
+        <input type="text" id="listing-url" class="dash-input" readonly style="font-size:12px;background:#f9fafb" />
+        <button id="copy-url" class="dash-btn dash-btn-primary" style="white-space:nowrap">Copy Link</button>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline>
+    window.addEventListener('dash-ready', function() {
+      var slug = window.dashState.currentSlug;
+      var listingUrl = 'https://depohire.com/listing/' + slug + '/';
+      document.getElementById('listing-url').value = listingUrl;
+
+      document.getElementById('copy-url').addEventListener('click', function() {
+        navigator.clipboard.writeText(listingUrl);
+        this.textContent = 'Copied!';
+        var btn = this;
+        setTimeout(function() { btn.textContent = 'Copy Link'; }, 2000);
+      });
+
+      // Reviews come from the static listing data (scraped reviews)
+      // In the future this would be a reviews API
+      document.getElementById('review-rating').textContent = '—';
+      document.getElementById('review-stars').innerHTML = '<span style="color:#d1d5db">&#x2606;&#x2606;&#x2606;&#x2606;&#x2606;</span>';
+      document.getElementById('review-count').textContent = 'No reviews collected yet';
+      document.getElementById('reviews-list').innerHTML =
+        '<div style="padding:60px;text-align:center;color:#9ca3af">' +
+          '<p style="font-size:36px;margin-bottom:12px">&#x2b50;</p>' +
+          '<p style="font-size:16px;font-weight:600">No reviews yet</p>' +
+          '<p style="font-size:13px;margin-top:8px">Reviews from the original listing data are shown on your public page.<br>A full review management system is coming soon.</p>' +
+        '</div>';
+    });
+  </script>
+
+</DashboardLayout>

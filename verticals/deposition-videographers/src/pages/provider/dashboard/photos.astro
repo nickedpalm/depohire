@@ -1,0 +1,151 @@
+---
+import DashboardLayout from '~/layouts/DashboardLayout.astro';
+---
+<DashboardLayout title="Photos — DepoHire" activePage="photos">
+
+  <div class="dash-topbar">
+    <div>
+      <h1>Photos & Portfolio</h1>
+      <div class="dash-topbar-sub">Showcase your equipment, studio, and past work.</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:20px">
+    <div>
+      <!-- Upload zone -->
+      <div id="drop-zone" class="dash-card" style="margin-bottom:20px;border:2px dashed #d1d5db;text-align:center;padding:40px;cursor:pointer;transition:border-color 0.2s">
+        <div style="font-size:36px;margin-bottom:8px">&#x1f4f7;</div>
+        <p style="font-size:15px;font-weight:600;color:#374151">Drag & drop photos here</p>
+        <p style="font-size:13px;color:#9ca3af;margin-top:4px">or click to browse. JPG, PNG, WebP up to 5MB. Max 8 photos.</p>
+        <input type="file" id="photo-input" accept="image/jpeg,image/png,image/webp" style="display:none" />
+      </div>
+
+      <!-- Upload status -->
+      <div id="upload-status" style="display:none;margin-bottom:16px;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:600;text-align:center"></div>
+
+      <!-- Photo grid -->
+      <div id="photos-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+        <div style="padding:40px;text-align:center;color:#9ca3af;grid-column:span 4">
+          <p style="font-size:14px">Loading photos...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tips sidebar -->
+    <div>
+      <div class="dash-card" style="position:sticky;top:32px">
+        <div class="dash-card-header"><h2>Photo Tips</h2></div>
+        <div class="dash-card-body" style="font-size:13px;color:#4b5563;line-height:1.6">
+          <div style="display:flex;gap:10px;margin-bottom:14px">
+            <span style="font-size:18px">&#x1f4a1;</span>
+            <div><strong>Show your equipment</strong> — cameras, lighting, and audio gear help attorneys feel confident.</div>
+          </div>
+          <div style="display:flex;gap:10px;margin-bottom:14px">
+            <span style="font-size:18px">&#x1f4a1;</span>
+            <div><strong>On-location shots</strong> — show your setup in a conference room or law office.</div>
+          </div>
+          <div style="display:flex;gap:10px;margin-bottom:14px">
+            <span style="font-size:18px">&#x1f4a1;</span>
+            <div><strong>Team photos</strong> — put a face to your business. It builds trust.</div>
+          </div>
+          <div style="display:flex;gap:10px">
+            <span style="font-size:18px">&#x1f4a1;</span>
+            <div><strong>Cover photo matters</strong> — the first photo shows on search results.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline>
+    window.addEventListener('dash-ready', async function() {
+      var slug = window.dashState.currentSlug;
+      var photos = [];
+
+      // Drag & drop
+      var dropZone = document.getElementById('drop-zone');
+      var fileInput = document.getElementById('photo-input');
+
+      dropZone.addEventListener('click', function() { fileInput.click(); });
+      dropZone.addEventListener('dragover', function(e) { e.preventDefault(); dropZone.style.borderColor = '#2563eb'; });
+      dropZone.addEventListener('dragleave', function() { dropZone.style.borderColor = '#d1d5db'; });
+      dropZone.addEventListener('drop', function(e) { e.preventDefault(); dropZone.style.borderColor = '#d1d5db'; if (e.dataTransfer.files[0]) uploadPhoto(e.dataTransfer.files[0]); });
+      fileInput.addEventListener('change', function() { if (this.files[0]) uploadPhoto(this.files[0]); this.value = ''; });
+
+      async function uploadPhoto(file) {
+        if (photos.length >= 8) { showStatus('Maximum 8 photos allowed.', true); return; }
+        if (file.size > 5 * 1024 * 1024) { showStatus('File too large. Maximum 5MB.', true); return; }
+
+        showStatus('Uploading...', false);
+        var fd = new FormData();
+        fd.append('listing_slug', slug);
+        fd.append('file', file);
+
+        try {
+          var resp = await fetch('/api/provider/photos', { method:'POST', credentials:'include', body:fd });
+          var data = await resp.json();
+          if (resp.ok) {
+            showStatus('Photo uploaded!', false);
+            loadPhotos();
+          } else {
+            showStatus(data.error || 'Upload failed.', true);
+          }
+        } catch(e) {
+          showStatus('Network error.', true);
+        }
+      }
+
+      function showStatus(msg, isError) {
+        var el = document.getElementById('upload-status');
+        el.textContent = msg;
+        el.style.display = 'block';
+        el.style.background = isError ? '#fef2f2' : '#ecfdf5';
+        el.style.color = isError ? '#991b1b' : '#065f46';
+        el.style.border = '1px solid ' + (isError ? '#fecaca' : '#a7f3d0');
+        setTimeout(function() { el.style.display = 'none'; }, 4000);
+      }
+
+      async function loadPhotos() {
+        try {
+          var resp = await fetch('/api/listing/' + slug);
+          var data = await resp.json();
+          photos = data.photos || [];
+          renderPhotos();
+        } catch(e) {
+          renderPhotos();
+        }
+      }
+
+      function renderPhotos() {
+        var grid = document.getElementById('photos-grid');
+        if (photos.length === 0) {
+          grid.innerHTML = '<div style="padding:40px;text-align:center;color:#9ca3af;grid-column:span 4"><p style="font-size:36px;margin-bottom:12px">&#x1f4f7;</p><p style="font-size:14px">No photos yet. Upload your first photo above.</p></div>';
+          return;
+        }
+
+        grid.innerHTML = photos.map(function(p, i) {
+          return '<div style="position:relative;aspect-ratio:1;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb">' +
+            (i === 0 ? '<div style="position:absolute;top:8px;left:8px;background:#2563eb;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;z-index:2">Cover</div>' : '') +
+            '<img src="' + p.url + '" style="width:100%;height:100%;object-fit:cover" />' +
+            '<div style="position:absolute;inset:0;background:rgba(0,0,0,0.4);opacity:0;transition:opacity 0.15s;display:flex;align-items:center;justify-content:center" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">' +
+              '<button data-delete="' + p.id + '" style="background:#ef4444;color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer">Delete</button>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+      }
+
+      document.getElementById('photos-grid').addEventListener('click', function(e) {
+        var btn = e.target.closest('[data-delete]');
+        if (btn && confirm('Delete this photo?')) {
+          fetch('/api/provider/photos', {
+            method:'DELETE', headers:{'Content-Type':'application/json'}, credentials:'include',
+            body: JSON.stringify({ photo_id: parseInt(btn.dataset.delete) })
+          }).then(function() { loadPhotos(); });
+        }
+      });
+
+      loadPhotos();
+    });
+  </script>
+
+</DashboardLayout>
