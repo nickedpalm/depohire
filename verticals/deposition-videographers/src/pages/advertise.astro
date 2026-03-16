@@ -144,45 +144,20 @@ const metadata = {
     <p class="text-sm text-muted mt-4">We evaluate all applicants for professionalism, legal videography experience, and verifiable client history.</p>
   </section>
 
-  <!-- Application Form -->
+  <!-- Checkout -->
   <section class="bg-gray-50 py-12" id="advertise-form">
-    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="text-2xl font-bold text-default mb-6 text-center">Apply for a Featured Listing</h2>
-      <form action={`mailto:${config.contactEmail}`} method="post" enctype="text/plain" class="space-y-4">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label for="name" class="block text-sm font-medium text-gray-700">Your Name</label>
-            <input type="text" id="name" name="name" required class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-3 py-2 border" />
-          </div>
-          <div>
-            <label for="business" class="block text-sm font-medium text-gray-700">Business Name</label>
-            <input type="text" id="business" name="business" required class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-3 py-2 border" />
-          </div>
-        </div>
-        <div>
-          <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
-          <input type="email" id="email" name="email" required class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-3 py-2 border" />
-        </div>
-        <div>
-          <label for="city" class="block text-sm font-medium text-gray-700">Primary City / Metro</label>
-          <input type="text" id="city" name="city" required placeholder="e.g. Chicago, IL" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-3 py-2 border" />
-        </div>
-        <div>
-          <label for="plan" class="block text-sm font-medium text-gray-700">Plan Interest</label>
-          <select id="plan" name="plan" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-3 py-2 border">
-            <option value="featured">Featured Listing — $79/mo</option>
-            <option value="citypro">City Pro — $149/mo</option>
-            <option value="unsure">Not sure yet</option>
-          </select>
-        </div>
-        <div>
-          <label for="message" class="block text-sm font-medium text-gray-700">Anything else? (optional)</label>
-          <textarea id="message" name="message" rows="3" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-3 py-2 border"></textarea>
-        </div>
-        <button type="submit" class="btn-primary w-full justify-center">Apply for a Featured Listing &rarr;</button>
-        <p class="text-xs text-muted text-center">We'll confirm availability in your city and follow up within one business day with next steps.</p>
-      </form>
-      <p class="text-xs text-muted text-center mt-4">No credit card needed &middot; Goes live in 2–3 business days &middot; Cancel anytime</p>
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-2xl font-bold text-default mb-2">Ready? Pick your plan and check out instantly.</h2>
+      <p class="text-muted mb-8">Secure payment via Stripe. Cancel anytime. Your listing goes live within 2–3 business days.</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg mx-auto">
+        <a href="https://buy.stripe.com/4gM14m8rggWc0yU5Ada3u01" target="_blank" rel="noopener" class="btn-primary py-4 text-center no-underline text-lg">
+          Featured — $79/mo
+        </a>
+        <a href="https://buy.stripe.com/6oUcN49vkeO495q9Qta3u00" target="_blank" rel="noopener" class="btn-primary py-4 text-center no-underline text-lg bg-green-700 hover:bg-green-600">
+          City Pro — $149/mo
+        </a>
+      </div>
+      <p class="text-xs text-muted mt-4">Questions? Email <a href="mailto:contact@depohire.com" class="text-primary hover:underline">contact@depohire.com</a></p>
     </div>
   </section>
 
@@ -192,7 +167,7 @@ const metadata = {
     <p class="mt-4 text-lg text-muted max-w-2xl mx-auto">
       The average deposition session pays $500–2,000. A Featured listing is $79/month. One booked job from DepoHire and you're profitable for the rest of the year.
     </p>
-    <a href="#advertise-form" class="btn-primary inline-block mt-6 no-underline">Apply Now — It Takes 2 Minutes &rarr;</a>
+    <a href="https://buy.stripe.com/4gM14m8rggWc0yU5Ada3u01" target="_blank" rel="noopener" class="btn-primary inline-block mt-6 no-underline">Get Featured — $79/mo &rarr;</a>
   </section>
 
   <!-- FAQ -->
