@@ -80,6 +80,16 @@ def export_listings(vertical: str):
     output_dir = PROJECT_ROOT / "verticals" / vertical / "src" / "data" / "listings"
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    # Build city slug → display name map from cities.json
+    cities_path = PROJECT_ROOT / "verticals" / vertical / "src" / "data" / "cities.json"
+    if not cities_path.exists():
+        cities_path = PROJECT_ROOT / "template" / "src" / "data" / "cities.json"
+    city_display_names = {}
+    if cities_path.exists():
+        with open(cities_path) as f:
+            for c in json.load(f):
+                city_display_names[c["slug"]] = c["city"]
+
     listings = conn.execute("""
         SELECT * FROM raw_listings
         WHERE vertical = ?
@@ -111,7 +121,7 @@ def export_listings(vertical: str):
         listing = {
             "slug": slugify(f"{row['name']}-{row['city']}"),
             "name": row["name"],
-            "city": row["city"],
+            "city": city_display_names.get(row["city"], row["city"]),
             "state": row["state"],
             "address": row["address"] or "",
             "lat": row["lat"] or 0,
