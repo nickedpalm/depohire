@@ -62,8 +62,9 @@ export function getListingBySlug(slug: string): Listing | undefined {
 
 export function getListingCountByCity(): Record<string, number> {
   const counts: Record<string, number> = {};
-  for (const listing of getAllListings()) {
-    counts[listing.city] = (counts[listing.city] || 0) + 1;
+  for (const [path, mod] of Object.entries(listingModules)) {
+    const slug = path.split('/').pop()?.replace('.json', '') || '';
+    counts[slug] = (mod.default || []).length;
   }
   return counts;
 }
