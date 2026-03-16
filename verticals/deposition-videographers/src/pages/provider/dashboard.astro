@@ -117,17 +117,13 @@ const metadata = { title: 'Provider Dashboard — DepoHire', description: 'Manag
           </form>
         </div>
 
-        <!-- Photos (placeholder) -->
+        <!-- Photos -->
         <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
           <h2 class="text-base font-bold text-gray-900 mb-2">Photos</h2>
-          <p class="text-sm text-gray-500 mb-4">Upload photos of your setup, equipment, or past work.</p>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="photos-grid">
-            <div class="aspect-square bg-gray-50 rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 cursor-pointer hover:border-primary-300 hover:text-primary-400 transition-colors">
-              <svg class="w-8 h-8 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4"/></svg>
-              <span class="text-xs font-medium">Add Photo</span>
-            </div>
-          </div>
-          <p class="text-xs text-gray-400 mt-3">Photo uploads coming soon. Contact us to add photos manually.</p>
+          <p class="text-sm text-gray-500 mb-4">Upload photos of your setup, equipment, or past work. Max 8 photos, 5MB each.</p>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="photos-grid"></div>
+          <input type="file" id="photo-input" accept="image/jpeg,image/png,image/webp" class="hidden" />
+          <div id="photo-upload-status" class="hidden text-sm mt-3 text-center"></div>
         </div>
 
         <!-- Upgrade CTA -->
@@ -187,11 +183,24 @@ const metadata = { title: 'Provider Dashboard — DepoHire', description: 'Manag
         <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
           <h2 class="text-base font-bold text-gray-900 mb-2">Billing</h2>
           <p class="text-sm text-gray-500 mb-4">Manage your subscription and payment methods.</p>
-          <a href="https://billing.stripe.com/p/login/test_placeholder" target="_blank" rel="noopener"
-            class="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2.5 rounded-xl text-sm font-medium transition-colors">
-            Manage Billing
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-          </a>
+          <div class="space-y-3">
+            <div class="flex items-center justify-between bg-gray-50 rounded-xl px-4 py-3">
+              <div>
+                <p class="text-sm font-medium text-gray-900">Free Listing</p>
+                <p class="text-xs text-gray-500">Basic profile, quote requests, lead notifications</p>
+              </div>
+              <span class="text-xs font-semibold text-green-700 bg-green-50 px-2.5 py-1 rounded-full">Active</span>
+            </div>
+            <a href="https://buy.stripe.com/4gM14m8rggWc0yU5Ada3u01" target="_blank" rel="noopener"
+              class="flex items-center justify-between bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 no-underline hover:bg-amber-100 transition-colors group">
+              <div>
+                <p class="text-sm font-semibold text-amber-900">Upgrade to Featured — $79/mo</p>
+                <p class="text-xs text-amber-700">Pinned to #1 in your city, featured badge, priority leads</p>
+              </div>
+              <svg class="w-5 h-5 text-amber-600 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+          <p class="text-xs text-gray-400 mt-3">Already subscribed? <a href="mailto:contact@depohire.com?subject=Billing inquiry" class="text-primary-600 hover:underline">Contact us</a> to manage your plan.</p>
         </div>
 
         <div class="bg-red-50 rounded-2xl border border-red-200 p-6">
@@ -252,6 +261,7 @@ const metadata = { title: 'Provider Dashboard — DepoHire', description: 'Manag
         listingData: {},
         services: [],
         certifications: [],
+        photos: [],
       };
 
       // --- Auth Check ---
@@ -307,6 +317,7 @@ const metadata = { title: 'Provider Dashboard — DepoHire', description: 'Manag
           var result = await resp.json();
           state.listingData = result.data || {};
           populateForm();
+          loadPhotos();
         } catch (err) {
           console.error('Failed to load listing:', err);
         }
@@ -436,6 +447,108 @@ const metadata = { title: 'Provider Dashboard — DepoHire', description: 'Manag
           btn.disabled = false;
         }
       });
+
+      // --- Photos ---
+      async function loadPhotos() {
+        if (!state.currentSlug) return;
+        try {
+          var resp = await fetch('/api/listing/' + state.currentSlug);
+          var data = await resp.json();
+          state.photos = data.photos || [];
+          renderPhotos();
+        } catch (err) {
+          console.error('Failed to load photos:', err);
+          renderPhotos();
+        }
+      }
+
+      function renderPhotos() {
+        var grid = document.getElementById('photos-grid');
+        var html = state.photos.map(function(p) {
+          return '<div class="relative group aspect-square">' +
+            '<img src="' + p.url + '" alt="' + escapeHtml(p.filename || 'Photo') + '" class="w-full h-full object-cover rounded-xl" />' +
+            '<button data-delete-photo="' + p.id + '" class="absolute top-1.5 right-1.5 w-7 h-7 bg-red-600 text-white rounded-full text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center shadow">&times;</button>' +
+          '</div>';
+        }).join('');
+
+        if (state.photos.length < 8) {
+          html += '<div id="photo-add-btn" class="aspect-square bg-gray-50 rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 cursor-pointer hover:border-primary-300 hover:text-primary-400 transition-colors">' +
+            '<svg class="w-8 h-8 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4"/></svg>' +
+            '<span class="text-xs font-medium">Add Photo</span>' +
+          '</div>';
+        }
+
+        grid.innerHTML = html;
+      }
+
+      document.getElementById('photos-grid').addEventListener('click', function(e) {
+        // Add photo
+        if (e.target.closest('#photo-add-btn')) {
+          document.getElementById('photo-input').click();
+          return;
+        }
+        // Delete photo
+        var delBtn = e.target.closest('[data-delete-photo]');
+        if (delBtn) {
+          var photoId = parseInt(delBtn.dataset.deletePhoto);
+          if (confirm('Delete this photo?')) deletePhoto(photoId);
+        }
+      });
+
+      document.getElementById('photo-input').addEventListener('change', async function(e) {
+        var file = e.target.files[0];
+        if (!file) return;
+        e.target.value = '';
+
+        var statusEl = document.getElementById('photo-upload-status');
+        statusEl.textContent = 'Uploading...';
+        statusEl.className = 'text-sm mt-3 text-center text-gray-500';
+
+        var formData = new FormData();
+        formData.append('listing_slug', state.currentSlug);
+        formData.append('file', file);
+
+        try {
+          var resp = await fetch('/api/provider/photos', {
+            method: 'POST',
+            credentials: 'include',
+            body: formData,
+          });
+          var data = await resp.json();
+          if (resp.ok) {
+            state.photos.push({ id: data.photo.r2_key, url: data.photo.url, filename: data.photo.filename });
+            renderPhotos();
+            statusEl.textContent = 'Photo uploaded!';
+            statusEl.className = 'text-sm mt-3 text-center text-green-600';
+            // Reload to get proper IDs
+            loadPhotos();
+          } else {
+            statusEl.textContent = data.error || 'Upload failed.';
+            statusEl.className = 'text-sm mt-3 text-center text-red-600';
+          }
+        } catch (err) {
+          statusEl.textContent = 'Network error. Please try again.';
+          statusEl.className = 'text-sm mt-3 text-center text-red-600';
+        }
+        setTimeout(function() { statusEl.textContent = ''; }, 4000);
+      });
+
+      async function deletePhoto(photoId) {
+        try {
+          var resp = await fetch('/api/provider/photos', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ photo_id: photoId }),
+          });
+          if (resp.ok) {
+            state.photos = state.photos.filter(function(p) { return p.id !== photoId; });
+            renderPhotos();
+          }
+        } catch (err) {
+          console.error('Delete failed:', err);
+        }
+      }
 
       // --- Leads Tab ---
       async function loadLeads() {

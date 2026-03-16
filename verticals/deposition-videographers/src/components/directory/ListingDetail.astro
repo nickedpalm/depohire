@@ -416,6 +416,80 @@ const completenessPercent = Math.round((completedCount / completenessItems.lengt
       var badge = document.getElementById('verified-badge');
       if (badge) badge.classList.add('hidden');
     }
+
+    // Live-patch claimed listing data from D1
+    var slug = window.location.pathname.replace(/^\/listing\//, '').replace(/\/$/, '');
+    if (slug) {
+      fetch('/api/listing/' + slug)
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          if (!d.claimed) return;
+          var data = d.data || {};
+
+          // Patch description
+          if (data.description) {
+            var descEl = document.querySelector('[data-pagefind-body] .text-sm.text-gray-600.leading-relaxed');
+            if (descEl) descEl.textContent = data.description;
+          }
+
+          // Patch phone
+          if (data.phone) {
+            var phoneEl = document.querySelector('a[href^="tel:"]');
+            if (phoneEl) { phoneEl.href = 'tel:' + data.phone; phoneEl.innerHTML = '&#x1F4DE; ' + data.phone; }
+          }
+
+          // Patch website
+          if (data.website) {
+            var siteEl = document.querySelector('a[target="_blank"][rel="noopener noreferrer"]');
+            if (siteEl) { siteEl.href = data.website; }
+          }
+
+          // Patch services
+          if (data.services && data.services.length > 0) {
+            var svcWrap = document.querySelector('.flex.flex-wrap.gap-2.mt-4');
+            if (svcWrap) {
+              svcWrap.innerHTML = data.services.map(function(s) {
+                return '<span class="px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">' + s + '</span>';
+              }).join('');
+            }
+          }
+
+          // Patch certifications
+          if (data.certifications && data.certifications.length > 0) {
+            var certWrap = document.querySelector('.flex.flex-wrap.gap-1\\.5');
+            if (certWrap) {
+              certWrap.innerHTML = data.certifications.map(function(c) {
+                return '<span class="inline-flex items-center px-2.5 py-1 rounded-md text-sm font-medium bg-green-100 text-green-800">' + c + '</span>';
+              }).join('');
+            }
+          }
+
+          // Show verified badge for claimed listings
+          if (!isProvider) {
+            var vBadge = document.getElementById('verified-badge');
+            if (vBadge) {
+              vBadge.querySelector('span').innerHTML = 'Claimed &amp; verified by owner';
+              vBadge.classList.remove('hidden');
+            }
+          }
+
+          // Render photos if available
+          if (d.photos && d.photos.length > 0) {
+            var mapSection = document.querySelector('#listing-map')?.closest('.bg-white');
+            if (mapSection) {
+              var photoHtml = '<div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">' +
+                '<h2 class="text-base font-bold mb-3">Photos</h2>' +
+                '<div class="grid grid-cols-2 sm:grid-cols-3 gap-2">' +
+                d.photos.map(function(p) {
+                  return '<img src="' + p.url + '" alt="' + (p.filename || 'Photo') + '" class="rounded-xl w-full aspect-[4/3] object-cover" loading="lazy" />';
+                }).join('') +
+                '</div></div>';
+              mapSection.insertAdjacentHTML('beforebegin', photoHtml);
+            }
+          }
+        })
+        .catch(function() {});
+    }
   }
 
   document.addEventListener('astro:page-load', initListingPage);
