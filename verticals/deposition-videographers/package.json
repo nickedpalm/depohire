@@ -10,8 +10,9 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build 2>&1 | tail -5 && npx pagefind --site dist 2>&1 | tail -5 && npx wrangler pages functions build _functions --outfile dist/_worker.js 2>&1 | tail -10",
-    "preview": "astro preview"
+    "build": "astro build && npx pagefind --site dist && npx wrangler pages functions build _functions --outdir dist/worker-build && cp dist/worker-build/index.js dist/_worker.js && rm -rf dist/worker-build",
+    "preview": "astro preview",
+    "deploy": "npm run build && npx wrangler pages deploy dist --project-name depohire --branch main"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.4.2",
