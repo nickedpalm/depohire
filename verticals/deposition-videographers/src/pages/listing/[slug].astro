@@ -85,7 +85,7 @@ const metadata = { title, description };
     <ListingDetail listing={listing} />
 
     <div class="mt-8">
-      <ContactForm listingName={listing.name} listingEmail={listing.email} />
+      <ContactForm listingName={listing.name} listingEmail={listing.email} listingSlug={listing.slug} city={cityInfo?.city || listing.city} />
     </div>
 
     <div class="mt-8">
