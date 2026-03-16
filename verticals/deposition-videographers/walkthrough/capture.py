@@ -4,7 +4,7 @@ import asyncio
 from pathlib import Path
 from playwright.async_api import async_playwright
 
-BASE = "https://master.depohire.pages.dev"
+BASE = "https://depohire.com"
 OUT = Path(__file__).parent / "screenshots"
 OUT.mkdir(exist_ok=True)
 
