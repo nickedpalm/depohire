@@ -1,0 +1,44 @@
+[
+  {
+    "slug": "deposition-videographer-rate-guide-2026",
+    "title": "Deposition Videographer Rate Guide 2026",
+    "subtitle": "Real pricing data from providers across all 50 states",
+    "description": "The most comprehensive deposition videographer pricing guide available. Compare half-day, full-day, and expedited rates by city and state.",
+    "bullets": [
+      "Average rates for 33 major metro areas",
+      "Half-day vs full-day pricing breakdown",
+      "Hidden fees to watch for (streaming, copies, travel)",
+      "How to negotiate better rates with providers"
+    ],
+    "pdfUrl": "/guides/pdf/deposition-videographer-rate-guide-2026.pdf",
+    "category": "Pricing"
+  },
+  {
+    "slug": "remote-deposition-setup-checklist",
+    "title": "Remote Deposition Setup Checklist",
+    "subtitle": "Everything you need for a legally defensible remote deposition",
+    "description": "A step-by-step checklist for setting up remote depositions that meet FRCP 30(b)(4) requirements and state-specific rules.",
+    "bullets": [
+      "Pre-deposition technology checklist (12 items)",
+      "Platform comparison: Zoom vs Teams vs dedicated legal platforms",
+      "State-by-state remote deposition rule summary",
+      "Troubleshooting guide for common technical issues"
+    ],
+    "pdfUrl": "/guides/pdf/remote-deposition-setup-checklist.pdf",
+    "category": "How-To"
+  },
+  {
+    "slug": "clvs-verification-guide",
+    "title": "CLVS Verification & Vetting Guide",
+    "subtitle": "How to verify credentials and avoid unqualified videographers",
+    "description": "A practical guide for attorneys to verify CLVS certification, check insurance, and vet deposition videographers before hiring.",
+    "bullets": [
+      "Step-by-step CLVS verification process",
+      "Insurance and bonding requirements by state",
+      "10 red flags that indicate an unqualified videographer",
+      "Sample vetting questionnaire you can send to providers"
+    ],
+    "pdfUrl": "/guides/pdf/clvs-verification-guide.pdf",
+    "category": "Hiring"
+  }
+]

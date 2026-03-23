@@ -1,5 +1,6 @@
 {
   "name": "Deposition Videographers",
+  "brandName": "DepoHire",
   "slug": "deposition-videographers",
   "domain": "depohire.com",
   "siteUrl": "https://depohire.com",
@@ -29,8 +30,12 @@
   "editorialAuthor": {
     "name": "Nick Palmer",
     "title": "Founder & Lead Researcher",
-    "bio": "After years working in the legal services industry, Nick built this directory to help attorneys find qualified deposition videographers without the guesswork.",
+    "bio": "Nick built DepoHire after seeing how difficult it was for attorneys to find qualified deposition videographers without relying on outdated referral lists and cold calls. He researches provider credentials, tracks certification and pricing trends, and maintains the directory's editorial standards across all 50 states.",
     "linkedin": "https://linkedin.com/in/nickedpalmer"
   },
+  "stripeSponsoredLink": "https://buy.stripe.com/4gM14m8rggWc0yU5Ada3u01",
+  "stripeCityProLink": "https://buy.stripe.com/6oUcN49vkeO495q9Qta3u00",
+  "turnsiteSitekey": "0x4AAAAAACs3PKhmjD-LkBwo",
+  "googleAnalyticsId": "G-0RRY5J28FH",
   "foundedYear": 2026
 }

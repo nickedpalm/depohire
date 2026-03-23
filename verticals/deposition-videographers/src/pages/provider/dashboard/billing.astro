@@ -1,5 +1,6 @@
 ---
 import DashboardLayout from '~/layouts/DashboardLayout.astro';
+import config from '~/config';
 ---
 <DashboardLayout title="Billing — DepoHire" activePage="billing">
 
@@ -25,7 +26,7 @@ import DashboardLayout from '~/layouts/DashboardLayout.astro';
           <div>&#x2705; Quote request inbox</div>
           <div>&#x2705; Photo uploads (8 max)</div>
           <div>&#x2705; Business info editing</div>
-          <div style="color:#d1d5db">&#x274c; Featured placement</div>
+          <div style="color:#d1d5db">&#x274c; Sponsored placement</div>
           <div style="color:#d1d5db">&#x274c; Priority in search results</div>
           <div style="color:#d1d5db">&#x274c; Monthly performance report</div>
           <div style="color:#d1d5db">&#x274c; Verified badge highlight</div>
@@ -39,21 +40,21 @@ import DashboardLayout from '~/layouts/DashboardLayout.astro';
       <div style="position:absolute;top:-12px;right:16px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:6px">&#x2b50; Recommended</div>
       <div class="dash-card-body" style="padding:28px">
         <div style="margin-bottom:16px">
-          <h3 style="font-size:18px;font-weight:700">Featured</h3>
+          <h3 style="font-size:18px;font-weight:700">Sponsored</h3>
           <p style="font-size:12px;color:#d97706;font-weight:600;margin-top:4px" id="scarcity-text">Limited spots per city</p>
         </div>
         <div style="font-size:36px;font-weight:800;margin-bottom:20px">$79<span style="font-size:16px;font-weight:500;color:#6b7280">/mo</span></div>
         <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;color:#4b5563">
           <div>&#x2705; Everything in Free</div>
           <div>&#x2705; <strong>Pinned to #1 in your city</strong></div>
-          <div>&#x2705; <strong>Featured badge on listing</strong></div>
+          <div>&#x2705; <strong>Sponsored badge on listing</strong></div>
           <div>&#x2705; Priority quote requests</div>
           <div>&#x2705; Monthly PDF performance report</div>
           <div>&#x2705; Verified badge highlight</div>
           <div>&#x2705; Direct email notifications</div>
           <div>&#x2705; Priority support</div>
         </div>
-        <a href="https://buy.stripe.com/4gM14m8rggWc0yU5Ada3u01" target="_blank" rel="noopener" class="dash-btn dash-btn-upgrade" style="width:100%;justify-content:center;margin-top:20px;font-size:14px;padding:12px;text-decoration:none">Upgrade to Featured</a>
+        <a id="upgrade-link" href="{config.stripeSponsoredLink}" target="_blank" rel="noopener" class="dash-btn dash-btn-upgrade" style="width:100%;justify-content:center;margin-top:20px;font-size:14px;padding:12px;text-decoration:none">Upgrade to Sponsored</a>
         <p style="font-size:11px;color:#9ca3af;text-align:center;margin-top:10px">No contracts &middot; Cancel anytime &middot; Billed monthly</p>
       </div>
     </div>
@@ -69,7 +70,7 @@ import DashboardLayout from '~/layouts/DashboardLayout.astro';
           <div style="font-size:24px;font-weight:800">$800-$1,500</div>
         </div>
         <div>
-          <div style="font-size:13px;color:#6b7280;margin-bottom:4px">Quote increase with Featured</div>
+          <div style="font-size:13px;color:#6b7280;margin-bottom:4px">Quote increase with Sponsored</div>
           <div style="font-size:24px;font-weight:800;color:#059669">3-5x</div>
         </div>
         <div>
@@ -78,7 +79,7 @@ import DashboardLayout from '~/layouts/DashboardLayout.astro';
         </div>
       </div>
       <div style="background:#eff6ff;border-radius:10px;padding:16px;margin-top:20px;text-align:center">
-        <p style="font-size:14px;color:#1e40af;font-weight:600">One booked deposition pays for 10-19 months of Featured.</p>
+        <p style="font-size:14px;color:#1e40af;font-weight:600">One booked deposition pays for 10-19 months of Sponsored.</p>
       </div>
     </div>
   </div>
@@ -90,7 +91,7 @@ import DashboardLayout from '~/layouts/DashboardLayout.astro';
       <div class="dash-card-body" style="text-align:center;padding:32px;color:#9ca3af">
         <div style="font-size:36px;margin-bottom:8px">&#x1f4b3;</div>
         <p style="font-size:14px">No payment method on file</p>
-        <p style="font-size:12px;margin-top:4px">Add a payment method when you upgrade to Featured.</p>
+        <p style="font-size:12px;margin-top:4px">Add a payment method when you upgrade to Sponsored.</p>
       </div>
     </div>
     <div class="dash-card">
@@ -102,5 +103,17 @@ import DashboardLayout from '~/layouts/DashboardLayout.astro';
       </div>
     </div>
   </div>
+
+  <script is:inline>
+    window.addEventListener('dash-ready', function() {
+      var slug = window.dashState.currentSlug;
+      if (slug) {
+        var link = document.getElementById('upgrade-link');
+        if (link) {
+          link.href = link.href.split('?')[0] + '?client_reference_id=' + encodeURIComponent(slug);
+        }
+      }
+    });
+  </script>
 
 </DashboardLayout>

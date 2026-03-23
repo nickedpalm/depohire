@@ -9,6 +9,7 @@ export interface EditorialAuthor {
 
 export interface SiteConfig {
   name: string;
+  brandName: string;
   slug: string;
   domain: string;
   siteUrl: string;
@@ -22,6 +23,10 @@ export interface SiteConfig {
   extraFields: string[];
   cityPagePromptContext: string;
   contactEmail: string;
+  stripeSponsoredLink: string;
+  stripeCityProLink: string;
+  turnsiteSitekey: string;
+  googleAnalyticsId: string;
   editorialAuthor: EditorialAuthor;
   foundedYear: number;
   buildYear: number;
@@ -32,6 +37,7 @@ const editorial = d.editorialAuthor || {};
 
 const config: SiteConfig = {
   name: d.name ?? 'Directory',
+  brandName: d.brandName || d.domain?.replace(/\.com$/, '') || 'Directory',
   slug: d.slug ?? 'directory',
   domain: d.domain ?? 'example.com',
   siteUrl: d.siteUrl ?? `https://${d.domain ?? 'example.com'}`,
@@ -45,6 +51,10 @@ const config: SiteConfig = {
   extraFields: d.extraFields ?? [],
   cityPagePromptContext: d.cityPagePromptContext ?? '',
   contactEmail: d.contactEmail ?? `contact@${d.domain ?? 'example.com'}`,
+  stripeSponsoredLink: d.stripeSponsoredLink ?? '',
+  stripeCityProLink: d.stripeCityProLink ?? '',
+  turnsiteSitekey: d.turnsiteSitekey ?? '',
+  googleAnalyticsId: d.googleAnalyticsId ?? '',
   editorialAuthor: {
     name: editorial.name ?? 'Editorial Team',
     title: editorial.title ?? 'Directory Editor',

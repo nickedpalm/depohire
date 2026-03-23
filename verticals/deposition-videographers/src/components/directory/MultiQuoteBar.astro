@@ -1,4 +1,6 @@
 ---
+import Turnstile from '~/components/common/Turnstile.astro';
+import config from '~/config';
 const API_URL = '/api/leads';
 ---
 <!-- Floating bar when providers are selected -->
@@ -7,13 +9,13 @@ const API_URL = '/api/leads';
   class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-lg transform translate-y-full transition-transform duration-300 ease-in-out"
   data-api-url={API_URL}
 >
-  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+  <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-2">
     <p class="text-sm text-gray-700">
       <span id="mq-count" class="font-bold text-primary-600">0</span> provider<span id="mq-plural">s</span> selected
     </p>
     <div class="flex items-center gap-3">
-      <button type="button" id="mq-clear" class="text-sm text-gray-500 hover:text-gray-700">Clear</button>
-      <button type="button" id="mq-submit" class="btn-primary py-2 px-5 text-sm">
+      <button type="button" id="mq-clear" class="text-sm text-gray-500 hover:text-gray-700 min-h-[44px] min-w-[44px] flex items-center justify-center">Clear</button>
+      <button type="button" id="mq-submit" class="btn-primary py-2 px-5 text-sm min-h-[44px]">
         Request Quotes
       </button>
     </div>
@@ -21,16 +23,16 @@ const API_URL = '/api/leads';
 </div>
 
 <!-- Modal -->
-<div id="mq-modal" class="fixed inset-0 z-[60] hidden">
+<div id="mq-modal" class="fixed inset-0 z-[60] hidden" role="dialog" aria-modal="true" aria-labelledby="mq-modal-heading">
   <div class="fixed inset-0 bg-black/50" id="mq-backdrop"></div>
   <div class="fixed inset-0 flex items-center justify-center p-4">
     <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto relative">
       <div class="p-6">
-        <button type="button" id="mq-close" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+        <button type="button" id="mq-close" class="absolute top-2 right-2 text-gray-400 hover:text-gray-600 min-h-[44px] min-w-[44px] flex items-center justify-center">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
         </button>
 
-        <h2 class="text-xl font-bold text-gray-900 mb-1">Request Quotes</h2>
+        <h2 id="mq-modal-heading" class="text-xl font-bold text-gray-900 mb-1">Request Quotes</h2>
         <p class="text-sm text-gray-500 mb-4">Your request will be sent to <span id="mq-provider-count" class="font-semibold">0</span> providers:</p>
 
         <div id="mq-provider-list" class="space-y-1 mb-4"></div>
@@ -42,20 +44,21 @@ const API_URL = '/api/leads';
           </div>
           <div>
             <label for="mq-name" class="block text-sm font-medium text-gray-700">Your Name</label>
-            <input type="text" id="mq-name" name="attorney_name" required class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-3 py-2 border" />
+            <input type="text" id="mq-name" name="attorney_name" required class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 focus:outline-none px-3 py-2 border" />
           </div>
           <div>
             <label for="mq-email" class="block text-sm font-medium text-gray-700">Email</label>
-            <input type="email" id="mq-email" name="attorney_email" required class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-3 py-2 border" />
+            <input type="email" id="mq-email" name="attorney_email" required class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 focus:outline-none px-3 py-2 border" />
           </div>
           <div>
             <label for="mq-phone" class="block text-sm font-medium text-gray-700">Phone <span class="text-gray-400">(optional)</span></label>
-            <input type="tel" id="mq-phone" name="attorney_phone" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-3 py-2 border" />
+            <input type="tel" id="mq-phone" name="attorney_phone" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 focus:outline-none px-3 py-2 border" />
           </div>
           <div>
             <label for="mq-details" class="block text-sm font-medium text-gray-700">Case Details</label>
-            <textarea id="mq-details" name="case_details" rows="3" placeholder="Date, location, type of proceeding..." class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-3 py-2 border"></textarea>
+            <textarea id="mq-details" name="case_details" rows="3" placeholder="Date, location, type of proceeding..." class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 focus:outline-none px-3 py-2 border"></textarea>
           </div>
+          <div class="cf-turnstile" data-sitekey={config.turnsiteSitekey} data-theme="light"></div>
           <button type="submit" id="mq-send" class="btn-primary w-full justify-center">
             Send to All Selected Providers
           </button>
@@ -210,6 +213,7 @@ const API_URL = '/api/leads';
       btn.disabled = true;
       btn.textContent = 'Sending...';
 
+      const turnstileInput = form.querySelector('[name="cf-turnstile-response"]');
       const data = {
         attorney_name: form.attorney_name.value,
         attorney_email: form.attorney_email.value,
@@ -217,6 +221,7 @@ const API_URL = '/api/leads';
         case_details: form.case_details.value,
         city: getCity(),
         honeypot: form.company_url.value,
+        turnstile_token: turnstileInput ? turnstileInput.value : '',
         providers: selected,
       };
 
@@ -241,6 +246,7 @@ const API_URL = '/api/leads';
         errorDiv.classList.remove('hidden');
         btn.disabled = false;
         btn.textContent = 'Send to All Selected Providers';
+        if (window.turnstile) turnstile.reset();
       }
     });
 
@@ -281,3 +287,4 @@ const API_URL = '/api/leads';
     initMultiQuote();
   }
 </script>
+<Turnstile />

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ .Campaign.Name }}</title>
+  <style>
+    body { margin: 0; padding: 0; background: #f3f4f6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    .wrapper { max-width: 600px; margin: 0 auto; background: #ffffff; }
+    .header { background: linear-gradient(135deg, #0f1b2d 0%, #1a3352 40%, #1e3a5f 70%, #2a4a6b 100%); padding: 32px 24px; text-align: center; }
+    .header h1 { color: #ffffff; font-size: 20px; margin: 0 0 4px; font-weight: 700; }
+    .header p { color: #93c5fd; font-size: 13px; margin: 0; }
+    .body { padding: 24px; }
+    .body h2 { color: #1f2937; font-size: 18px; margin: 24px 0 12px; font-weight: 700; }
+    .body p { color: #4b5563; font-size: 14px; line-height: 1.6; margin: 0 0 16px; }
+    .provider-card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+    .provider-card h3 { margin: 0 0 4px; font-size: 15px; color: #1f2937; }
+    .provider-card .meta { font-size: 12px; color: #6b7280; margin: 0; }
+    .provider-card .badge { display: inline-block; background: #eff6ff; color: #2563eb; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-top: 6px; }
+    .cta { display: inline-block; background: #2563eb; color: #ffffff !important; text-decoration: none; font-weight: 600; font-size: 14px; padding: 10px 24px; border-radius: 8px; margin: 8px 0; }
+    .cta:hover { background: #1d4ed8; }
+    .article-link { display: block; padding: 12px 0; border-bottom: 1px solid #f3f4f6; text-decoration: none; }
+    .article-link h4 { margin: 0 0 4px; font-size: 14px; color: #2563eb; font-weight: 600; }
+    .article-link p { margin: 0; font-size: 13px; color: #6b7280; }
+    .footer { background: #f9fafb; padding: 20px 24px; text-align: center; border-top: 1px solid #e5e7eb; }
+    .footer p { font-size: 12px; color: #9ca3af; margin: 4px 0; }
+    .footer a { color: #6b7280; }
+    .sponsored { background: #fefce8; border-color: #fde68a; }
+    .sponsored .badge { background: #fef3c7; color: #92400e; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <!-- Header -->
+    <div class="header">
+      <h1>DepoHire</h1>
+      <p>{{ .Campaign.Name }}</p>
+    </div>
+
+    <div class="body">
+      <!-- Intro -->
+      <p>Here's your monthly update on deposition videographers in your area — new providers, market changes, and resources to help you hire smarter.</p>
+
+      <!-- New Providers Section -->
+      <h2>New Providers This Month</h2>
+      <!-- Replace with actual provider data when sending -->
+      <div class="provider-card">
+        <h3><a href="https://depohire.com/listing/SLUG/" style="color:#1f2937;text-decoration:none;">Provider Name</a></h3>
+        <p class="meta">City, ST &middot; CLVS Certified</p>
+        <span class="badge">New Listing</span>
+      </div>
+
+      <p style="text-align:center;">
+        <a href="https://depohire.com/locations/" class="cta">Browse All Providers</a>
+      </p>
+
+      <!-- Featured Provider (Sponsored) -->
+      <h2>Featured Provider</h2>
+      <div class="provider-card sponsored">
+        <h3><a href="https://depohire.com/listing/SLUG/" style="color:#1f2937;text-decoration:none;">Featured Provider Name</a></h3>
+        <p class="meta">City, ST &middot; 4.8 stars (23 reviews)</p>
+        <span class="badge">Sponsored</span>
+      </div>
+
+      <!-- Article -->
+      <h2>From the Blog</h2>
+      <a href="https://depohire.com/blog/SLUG/" class="article-link">
+        <h4>Article Title Goes Here</h4>
+        <p>Brief description of the article content that helps attorneys make better hiring decisions.</p>
+      </a>
+
+      <!-- Quick Tip -->
+      <h2>Quick Tip</h2>
+      <p style="background:#f0f9ff;border-left:3px solid #2563eb;padding:12px 16px;border-radius:0 8px 8px 0;">
+        <strong>Did you know?</strong> CLVS-certified videographers complete 40+ hours of specialized legal video training. Always verify certification at <a href="https://depohire.com/blog/clvs-certified-legal-video-specialist-certification-guide/" style="color:#2563eb;">depohire.com/blog/clvs-guide</a>.
+      </p>
+
+      <p style="text-align:center;margin-top:24px;">
+        <a href="https://depohire.com/guides/" class="cta">Download Free Rate Guide</a>
+      </p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>&copy; {{ .Campaign.StartedAt.Year }} DepoHire. All rights reserved.</p>
+      <p>The only directory built for litigation teams.</p>
+      <p>DepoHire &middot; PO Box 1547, Austin, TX 78767</p>
+      <p><a href="{{ .UnsubscribeURL }}">Unsubscribe</a> &middot; <a href="https://depohire.com/privacy/">Privacy</a></p>
+    </div>
+  </div>
+</body>
+</html>

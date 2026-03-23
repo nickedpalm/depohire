@@ -4,18 +4,20 @@
  */
 import config from '~/config';
 
+const brandName = config.brandName;
+
 export const SITE = {
-  name: config.name,
+  name: brandName,
   site: config.siteUrl,
   base: '/',
-  trailingSlash: false,
+  trailingSlash: true,
   googleSiteVerificationId: '',
 };
 
 export const METADATA = {
   title: {
-    default: config.name,
-    template: `%s | ${config.name}`,
+    default: brandName,
+    template: `%s | ${brandName}`,
   },
   description: config.description,
   robots: {
@@ -23,7 +25,7 @@ export const METADATA = {
     follow: true,
   },
   openGraph: {
-    site_name: config.name,
+    site_name: brandName,
     type: 'website',
   },
   twitter: {
@@ -68,6 +70,6 @@ export const UI = {
 
 export const ANALYTICS = {
   vendors: {
-    googleAnalytics: { id: undefined, partytown: false },
+    googleAnalytics: { id: config.googleAnalyticsId || '', partytown: false },
   },
 };

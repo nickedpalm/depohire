@@ -20,10 +20,8 @@ const { title, activePage } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex, nofollow" />
     <title>{title}</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <style>
+    <link rel="preload" href="/_astro/inter-latin-wght-normal.BgVq2Tq4.woff2" as="font" type="font/woff2" crossorigin />
+    <style is:global>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { font-family: 'Inter', -apple-system, sans-serif; background: #f5f6f8; color: #1a1a2e; }
 

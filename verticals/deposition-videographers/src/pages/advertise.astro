@@ -2,10 +2,13 @@
 import PageLayout from '~/layouts/PageLayout.astro';
 import FAQAccordion from '~/components/directory/FAQAccordion.astro';
 import config from '~/config';
+import citiesData from '~/data/cities.json';
+
+const totalCities = citiesData.length;
 
 const metadata = {
   title: 'Advertise',
-  description: `Get featured in the #1 deposition videographer directory. Attorneys in 50+ cities searching for videographers — put your business at the top.`,
+  description: `Get a sponsored listing in the #1 deposition videographer directory. Attorneys in ${totalCities}+ cities searching for videographers — put your business at the top.`,
 };
 ---
 <PageLayout metadata={metadata}>
@@ -18,16 +21,16 @@ const metadata = {
         Attorneys in your city are searching for a videographer <em>right now.</em>
       </h1>
       <p class="mt-4 text-xl text-muted">
-        Without a Featured listing, they find your competitor first. DepoHire puts you at the top of results in your city — with quote requests routed directly to your inbox.
+        Without a Sponsored listing, they find your competitor first. DepoHire puts you at the top of results in your city — with quote requests routed directly to your inbox.
       </p>
       <p class="mt-3 text-sm text-amber-700 bg-amber-50 inline-block px-4 py-2 rounded-lg">
-        Limited availability: We cap Featured listings at 2–3 per city to protect the value of each placement.
+        Limited availability: We cap Sponsored listings at 2–3 per city to protect the value of each placement.
       </p>
     </div>
 
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-10 max-w-3xl">
       <div>
-        <p class="text-2xl font-bold text-primary">50+</p>
+        <p class="text-2xl font-bold text-primary">{totalCities}+</p>
         <p class="text-sm text-muted">Cities covered</p>
       </div>
       <div>
@@ -36,7 +39,7 @@ const metadata = {
       </div>
       <div>
         <p class="text-2xl font-bold text-primary">2–3</p>
-        <p class="text-sm text-muted">Featured slots per city max</p>
+        <p class="text-sm text-muted">Sponsored slots per city max</p>
       </div>
       <div>
         <p class="text-2xl font-bold text-primary">$0</p>
@@ -51,7 +54,7 @@ const metadata = {
 
       <!-- Featured -->
       <div class="card p-6 border-2 border-primary">
-        <h3 class="text-xl font-bold text-default">Featured City Listing</h3>
+        <h3 class="text-xl font-bold text-default">Sponsored City Listing</h3>
         <p class="text-sm text-muted mt-1">One job covers months of listing fees.</p>
         <div class="mt-4 mb-6">
           <span class="text-4xl font-extrabold text-default">$79</span>
@@ -64,7 +67,7 @@ const metadata = {
           </li>
           <li class="flex items-start gap-2">
             <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-            "Featured" badge — visible immediately
+            "Sponsored" badge — visible immediately
           </li>
           <li class="flex items-start gap-2">
             <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
@@ -92,7 +95,7 @@ const metadata = {
       <!-- City Pro -->
       <div class="card p-6">
         <h3 class="text-xl font-bold text-default">City Pro</h3>
-        <p class="text-sm text-muted mt-1">Everything in Featured, plus editorial SEO + newsletter.</p>
+        <p class="text-sm text-muted mt-1">Everything in Sponsored, plus editorial SEO + newsletter.</p>
         <div class="mt-4 mb-6">
           <span class="text-4xl font-extrabold text-default">$149</span>
           <span class="text-muted">/month</span>
@@ -100,7 +103,7 @@ const metadata = {
         <ul class="space-y-3 text-sm">
           <li class="flex items-start gap-2">
             <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-            All Featured features
+            All Sponsored features
           </li>
           <li class="flex items-start gap-2">
             <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
@@ -150,10 +153,10 @@ const metadata = {
       <h2 class="text-2xl font-bold text-default mb-2">Ready? Pick your plan and check out instantly.</h2>
       <p class="text-muted mb-8">Secure payment via Stripe. Cancel anytime. Your listing goes live within 2–3 business days.</p>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg mx-auto">
-        <a href="https://buy.stripe.com/4gM14m8rggWc0yU5Ada3u01" target="_blank" rel="noopener" class="btn-primary py-4 text-center no-underline text-lg">
-          Featured — $79/mo
+        <a href="{config.stripeSponsoredLink}" target="_blank" rel="noopener" class="btn-primary py-4 text-center no-underline text-lg">
+          Sponsored — $79/mo
         </a>
-        <a href="https://buy.stripe.com/6oUcN49vkeO495q9Qta3u00" target="_blank" rel="noopener" class="btn-primary py-4 text-center no-underline text-lg bg-green-700 hover:bg-green-600">
+        <a href="{config.stripeCityProLink}" target="_blank" rel="noopener" class="btn-primary py-4 text-center no-underline text-lg bg-green-700 hover:bg-green-600">
           City Pro — $149/mo
         </a>
       </div>
@@ -165,9 +168,9 @@ const metadata = {
   <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
     <h2 class="text-3xl font-bold text-default">One job pays for months of listing fees.</h2>
     <p class="mt-4 text-lg text-muted max-w-2xl mx-auto">
-      The average deposition session pays $500–2,000. A Featured listing is $79/month. One booked job from DepoHire and you're profitable for the rest of the year.
+      The average deposition session pays $500–2,000. A Sponsored listing is $79/month. One booked job from DepoHire and you're profitable for the rest of the year.
     </p>
-    <a href="https://buy.stripe.com/4gM14m8rggWc0yU5Ada3u01" target="_blank" rel="noopener" class="btn-primary inline-block mt-6 no-underline">Get Featured — $79/mo &rarr;</a>
+    <a href="{config.stripeSponsoredLink}" target="_blank" rel="noopener" class="btn-primary inline-block mt-6 no-underline">Get Sponsored — $79/mo &rarr;</a>
   </section>
 
   <!-- FAQ -->
@@ -187,7 +190,7 @@ const metadata = {
       },
       {
         question: 'How long does setup take?',
-        answer: 'Featured listings go live within 2–3 business days of approval.',
+        answer: 'Sponsored listings go live within 2–3 business days of approval.',
       },
       {
         question: 'Can I advertise in multiple cities?',

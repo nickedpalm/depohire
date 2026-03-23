@@ -23,6 +23,7 @@
     "leaflet": "^1.9.4",
     "limax": "4.1.0",
     "lodash.merge": "^4.6.2",
+    "satori": "^0.25.0",
     "unpic": "^4.1.3"
   },
   "devDependencies": {

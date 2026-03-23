@@ -269,6 +269,7 @@ import { UI } from '~/utils/astrowind-config';
   Observer.start();
 
   document.addEventListener('astro:after-swap', () => {
+    if (Observer.observer) Observer.observer.disconnect();
     Observer.start();
   });
 </script>
