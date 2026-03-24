@@ -13,10 +13,10 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
     return jsonResponse({ authenticated: false }, 401, origin);
   }
 
-  // Get claimed listings for this provider
+  // Get claimed listings for this provider (with verification status)
   const claims = await env.LEADS_DB.prepare(
-    `SELECT listing_slug FROM claimed_listings WHERE provider_id = ?`
-  ).bind(provider.id).all<{ listing_slug: string }>();
+    `SELECT listing_slug, verification_status FROM claimed_listings WHERE provider_id = ?`
+  ).bind(provider.id).all<{ listing_slug: string; verification_status: string }>();
 
   return jsonResponse({
     authenticated: true,
@@ -25,7 +25,10 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
       email: provider.email,
       name: provider.name,
     },
-    listings: claims.results?.map(c => c.listing_slug) || [],
+    // Backwards-compatible: listings is still a string array of verified slugs
+    listings: claims.results?.filter(c => c.verification_status === 'verified').map(c => c.listing_slug) || [],
+    // Full claim details for dashboard UI
+    claims: claims.results?.map(c => ({ slug: c.listing_slug, status: c.verification_status })) || [],
   }, 200, origin);
 };
 

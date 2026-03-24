@@ -1,5 +1,6 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { execSync } from 'child_process';
 
 import { defineConfig } from 'astro/config';
 
@@ -12,12 +13,28 @@ import { readingTimeRemarkPlugin, responsiveTablesRehypePlugin, lazyImagesRehype
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+function listingContactsIntegration() {
+  return {
+    name: 'build-listing-contacts',
+    hooks: {
+      'astro:build:start': () => {
+        console.log('[integration] Generating listing-contacts.json...');
+        execSync('npx tsx src/scripts/build-listing-contacts.ts', {
+          cwd: __dirname,
+          stdio: 'inherit',
+        });
+      },
+    },
+  };
+}
+
 export default defineConfig({
   site: 'https://depohire.com',
 
   output: 'static',
 
   integrations: [
+    listingContactsIntegration(),
     tailwind({
       applyBaseStyles: false,
     }),
