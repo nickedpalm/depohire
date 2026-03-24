@@ -9,6 +9,11 @@ const ALLOWED_FIELDS = [
   'name', 'phone', 'website', 'email', 'description',
   'services', 'certifications', 'coverage_area', 'years_experience',
   'demo_reel_url',
+  // Settings & visibility
+  'visible', 'accept_quotes',
+  'notify_new_quotes', 'notify_reminders', 'notify_monthly_report', 'notify_marketing',
+  // Service area
+  'service_radius', 'availability_days', 'rush_available', 'travel_policy',
 ];
 
 export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {

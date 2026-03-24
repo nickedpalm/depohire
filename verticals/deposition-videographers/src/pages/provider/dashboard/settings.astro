@@ -37,28 +37,28 @@ import DashboardLayout from '~/layouts/DashboardLayout.astro';
             <div style="font-size:14px;font-weight:600;color:#1a1a2e">New quote requests</div>
             <div style="font-size:12px;color:#6b7280">Get notified when an attorney sends a quote request</div>
           </div>
-          <label class="dash-toggle"><input type="checkbox" checked /><span class="dash-toggle-slider"></span></label>
+          <label class="dash-toggle"><input type="checkbox" id="tog-new-quotes" checked /><span class="dash-toggle-slider"></span></label>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between">
           <div>
             <div style="font-size:14px;font-weight:600;color:#1a1a2e">Quote request reminders</div>
             <div style="font-size:12px;color:#6b7280">Reminder if you haven't responded within 24 hours</div>
           </div>
-          <label class="dash-toggle"><input type="checkbox" checked /><span class="dash-toggle-slider"></span></label>
+          <label class="dash-toggle"><input type="checkbox" id="tog-reminders" checked /><span class="dash-toggle-slider"></span></label>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between">
           <div>
             <div style="font-size:14px;font-weight:600;color:#1a1a2e">Monthly performance report</div>
             <div style="font-size:12px;color:#6b7280">Summary of views, quotes, and ranking</div>
           </div>
-          <label class="dash-toggle"><input type="checkbox" checked /><span class="dash-toggle-slider"></span></label>
+          <label class="dash-toggle"><input type="checkbox" id="tog-monthly" checked /><span class="dash-toggle-slider"></span></label>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between">
           <div>
             <div style="font-size:14px;font-weight:600;color:#1a1a2e">Marketing & tips</div>
             <div style="font-size:12px;color:#6b7280">Occasional tips to improve your listing</div>
           </div>
-          <label class="dash-toggle"><input type="checkbox" /><span class="dash-toggle-slider"></span></label>
+          <label class="dash-toggle"><input type="checkbox" id="tog-marketing" /><span class="dash-toggle-slider"></span></label>
         </div>
       </div>
       <p style="font-size:12px;color:#9ca3af;margin-top:16px">Notification settings are saved automatically. Email delivery is managed through your Listmonk subscription.</p>
@@ -74,14 +74,14 @@ import DashboardLayout from '~/layouts/DashboardLayout.astro';
           <div style="font-size:14px;font-weight:600;color:#1a1a2e">Listing is active</div>
           <div style="font-size:12px;color:#6b7280">Your listing is visible to attorneys searching DepoHire</div>
         </div>
-        <label class="dash-toggle"><input type="checkbox" checked /><span class="dash-toggle-slider"></span></label>
+        <label class="dash-toggle"><input type="checkbox" id="tog-visible" checked /><span class="dash-toggle-slider"></span></label>
       </div>
       <div style="display:flex;align-items:center;justify-content:space-between">
         <div>
           <div style="font-size:14px;font-weight:600;color:#1a1a2e">Accept quote requests</div>
           <div style="font-size:12px;color:#6b7280">Allow attorneys to send you quote requests</div>
         </div>
-        <label class="dash-toggle"><input type="checkbox" checked /><span class="dash-toggle-slider"></span></label>
+        <label class="dash-toggle"><input type="checkbox" id="tog-accept-quotes" checked /><span class="dash-toggle-slider"></span></label>
       </div>
     </div>
   </div>
@@ -101,7 +101,7 @@ import DashboardLayout from '~/layouts/DashboardLayout.astro';
       <div style="flex:1">
         <p style="font-size:14px;font-weight:600;color:#991b1b">Unclaim Listing</p>
         <p style="font-size:12px;color:#b91c1c;margin:4px 0 12px">Release your claim. Another provider can then claim it.</p>
-        <button class="dash-btn" style="background:#fecaca;color:#991b1b;font-size:12px">Unclaim Listing</button>
+        <button id="unclaim-btn" class="dash-btn" style="background:#fecaca;color:#991b1b;font-size:12px">Unclaim Listing</button>
       </div>
       <div style="flex:1">
         <p style="font-size:14px;font-weight:600;color:#991b1b">Delete Account</p>
@@ -117,8 +117,9 @@ import DashboardLayout from '~/layouts/DashboardLayout.astro';
   </div>
 
   <script is:inline>
-    window.addEventListener('dash-ready', function() {
+    window.addEventListener('dash-ready', async function() {
       var state = window.dashState;
+      var slug = state.currentSlug;
       document.getElementById('settings-email').textContent = state.provider.email;
 
       // Claimed listings
@@ -130,6 +131,80 @@ import DashboardLayout from '~/layouts/DashboardLayout.astro';
           return '<a href="/listing/' + s + '/" target="_blank" style="display:block;background:#f9fafb;padding:12px 16px;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:8px;font-size:14px;color:#2563eb;text-decoration:none;font-weight:500">' + s + ' &rarr;</a>';
         }).join('');
       }
+
+      // Load saved settings from D1
+      if (slug) {
+        try {
+          var resp = await fetch('/api/provider/listing?slug=' + encodeURIComponent(slug), { credentials: 'include' });
+          var result = await resp.json();
+          if (result.data) {
+            var d = result.data;
+            if (d.visible === false) document.getElementById('tog-visible').checked = false;
+            if (d.accept_quotes === false) document.getElementById('tog-accept-quotes').checked = false;
+            if (d.notify_new_quotes === false) document.getElementById('tog-new-quotes').checked = false;
+            if (d.notify_reminders === false) document.getElementById('tog-reminders').checked = false;
+            if (d.notify_monthly_report === false) document.getElementById('tog-monthly').checked = false;
+            if (d.notify_marketing === true) document.getElementById('tog-marketing').checked = true;
+          }
+        } catch (e) { console.error('Failed to load settings:', e); }
+      }
+
+      // Auto-save toggles
+      var toggleIds = [
+        ['tog-visible', 'visible'],
+        ['tog-accept-quotes', 'accept_quotes'],
+        ['tog-new-quotes', 'notify_new_quotes'],
+        ['tog-reminders', 'notify_reminders'],
+        ['tog-monthly', 'notify_monthly_report'],
+        ['tog-marketing', 'notify_marketing'],
+      ];
+
+      toggleIds.forEach(function(pair) {
+        var checkbox = document.getElementById(pair[0]);
+        if (!checkbox) return;
+        checkbox.addEventListener('change', function() {
+          var body = { slug: slug };
+          body[pair[1]] = checkbox.checked;
+          fetch('/api/provider/listing', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(body),
+          }).catch(function(e) { console.error('Save failed:', e); });
+        });
+      });
+
+      // Unclaim
+      document.getElementById('unclaim-btn').addEventListener('click', async function() {
+        if (!slug) return;
+        if (!confirm('Are you sure you want to unclaim this listing? This cannot be undone.')) return;
+
+        var btn = document.getElementById('unclaim-btn');
+        btn.textContent = 'Unclaiming...';
+        btn.disabled = true;
+
+        try {
+          var resp = await fetch('/api/provider/claim', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ listing_slug: slug }),
+          });
+          var result = await resp.json();
+          if (result.ok) {
+            alert('Listing unclaimed successfully.');
+            window.location.href = '/';
+          } else {
+            alert(result.error || 'Failed to unclaim listing.');
+            btn.textContent = 'Unclaim Listing';
+            btn.disabled = false;
+          }
+        } catch (e) {
+          alert('Something went wrong. Please try again.');
+          btn.textContent = 'Unclaim Listing';
+          btn.disabled = false;
+        }
+      });
 
       // Logout
       document.getElementById('logout-btn').addEventListener('click', async function() {

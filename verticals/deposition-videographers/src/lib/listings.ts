@@ -25,6 +25,8 @@ export interface Listing {
   phone?: string;
   website?: string;
   email?: string;
+  contact_form_url?: string;
+  contact_method?: string;
   rating: number;
   review_count: number;
   description?: string;
@@ -35,6 +37,7 @@ export interface Listing {
   equipment?: string[];
   demo_reel_url?: string;
   demo_reel_thumbnail?: string;
+  photos?: { url: string; alt?: string }[];
   claimed: boolean;
   featured: boolean;
   source: string;

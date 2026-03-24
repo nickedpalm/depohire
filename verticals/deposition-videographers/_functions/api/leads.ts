@@ -1,101 +1,319 @@
 /**
- * Cloudflare Pages Function: Lead Capture Fallback
+ * Cloudflare Pages Function: Lead Capture + Email Notifications
  *
- * Proxies POST /api/leads to the VPS backend (api.depohire.com).
- * If the VPS is down or times out (5s), stores the lead in D1 as a fallback
- * so zero leads are dropped. Returns 200 to the attorney either way.
+ * POST /api/leads
+ * 1. Saves the lead to D1
+ * 2. Sends notification email to each provider via Listmonk
+ * 3. Sends confirmation email to the attorney via Listmonk
+ * 4. Returns 200 to the attorney no matter what (zero lead loss)
  */
 
-interface Env {
-  LEADS_DB: D1Database;
+import type { Env } from '../_types';
+import { verifyTurnstile } from '../_auth';
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+};
+
+function jsonResp(data: any, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { 'Content-Type': 'application/json', ...corsHeaders },
+  });
 }
 
-export const onRequestPost: PagesFunction<Env> = async (context) => {
-  const { request, env } = context;
+function esc(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 
-  // CORS headers
-  const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
+function escUrl(str: string): string {
+  // Only allow tel: and mailto: protocols for href attributes
+  return encodeURI(str).replace(/'/g, '%27').replace(/"/g, '%22');
+}
+
+interface SiteConfig { name: string; domain: string; tagline: string; fromEmail: string; }
+
+function getSiteConfig(env: Env): SiteConfig {
+  const name = env.SITE_NAME || 'DepoHire';
+  const domain = env.SITE_DOMAIN || 'depohire.com';
+  return {
+    name,
+    domain,
+    tagline: env.SITE_TAGLINE || 'Find certified deposition videographers',
+    fromEmail: env.SITE_FROM_EMAIL || `${name} <noreply@${domain}>`,
   };
+}
 
+function providerEmailHtml(p: { name: string; email: string }, attorney: { name: string; email: string; phone: string; caseDetails: string; city: string }, site: SiteConfig) {
+  return `<!DOCTYPE html>
+<html>
+<body style="margin:0;padding:0;background:#f9fafb;font-family:system-ui,-apple-system,sans-serif">
+<div style="max-width:560px;margin:40px auto;background:#fff;border-radius:12px;border:1px solid #e5e7eb;overflow:hidden">
+  <div style="background:#1e3a5f;padding:24px 32px">
+    <h1 style="color:#fff;font-size:20px;margin:0;font-weight:700">${site.name}</h1>
+  </div>
+  <div style="padding:32px">
+    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:16px 20px;margin-bottom:24px">
+      <p style="color:#1e40af;font-size:14px;font-weight:600;margin:0 0 4px">New Quote Request</p>
+      <p style="color:#3b82f6;font-size:13px;margin:0">A client wants to connect with you.</p>
+    </div>
+
+    <h2 style="color:#1a1a1a;font-size:18px;margin:0 0 16px">Quote request for ${esc(p.name)}</h2>
+
+    <table style="width:100%;border-collapse:collapse">
+      <tr>
+        <td style="padding:10px 0;border-bottom:1px solid #f3f4f6;color:#6b7280;font-size:14px;width:110px;vertical-align:top">Attorney</td>
+        <td style="padding:10px 0;border-bottom:1px solid #f3f4f6;color:#1a1a1a;font-size:14px;font-weight:500">${esc(attorney.name)}</td>
+      </tr>
+      <tr>
+        <td style="padding:10px 0;border-bottom:1px solid #f3f4f6;color:#6b7280;font-size:14px;vertical-align:top">Email</td>
+        <td style="padding:10px 0;border-bottom:1px solid #f3f4f6;color:#1a1a1a;font-size:14px">
+          <a href="mailto:${escUrl(attorney.email)}" style="color:#2563eb;text-decoration:none">${esc(attorney.email)}</a>
+        </td>
+      </tr>
+      ${attorney.phone ? `<tr>
+        <td style="padding:10px 0;border-bottom:1px solid #f3f4f6;color:#6b7280;font-size:14px;vertical-align:top">Phone</td>
+        <td style="padding:10px 0;border-bottom:1px solid #f3f4f6;color:#1a1a1a;font-size:14px">
+          <a href="tel:${escUrl(attorney.phone)}" style="color:#2563eb;text-decoration:none">${esc(attorney.phone)}</a>
+        </td>
+      </tr>` : ''}
+      ${attorney.city ? `<tr>
+        <td style="padding:10px 0;border-bottom:1px solid #f3f4f6;color:#6b7280;font-size:14px;vertical-align:top">Location</td>
+        <td style="padding:10px 0;border-bottom:1px solid #f3f4f6;color:#1a1a1a;font-size:14px">${esc(attorney.city)}</td>
+      </tr>` : ''}
+      ${attorney.caseDetails ? `<tr>
+        <td style="padding:10px 0;border-bottom:1px solid #f3f4f6;color:#6b7280;font-size:14px;vertical-align:top">Details</td>
+        <td style="padding:10px 0;border-bottom:1px solid #f3f4f6;color:#1a1a1a;font-size:14px">${esc(attorney.caseDetails)}</td>
+      </tr>` : ''}
+    </table>
+
+    <div style="margin-top:24px">
+      <a href="mailto:${escUrl(attorney.email)}?subject=Re:%20Deposition%20Videography%20Quote%20Request&body=Hi%20${escUrl(attorney.name)},%0A%0AThank%20you%20for%20your%20interest.%20"
+         style="display:inline-block;background:#2563eb;color:#fff;padding:14px 28px;border-radius:8px;text-decoration:none;font-weight:600;font-size:15px">
+        Reply to ${esc(attorney.name)}
+      </a>
+    </div>
+
+    <p style="color:#9ca3af;font-size:13px;line-height:1.5;margin:24px 0 0">
+      Respond quickly — attorneys often contact multiple providers. The first reply usually wins the job.
+    </p>
+  </div>
+  <div style="border-top:1px solid #f3f4f6;padding:20px 32px;background:#fafafa">
+    <p style="color:#9ca3af;font-size:12px;margin:0;line-height:1.6">
+      <a href="https://${site.domain}/provider/login?listing=${encodeURIComponent(p.slug)}" style="color:#6b7280;text-decoration:none">Manage your listing</a> &middot;
+      <a href="https://${site.domain}/api/unsubscribe?email=${encodeURIComponent(p.email)}" style="color:#6b7280;text-decoration:none">Unsubscribe</a>
+    </p>
+    <p style="color:#d1d5db;font-size:11px;margin:8px 0 0;line-height:1.5">
+      ${site.name} &middot; PO Box 1547, Austin, TX 78767<br>
+      This email was sent because your business is listed on ${site.domain}. You can <a href="https://${site.domain}/api/unsubscribe?email=${encodeURIComponent(p.email)}" style="color:#d1d5db">unsubscribe</a> at any time.
+    </p>
+  </div>
+</div>
+</body>
+</html>`;
+}
+
+function attorneyConfirmationHtml(attorney: { name: string }, providers: { name: string }[], site: SiteConfig) {
+  const providerList = providers.map(p => `<li style="padding:4px 0;color:#1a1a1a;font-size:14px">${esc(p.name)}</li>`).join('');
+  return `<!DOCTYPE html>
+<html>
+<body style="margin:0;padding:0;background:#f9fafb;font-family:system-ui,-apple-system,sans-serif">
+<div style="max-width:480px;margin:40px auto;background:#fff;border-radius:12px;border:1px solid #e5e7eb;overflow:hidden">
+  <div style="background:#1e3a5f;padding:24px 32px">
+    <h1 style="color:#fff;font-size:20px;margin:0;font-weight:700">${site.name}</h1>
+  </div>
+  <div style="padding:32px">
+    <h2 style="color:#1a1a1a;font-size:18px;margin:0 0 12px">Your quote request has been sent!</h2>
+    <p style="color:#6b7280;font-size:15px;line-height:1.6;margin:0 0 20px">
+      Hi ${esc(attorney.name)}, your request has been forwarded to:
+    </p>
+    <ul style="margin:0 0 20px;padding-left:20px">${providerList}</ul>
+    <p style="color:#6b7280;font-size:15px;line-height:1.6;margin:0 0 20px">
+      Providers typically respond within 1 business day. Keep an eye on your inbox for a direct reply.
+    </p>
+    <p style="color:#9ca3af;font-size:13px;line-height:1.5;margin:0">
+      Need help? Reply to this email and we'll assist you.
+    </p>
+  </div>
+  <div style="border-top:1px solid #f3f4f6;padding:20px 32px">
+    <p style="color:#d1d5db;font-size:11px;margin:0;line-height:1.5">
+      ${site.name} &middot; PO Box 1547, Austin, TX 78767<br>
+      ${site.tagline}
+    </p>
+  </div>
+</div>
+</body>
+</html>`;
+}
+
+async function sendListmonkEmail(env: Env, to: string, subject: string, body: string, site: SiteConfig) {
+  const url = env.LISTMONK_URL || 'https://mail.firestick.io';
+  const user = env.LISTMONK_USER || 'admin';
+  const pass = env.LISTMONK_PASS || '';
+
+  // Ensure subscriber exists in Listmonk (required for tx API)
+  await fetch(`${url}/api/subscribers`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Basic ' + btoa(`${user}:${pass}`),
+    },
+    body: JSON.stringify({ email: to, name: '', status: 'enabled' }),
+  }); // 409 if exists — that's fine
+
+  const resp = await fetch(`${url}/api/tx`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Basic ' + btoa(`${user}:${pass}`),
+    },
+    body: JSON.stringify({
+      subscriber_email: to,
+      template_id: 8,
+      subject,
+      data: { body },
+      content_type: 'html',
+      messenger: 'email',
+      from_email: site.fromEmail,
+    }),
+  });
+
+  if (!resp.ok) {
+    const text = await resp.text();
+    console.error(`Listmonk email to ${to} failed: ${resp.status} ${text}`);
+    return false;
+  }
+  return true;
+}
+
+export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   let payload: any;
   try {
     payload = await request.json();
   } catch {
-    return new Response(JSON.stringify({ detail: 'Invalid JSON' }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json', ...corsHeaders },
-    });
+    return jsonResp({ error: 'Invalid JSON' }, 400);
   }
 
-  // Honeypot check
+  // Honeypot check — silently accept
   if (payload.honeypot) {
-    return new Response(JSON.stringify({ status: 'ok' }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json', ...corsHeaders },
-    });
+    return jsonResp({ status: 'ok' });
   }
 
-  // Try the primary VPS backend with a 5-second timeout
-  try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
-
-    const resp = await fetch('https://api.depohire.com/api/leads', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-      signal: controller.signal,
-    });
-
-    clearTimeout(timeout);
-
-    if (resp.ok) {
-      const data = await resp.json();
-      return new Response(JSON.stringify(data), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json', ...corsHeaders },
-      });
+  // Turnstile CSRF verification
+  const turnstileToken = payload.turnstile_token || '';
+  const ip = request.headers.get('CF-Connecting-IP') || '';
+  if (env.TURNSTILE_SECRET_KEY) {
+    const valid = await verifyTurnstile(turnstileToken, env.TURNSTILE_SECRET_KEY, ip);
+    if (!valid) {
+      return jsonResp({ error: 'Bot verification failed. Please try again.' }, 403);
     }
+  }
 
-    // VPS returned an error — fall through to D1 fallback
-    throw new Error(`VPS returned ${resp.status}`);
+  const providers: { name: string; email: string; slug: string }[] = payload.providers || [];
+  const attorney = {
+    name: payload.attorney_name || '',
+    email: payload.attorney_email || '',
+    phone: payload.attorney_phone || '',
+    caseDetails: payload.case_details || '',
+    city: payload.city || '',
+  };
+
+  // 1. Always save to D1
+  try {
+    if (env.LEADS_DB) {
+      await env.LEADS_DB.prepare(
+        `INSERT INTO leads (created_at, attorney_name, attorney_email, attorney_phone, case_details, city, providers_json, forwarded)
+         VALUES (?, ?, ?, ?, ?, ?, ?, 1)`
+      ).bind(
+        new Date().toISOString(),
+        attorney.name,
+        attorney.email,
+        attorney.phone,
+        attorney.caseDetails,
+        attorney.city,
+        JSON.stringify(providers),
+      ).run();
+    }
   } catch (err) {
-    // VPS is down or timed out — store in D1 as fallback
-    console.error('VPS lead proxy failed, falling back to D1:', err);
+    console.error('D1 lead insert failed:', err);
+  }
+
+  // 2. Send notification to each provider
+  const site = getSiteConfig(env);
+  let emailsSent = 0;
+  for (const p of providers) {
+    if (!p.email) continue;
+
+    // Check suppression list and notification preferences
+    if (env.LEADS_DB) {
+      try {
+        const suppressed = await env.LEADS_DB.prepare(
+          `SELECT id FROM suppression_list WHERE email = ?`
+        ).bind(p.email.toLowerCase()).first();
+        if (suppressed) {
+          console.log(`Skipping email for ${p.email}: on suppression list`);
+          continue;
+        }
+      } catch {}
+
+      if (p.slug) {
+        try {
+          const claim = await env.LEADS_DB.prepare(
+            `SELECT data_json FROM claimed_listings WHERE listing_slug = ?`
+          ).bind(p.slug).first<{ data_json: string }>();
+          if (claim) {
+            const prefs = JSON.parse(claim.data_json || '{}');
+            if (prefs.notify_new_quotes === false) {
+              console.log(`Skipping email for ${p.slug}: notifications disabled`);
+              continue;
+            }
+          }
+        } catch {}
+      }
+    }
 
     try {
-      if (env.LEADS_DB) {
-        await env.LEADS_DB.prepare(
-          `INSERT INTO leads (created_at, attorney_name, attorney_email, attorney_phone, case_details, city, providers_json, forwarded)
-           VALUES (?, ?, ?, ?, ?, ?, ?, 0)`
-        ).bind(
-          new Date().toISOString(),
-          payload.attorney_name || '',
-          payload.attorney_email || '',
-          payload.attorney_phone || '',
-          payload.case_details || '',
-          payload.city || '',
-          JSON.stringify(payload.providers || []),
-        ).run();
-      }
-    } catch (d1Err) {
-      console.error('D1 fallback also failed:', d1Err);
+      const ok = await sendListmonkEmail(
+        env,
+        p.email,
+        `New quote request for ${p.name} on ${site.name}`,
+        providerEmailHtml(p, attorney, site),
+        site,
+      );
+      if (ok) emailsSent++;
+    } catch (err) {
+      console.error(`Provider email to ${p.email} failed:`, err);
     }
-
-    // Always return success to the attorney
-    return new Response(JSON.stringify({
-      status: 'ok',
-      message: 'Your request has been received. Providers will respond to your email.',
-      emailed: (payload.providers || []).length || 1,
-      fallback: true,
-    }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json', ...corsHeaders },
-    });
   }
+
+  // 3. Send confirmation to attorney
+  if (attorney.email) {
+    try {
+      await sendListmonkEmail(
+        env,
+        attorney.email,
+        `Your ${site.name} quote request has been sent`,
+        attorneyConfirmationHtml(attorney, providers, site),
+        site,
+      );
+    } catch (err) {
+      console.error('Attorney confirmation email failed:', err);
+    }
+  }
+
+  // 4. Always return success
+  return jsonResp({
+    status: 'ok',
+    message: 'Your request has been received. Providers will respond to your email.',
+    emailed: emailsSent,
+  });
 };
 
 // Handle CORS preflight

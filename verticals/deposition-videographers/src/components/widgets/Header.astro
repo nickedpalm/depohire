@@ -92,7 +92,7 @@ const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
                 <>
                   <button
                     type="button"
-                    class="hover:text-link dark:hover:text-white px-4 py-3 flex items-center whitespace-nowrap"
+                    class="hover:text-link dark:hover:text-white px-4 py-3 flex items-center whitespace-nowrap focus:outline-none focus:text-link"
                   >
                     {text}{' '}
                     <Icon name="tabler:chevron-down" class="w-3.5 h-3.5 ml-0.5 rtl:ml-0 rtl:mr-0.5 hidden md:inline" />
@@ -102,8 +102,8 @@ const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
                       <li>
                         <a
                           class:list={[
-                            'first:rounded-t last:rounded-b md:hover:bg-gray-100 hover:text-link dark:hover:text-white dark:hover:bg-gray-700 py-2 px-5 block whitespace-no-wrap',
-                            { 'aw-link-active': href2 === currentPath },
+                            'first:rounded-t last:rounded-b md:hover:bg-gray-100 hover:text-link dark:hover:text-white dark:hover:bg-gray-700 py-2 px-5 block whitespace-no-wrap focus:outline-none focus:text-link focus:bg-gray-100',
+                            { 'font-bold text-link': href2 === currentPath },
                           ]}
                           href={href2}
                         >
@@ -116,8 +116,8 @@ const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
               ) : (
                 <a
                   class:list={[
-                    'hover:text-link dark:hover:text-white px-4 py-3 flex items-center whitespace-nowrap',
-                    { 'aw-link-active': href === currentPath },
+                    'hover:text-link dark:hover:text-white px-4 py-3 flex items-center whitespace-nowrap focus:outline-none focus:text-link focus:underline underline-offset-4',
+                    { 'font-bold text-link': href === currentPath },
                   ]}
                   href={href}
                 >
@@ -127,6 +127,15 @@ const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
             </li>
           ))
         }
+        {actions?.length ? (
+          <li class="md:hidden border-t border-gray-100 mt-2 pt-2">
+            {actions.map((btnProps) => (
+              <a href={btnProps.href} class="block px-4 py-3 text-center font-semibold text-white bg-primary-600 rounded-lg mx-4 mb-2 hover:bg-primary-700 transition-colors">
+                {btnProps.text}
+              </a>
+            ))}
+          </li>
+        ) : null}
       </ul>
     </nav>
     <div

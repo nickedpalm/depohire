@@ -17,14 +17,14 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   }
 
   const email = (payload.email || '').trim().toLowerCase();
-  if (!email || !email.includes('@')) {
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
     return jsonResponse({ error: 'Valid email is required' }, 400, origin);
   }
 
-  // Rate limit: max 3 magic links per email per hour
+  // Rate limit: max 3 magic links per email per hour (counts all, not just unused)
   const recentCount = await env.LEADS_DB.prepare(
     `SELECT COUNT(*) as cnt FROM magic_links
-     WHERE email = ? AND created_at > ? AND used = 0`
+     WHERE email = ? AND created_at > ?`
   ).bind(email, new Date(Date.now() - 3600000).toISOString()).first<{ cnt: number }>();
 
   if (recentCount && recentCount.cnt >= 3) {
@@ -35,17 +35,25 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   const now = new Date().toISOString();
   const expiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString(); // 15 min
 
+  const listingSlug = (payload.listing_slug || '').trim() || null;
+  if (listingSlug && !/^[a-z0-9][a-z0-9-]*$/.test(listingSlug)) {
+    return jsonResponse({ error: 'Invalid listing slug' }, 400, origin);
+  }
+
   await env.LEADS_DB.prepare(
     `INSERT INTO magic_links (email, token, listing_slug, created_at, expires_at, used)
      VALUES (?, ?, ?, ?, ?, 0)`
-  ).bind(email, token, payload.listing_slug || null, now, expiresAt).run();
+  ).bind(email, token, listingSlug, now, expiresAt).run();
 
   // Send email via Listmonk transactional API
   const listmonkUrl = env.LISTMONK_URL || 'https://mail.firestick.io';
   const listmonkUser = env.LISTMONK_USER || 'admin';
   const listmonkPass = env.LISTMONK_PASS || '';
 
-  const verifyUrl = `https://depohire.com/api/auth/verify?token=${token}`;
+  const domain = env.SITE_DOMAIN || 'depohire.com';
+  const siteName = env.SITE_NAME || 'DepoHire';
+  const tagline = env.SITE_TAGLINE || 'Find certified deposition videographers';
+  const verifyUrl = `https://${domain}/api/auth/verify?token=${token}`;
 
   const emailBody = `
 <!DOCTYPE html>
@@ -53,12 +61,12 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
 <body style="margin:0;padding:0;background:#f9fafb;font-family:system-ui,-apple-system,sans-serif">
 <div style="max-width:480px;margin:40px auto;background:#fff;border-radius:12px;border:1px solid #e5e7eb;overflow:hidden">
   <div style="background:#1e3a5f;padding:24px 32px">
-    <h1 style="color:#fff;font-size:20px;margin:0;font-weight:700">DepoHire</h1>
+    <h1 style="color:#fff;font-size:20px;margin:0;font-weight:700">${siteName}</h1>
   </div>
   <div style="padding:32px">
     <h2 style="color:#1a1a1a;font-size:18px;margin:0 0 12px">Log in to your dashboard</h2>
     <p style="color:#6b7280;font-size:15px;line-height:1.6;margin:0 0 24px">
-      Click the button below to access your provider dashboard on DepoHire. This link expires in 15 minutes.
+      Click the button below to access your provider dashboard on ${siteName}. This link expires in 15 minutes.
     </p>
     <a href="${verifyUrl}"
        style="display:inline-block;background:#2563eb;color:#fff;padding:14px 32px;border-radius:8px;text-decoration:none;font-weight:600;font-size:15px">
@@ -68,8 +76,11 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       If you didn't request this link, you can safely ignore this email.
     </p>
   </div>
-  <div style="border-top:1px solid #f3f4f6;padding:16px 32px">
-    <p style="color:#d1d5db;font-size:12px;margin:0">DepoHire &mdash; Find certified deposition videographers</p>
+  <div style="border-top:1px solid #f3f4f6;padding:20px 32px">
+    <p style="color:#d1d5db;font-size:11px;margin:0;line-height:1.5">
+      ${siteName} &middot; PO Box 1547, Austin, TX 78767<br>
+      ${tagline}
+    </p>
   </div>
 </div>
 </body>
@@ -85,12 +96,11 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       body: JSON.stringify({
         subscriber_email: email,
         template_id: 6,
-        subject: 'Your DepoHire login link',
-        body: emailBody,
+        subject: `Your ${siteName} login link`,
         content_type: 'html',
-        data: {},
+        data: { body: emailBody },
         messenger: 'email',
-        from_email: 'DepoHire <noreply@depohire.com>',
+        from_email: env.SITE_FROM_EMAIL || `${siteName} <noreply@${domain}>`,
       }),
     });
 

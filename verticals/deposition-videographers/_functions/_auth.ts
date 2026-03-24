@@ -1,14 +1,17 @@
 import type { Env } from './_types';
 
+export const SLUG_RE = /^[a-z0-9][a-z0-9-]*$/;
+
 export function generateToken(): string {
   const bytes = new Uint8Array(32);
   crypto.getRandomValues(bytes);
   return Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
 }
 
-export function corsHeaders(origin?: string) {
+export function corsHeaders(origin?: string, env?: { SITE_DOMAIN?: string }) {
+  const defaultOrigin = env?.SITE_DOMAIN ? `https://${env.SITE_DOMAIN}` : 'https://depohire.com';
   return {
-    'Access-Control-Allow-Origin': origin || 'https://depohire.com',
+    'Access-Control-Allow-Origin': origin || defaultOrigin,
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Allow-Credentials': 'true',
@@ -37,6 +40,25 @@ export function getSessionToken(request: Request): string | null {
   const cookie = request.headers.get('Cookie') || '';
   const match = cookie.match(/depohire_session=([a-f0-9]{64})/);
   return match ? match[1] : null;
+}
+
+export async function verifyTurnstile(token: string, secret: string, ip?: string): Promise<boolean> {
+  if (!secret) return true; // Skip if no secret configured (dev mode)
+  if (!token) return false;
+  const body: Record<string, string> = { secret, response: token };
+  if (ip) body.remoteip = ip;
+  try {
+    const resp = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const result = await resp.json<{ success: boolean }>();
+    return result.success === true;
+  } catch {
+    console.error('Turnstile verification failed');
+    return false;
+  }
 }
 
 export async function getProvider(db: D1Database, request: Request) {

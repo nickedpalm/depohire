@@ -266,7 +266,11 @@ const { title, activePage } = Astro.props;
           var resp = await fetch('/api/auth/session', { credentials: 'include' });
           var data = await resp.json();
           if (!data.authenticated) {
-            window.location.href = '/provider/login';
+            var params = new URLSearchParams(window.location.search);
+            var listing = params.get('listing');
+            window.location.href = listing
+              ? '/provider/login?listing=' + encodeURIComponent(listing)
+              : '/provider/login';
             return;
           }
           window.dashState.provider = data.provider;

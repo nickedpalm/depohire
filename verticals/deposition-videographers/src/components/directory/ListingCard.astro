@@ -40,7 +40,7 @@ const hasCLVS = certifications.some(c => c.toUpperCase().includes('CLVS'));
   data-provider-email={email}
   data-provider-slug={slug}
 >
-  {selectable && (
+  {selectable && email && (
     <button
       type="button"
       class="absolute top-3 right-3 z-10 min-h-[44px] min-w-[44px] inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-medium border border-gray-300 text-gray-500 bg-white hover:border-primary-400 hover:text-primary-600 transition-all select-quote-btn"
@@ -55,7 +55,7 @@ const hasCLVS = certifications.some(c => c.toUpperCase().includes('CLVS'));
     </button>
   )}
   <a href={`/listing/${slug}/`} class="no-underline group block">
-    <div class="flex items-start justify-between gap-3">
+    <div class="flex items-start gap-3 flex-wrap">
       <InitialsAvatar name={name} size="sm" />
       <div class="flex-1 min-w-0">
         <div class="flex items-center gap-2">
@@ -63,8 +63,12 @@ const hasCLVS = certifications.some(c => c.toUpperCase().includes('CLVS'));
           {featured && <FeaturedBadge size="sm" />}
         </div>
         <p class="text-sm text-gray-500 mt-0.5">{city}, {state}</p>
+        <div class="flex items-center gap-2 mt-1 sm:hidden">
+          <ReviewStars rating={rating} count={review_count} size="sm" />
+          {sentiment && <SentimentBadge label={sentiment.label} score={sentiment.score} size="sm" />}
+        </div>
       </div>
-      <div class="flex flex-col items-end gap-1">
+      <div class="hidden sm:flex flex-col items-end gap-1">
         <ReviewStars rating={rating} count={review_count} size="sm" />
         {sentiment && <SentimentBadge label={sentiment.label} score={sentiment.score} size="sm" />}
       </div>

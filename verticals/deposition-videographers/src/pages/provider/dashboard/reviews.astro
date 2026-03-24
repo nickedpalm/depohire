@@ -45,7 +45,7 @@ import DashboardLayout from '~/layouts/DashboardLayout.astro';
   </div>
 
   <script is:inline>
-    window.addEventListener('dash-ready', function() {
+    window.addEventListener('dash-ready', async function() {
       var slug = window.dashState.currentSlug;
       var listingUrl = 'https://depohire.com/listing/' + slug + '/';
       document.getElementById('listing-url').value = listingUrl;
@@ -57,17 +57,64 @@ import DashboardLayout from '~/layouts/DashboardLayout.astro';
         setTimeout(function() { btn.textContent = 'Copy Link'; }, 2000);
       });
 
-      // Reviews come from the static listing data (scraped reviews)
-      // In the future this would be a reviews API
-      document.getElementById('review-rating').textContent = '—';
-      document.getElementById('review-stars').innerHTML = '<span style="color:#d1d5db">&#x2606;&#x2606;&#x2606;&#x2606;&#x2606;</span>';
-      document.getElementById('review-count').textContent = 'No reviews collected yet';
-      document.getElementById('reviews-list').innerHTML =
-        '<div style="padding:60px;text-align:center;color:#9ca3af">' +
-          '<p style="font-size:36px;margin-bottom:12px">&#x2b50;</p>' +
-          '<p style="font-size:16px;font-weight:600">No reviews yet</p>' +
-          '<p style="font-size:13px;margin-top:8px">Reviews from the original listing data are shown on your public page.<br>A full review management system is coming soon.</p>' +
-        '</div>';
+      // Load scraped review data from the static listing page
+      try {
+        var resp = await fetch('/listing/' + slug + '/');
+        if (resp.ok) {
+          var html = await resp.text();
+          var parser = new DOMParser();
+          var doc = parser.parseFromString(html, 'text/html');
+
+          // Try to extract rating and review count from the listing page
+          var ratingEl = doc.querySelector('[data-rating]');
+          var rating = ratingEl ? parseFloat(ratingEl.getAttribute('data-rating')) : 0;
+          var reviewCountEl = doc.querySelector('[data-review-count]');
+          var reviewCount = reviewCountEl ? parseInt(reviewCountEl.getAttribute('data-review-count')) : 0;
+
+          // Fallback: try meta or text content
+          if (!rating) {
+            var text = doc.body.textContent || '';
+            var ratingMatch = text.match(/(\d+\.\d+)\s*(?:\/\s*5|stars?|rating)/i);
+            if (ratingMatch) rating = parseFloat(ratingMatch[1]);
+            var countMatch = text.match(/(\d+)\s*reviews?/i);
+            if (countMatch) reviewCount = parseInt(countMatch[1]);
+          }
+
+          if (rating > 0) {
+            document.getElementById('review-rating').textContent = rating.toFixed(1);
+            var fullStars = Math.floor(rating);
+            var halfStar = rating - fullStars >= 0.5;
+            var starsHtml = '';
+            for (var i = 0; i < 5; i++) {
+              if (i < fullStars) starsHtml += '&#x2605;';
+              else if (i === fullStars && halfStar) starsHtml += '&#x2605;';
+              else starsHtml += '<span style="color:#d1d5db">&#x2606;</span>';
+            }
+            document.getElementById('review-stars').innerHTML = starsHtml;
+            document.getElementById('review-count').textContent = reviewCount + ' review' + (reviewCount !== 1 ? 's' : '') + ' (from Google/Yelp)';
+
+            document.getElementById('reviews-list').innerHTML =
+              '<div style="padding:40px;text-align:center;color:#6b7280">' +
+                '<p style="font-size:14px;font-weight:600;margin-bottom:8px">Your listing shows ' + rating.toFixed(1) + ' stars from ' + reviewCount + ' review' + (reviewCount !== 1 ? 's' : '') + '</p>' +
+                '<p style="font-size:13px;color:#9ca3af">These are aggregated from Google and Yelp. Individual review management and client review collection are coming soon.</p>' +
+              '</div>';
+          } else {
+            throw new Error('no rating found');
+          }
+        } else {
+          throw new Error('page not found');
+        }
+      } catch(e) {
+        document.getElementById('review-rating').textContent = '—';
+        document.getElementById('review-stars').innerHTML = '<span style="color:#d1d5db">&#x2606;&#x2606;&#x2606;&#x2606;&#x2606;</span>';
+        document.getElementById('review-count').textContent = 'No reviews collected yet';
+        document.getElementById('reviews-list').innerHTML =
+          '<div style="padding:60px;text-align:center;color:#9ca3af">' +
+            '<p style="font-size:36px;margin-bottom:12px">&#x2b50;</p>' +
+            '<p style="font-size:16px;font-weight:600">No reviews yet</p>' +
+            '<p style="font-size:13px;margin-top:8px">Share your listing link below and ask past clients to leave a review. Review management tools are coming soon.</p>' +
+          '</div>';
+      }
     });
   </script>
 

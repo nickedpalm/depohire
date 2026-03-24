@@ -6,7 +6,7 @@
  * Delete: JSON body with: listing_slug, photo_id
  */
 import type { Env } from '../../_types';
-import { getProvider, jsonResponse, optionsResponse } from '../../_auth';
+import { getProvider, jsonResponse, optionsResponse, SLUG_RE } from '../../_auth';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
@@ -31,8 +31,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   const slug = formData.get('listing_slug') as string;
   const file = formData.get('file') as File | null;
 
-  if (!slug || !file) {
-    return jsonResponse({ error: 'listing_slug and file are required' }, 400, origin);
+  if (!slug || !SLUG_RE.test(slug) || !file) {
+    return jsonResponse({ error: 'Valid listing_slug and file are required' }, 400, origin);
   }
 
   // Verify ownership
@@ -51,14 +51,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     return jsonResponse({ error: 'File must be under 5MB' }, 400, origin);
   }
 
-  // Check photo count
-  const countResult = await env.LEADS_DB.prepare(
-    `SELECT COUNT(*) as cnt FROM provider_photos WHERE listing_slug = ?`
-  ).bind(slug).first<{ cnt: number }>();
-
-  if (countResult && countResult.cnt >= MAX_PHOTOS_PER_LISTING) {
-    return jsonResponse({ error: `Maximum ${MAX_PHOTOS_PER_LISTING} photos per listing` }, 400, origin);
-  }
+  // Sanitize filename: strip path components and non-printable chars
+  const safeFilename = (file.name || 'photo').replace(/[\/\\]/g, '_').replace(/[^\x20-\x7E]/g, '').substring(0, 100) || 'photo';
 
   // Upload to R2
   const ext = file.type === 'image/png' ? 'png' : file.type === 'image/webp' ? 'webp' : 'jpg';
@@ -70,21 +64,27 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     httpMetadata: { contentType: file.type },
   });
 
-  // Save to DB
-  const nextOrder = (countResult?.cnt || 0) + 1;
+  // Atomic insert with count check — prevents race condition
   const now = new Date().toISOString();
-
-  await env.LEADS_DB.prepare(
+  const result = await env.LEADS_DB.prepare(
     `INSERT INTO provider_photos (provider_id, listing_slug, r2_key, filename, uploaded_at, sort_order)
-     VALUES (?, ?, ?, ?, ?, ?)`
-  ).bind(provider.id, slug, r2Key, file.name, now, nextOrder).run();
+     SELECT ?, ?, ?, ?, ?,
+       (SELECT COUNT(*) + 1 FROM provider_photos WHERE listing_slug = ?)
+     WHERE (SELECT COUNT(*) FROM provider_photos WHERE listing_slug = ?) < ?`
+  ).bind(provider.id, slug, r2Key, safeFilename, now, slug, slug, MAX_PHOTOS_PER_LISTING).run();
+
+  if (result.meta.changes === 0) {
+    // Over limit — clean up the R2 object we just uploaded
+    await env.PHOTOS.delete(r2Key);
+    return jsonResponse({ error: `Maximum ${MAX_PHOTOS_PER_LISTING} photos per listing` }, 400, origin);
+  }
 
   return jsonResponse({
     ok: true,
     photo: {
       r2_key: r2Key,
       url: `/api/photos/${r2Key}`,
-      filename: file.name,
+      filename: safeFilename,
       uploaded_at: now,
     },
   }, 200, origin);

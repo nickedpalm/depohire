@@ -13,11 +13,10 @@ interface Props {
 
 const { states } = Astro.props;
 ---
-<section class="container-narrow py-12">
-  <h2 class="text-2xl font-bold text-gray-900 mb-6">Browse by State</h2>
+<div>
   <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
     {states.map((s) => (
-      <a href={`/states/${s.stateSlug}/`} class="card p-4 no-underline hover:border-primary-300 group">
+      <a href={`/states/${s.stateSlug}/`} class="bg-white rounded-xl border border-gray-200 p-4 no-underline hover:border-primary-300 hover:shadow-sm transition-all group">
         <span class="block font-semibold text-gray-900 group-hover:text-primary-600">{s.stateName}</span>
         <span class="text-sm text-gray-500">{s.cityCount} {s.cityCount === 1 ? 'city' : 'cities'}</span>
         {s.listingCount > 0 && (
@@ -26,4 +25,4 @@ const { states } = Astro.props;
       </a>
     ))}
   </div>
-</section>
+</div>

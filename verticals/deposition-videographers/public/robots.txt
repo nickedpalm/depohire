@@ -1,4 +1,5 @@
 User-agent: *
-Disallow:
+Disallow: /provider/dashboard/
+Disallow: /api/
 
 Sitemap: https://depohire.com/sitemap-index.xml

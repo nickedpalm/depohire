@@ -95,6 +95,25 @@ import DashboardLayout from '~/layouts/DashboardLayout.astro';
           var result = await resp.json();
           var d = result.data || {};
           if (d.coverage_area) document.getElementById('area-coverage').value = d.coverage_area;
+          if (d.service_radius) {
+            document.getElementById('radius-slider').value = d.service_radius;
+            document.getElementById('radius-display').textContent = d.service_radius;
+          }
+          if (d.rush_available) document.getElementById('rush-toggle').checked = true;
+          if (d.travel_policy) document.getElementById('travel-policy').value = d.travel_policy;
+          if (d.availability_days && Array.isArray(d.availability_days)) {
+            document.querySelectorAll('.day-btn').forEach(function(btn) {
+              var day = btn.getAttribute('data-day');
+              var active = d.availability_days.indexOf(day) !== -1;
+              if (active) {
+                btn.classList.add('active');
+                btn.style.background = '#2563eb'; btn.style.color = '#fff';
+              } else {
+                btn.classList.remove('active');
+                btn.style.background = '#f3f4f6'; btn.style.color = '#6b7280';
+              }
+            });
+          }
         }
       } catch(e) {}
 
@@ -115,15 +134,24 @@ import DashboardLayout from '~/layouts/DashboardLayout.astro';
         });
       });
 
-      // Save
+      // Save — all fields
       document.getElementById('save-area-btn').addEventListener('click', async function() {
         var btn = this;
         var banner = document.getElementById('save-area-banner');
         btn.textContent = 'Saving...'; btn.disabled = true;
 
+        var activeDays = [];
+        document.querySelectorAll('.day-btn.active').forEach(function(b) {
+          activeDays.push(b.getAttribute('data-day'));
+        });
+
         var payload = {
           slug: slug,
           coverage_area: document.getElementById('area-coverage').value.trim(),
+          service_radius: parseInt(document.getElementById('radius-slider').value),
+          availability_days: activeDays,
+          rush_available: document.getElementById('rush-toggle').checked,
+          travel_policy: document.getElementById('travel-policy').value.trim(),
         };
 
         try {

@@ -15,6 +15,10 @@ export const headerData = {
       href: getBlogPermalink(),
     },
     {
+      text: 'Free Guides',
+      href: getPermalink('/guides'),
+    },
+    {
       text: 'About',
       href: getPermalink('/about'),
     },
@@ -38,7 +42,7 @@ export const footerData = {
       title: 'Resources',
       links: [
         { text: 'Blog', href: getBlogPermalink() },
-        { text: 'Statistics', href: getPermalink('/statistics') },
+        { text: 'Free Guides', href: getPermalink('/guides') },
         { text: 'Editorial Guidelines', href: getPermalink('/editorial-guidelines') },
       ],
     },
@@ -54,6 +58,7 @@ export const footerData = {
       links: [
         { text: 'About', href: getPermalink('/about') },
         { text: 'Privacy Policy', href: getPermalink('/privacy') },
+        { text: 'Terms of Service', href: getPermalink('/terms') },
       ],
     },
   ],
@@ -62,5 +67,5 @@ export const footerData = {
     { text: 'Editorial Guidelines', href: getPermalink('/editorial-guidelines') },
   ],
   socialLinks: [],
-  footNote: '',
+  footNote: `© ${new Date().getFullYear()} DepoHire. All rights reserved. The only directory built for litigation teams.`,
 };

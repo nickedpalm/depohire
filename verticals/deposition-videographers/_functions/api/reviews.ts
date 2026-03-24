@@ -5,9 +5,8 @@
  * Reviews are stored in D1 and require approval before display.
  */
 
-interface Env {
-  LEADS_DB: D1Database;
-}
+import type { Env } from '../_types';
+import { verifyTurnstile } from '../_auth';
 
 export const onRequestPost: PagesFunction<Env> = async (context) => {
   const { request, env } = context;
@@ -22,7 +21,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   try {
     payload = await request.json();
   } catch {
-    return new Response(JSON.stringify({ detail: 'Invalid JSON' }), {
+    return new Response(JSON.stringify({ error: 'Invalid JSON' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
@@ -31,10 +30,22 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   const { provider_slug, reviewer_name, reviewer_email, rating, comment } = payload;
 
   if (!provider_slug || !rating || rating < 1 || rating > 5) {
-    return new Response(JSON.stringify({ detail: 'provider_slug and rating (1-5) are required' }), {
+    return new Response(JSON.stringify({ error: 'provider_slug and rating (1-5) are required' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
+  }
+
+  // Turnstile verification
+  if (env.TURNSTILE_SECRET_KEY) {
+    const ip = request.headers.get('CF-Connecting-IP') || '';
+    const valid = await verifyTurnstile(payload.turnstile_token || '', env.TURNSTILE_SECRET_KEY, ip);
+    if (!valid) {
+      return new Response(JSON.stringify({ error: 'Bot verification failed. Please try again.' }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders },
+      });
+    }
   }
 
   try {
@@ -63,7 +74,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     });
   } catch (err) {
     console.error('Review submission failed:', err);
-    return new Response(JSON.stringify({ detail: 'Failed to save review' }), {
+    return new Response(JSON.stringify({ error: 'Failed to save review' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });

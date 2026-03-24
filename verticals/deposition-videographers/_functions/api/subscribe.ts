@@ -56,6 +56,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   if (city) attribs.city = city;
 
   try {
+    // Step 1: Create subscriber (or get existing)
     const resp = await fetch(`${url}/api/subscribers`, {
       method: 'POST',
       headers: {
@@ -72,10 +73,49 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       }),
     });
 
-    if (!resp.ok && resp.status !== 409) {
+    let subscriberId: number | null = null;
+
+    if (resp.ok) {
+      try {
+        const data = await resp.json() as any;
+        subscriberId = data?.data?.id || null;
+      } catch {}
+    } else if (resp.status === 409) {
+      // Subscriber already exists — look up their ID
+      try {
+        const lookupResp = await fetch(`${url}/api/subscribers?query=subscribers.email='${encodeURIComponent(email)}'&page=1&per_page=1`, {
+          headers: { 'Authorization': authHeader },
+        });
+        if (lookupResp.ok) {
+          const lookupData = await lookupResp.json() as any;
+          subscriberId = lookupData?.data?.results?.[0]?.id || null;
+        }
+      } catch {}
+    } else {
       const text = await resp.text();
       console.error(`Listmonk subscribe failed: ${resp.status} ${text}`);
       return jsonResp({ error: 'Subscription failed' }, 502);
+    }
+
+    // Step 2: Explicitly add subscriber to lists (Listmonk v6 workaround)
+    if (subscriberId) {
+      try {
+        await fetch(`${url}/api/subscribers/lists`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': authHeader,
+          },
+          body: JSON.stringify({
+            ids: [subscriberId],
+            action: 'add',
+            target_list_ids: lists,
+            status: 'confirmed',
+          }),
+        });
+      } catch (err) {
+        console.error('Failed to add subscriber to lists:', err);
+      }
     }
 
     // If this is a guide download request, send the delivery email

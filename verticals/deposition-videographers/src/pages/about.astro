@@ -10,7 +10,7 @@ const totalCities = Object.keys(cityCounts).length;
 const totalStates = new Set(citiesData.map(c => c.state)).size;
 
 const title = 'About DepoHire';
-const description = `DepoHire helps litigation attorneys find verified deposition videographers in ${totalCities}+ cities. No guesswork, no cold calls — just vetted providers with real credentials.`;
+const description = `DepoHire helps attorneys find curated deposition videographers in ${totalCities}+ cities. Researched providers, real credentials, no cold calls.`;
 
 const schema = {
   '@context': 'https://schema.org',
@@ -19,7 +19,7 @@ const schema = {
   description,
   mainEntity: {
     '@type': 'Organization',
-    name: config.name,
+    name: 'DepoHire',
     url: config.siteUrl,
     foundingDate: `${config.foundedYear}`,
     description: config.description,
@@ -80,7 +80,7 @@ const metadata = { title, description };
       <p class="text-primary-600 text-sm font-semibold uppercase tracking-widest mb-3 text-center">The solution</p>
       <h2 class="text-2xl sm:text-3xl font-bold text-default mb-4 text-center">DepoHire takes the guesswork out of hiring.</h2>
       <p class="text-lg text-muted text-center max-w-2xl mx-auto mb-10">
-        We built the only directory designed specifically for litigation professionals who need deposition videographers. No generic contractor listings. No pay-to-play rankings. Just verified providers you can actually trust.
+        We built the only directory designed specifically for litigation professionals who need deposition videographers. No generic contractor listings. No pay-to-play rankings. Just carefully researched providers you can actually trust.
       </p>
 
       <div class="space-y-6">
@@ -89,7 +89,7 @@ const metadata = { title, description };
             <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
           </div>
           <div>
-            <h3 class="font-semibold text-default text-lg">Every listing is verified</h3>
+            <h3 class="font-semibold text-default text-lg">Every listing is researched</h3>
             <p class="text-muted text-sm mt-1">We cross-reference business records, industry databases, and professional profiles. CLVS certification status is front and center on every listing.</p>
           </div>
         </div>
@@ -132,7 +132,7 @@ const metadata = { title, description };
         <div>
           <div class="w-12 h-12 rounded-full bg-primary-600 text-white text-xl font-bold flex items-center justify-center mx-auto mb-4">1</div>
           <h3 class="font-semibold text-default mb-2">Search your city</h3>
-          <p class="text-sm text-muted">Enter a city name or zip code. We'll show you every verified deposition videographer in range.</p>
+          <p class="text-sm text-muted">Enter a city name or zip code. We'll show you every listed deposition videographer in range.</p>
         </div>
         <div>
           <div class="w-12 h-12 rounded-full bg-primary-600 text-white text-xl font-bold flex items-center justify-center mx-auto mb-4">2</div>
@@ -165,7 +165,7 @@ const metadata = { title, description };
         </div>
         <div class="bg-white rounded-lg border border-gray-200 p-4">
           <p class="font-semibold text-default text-sm">Credential tracking</p>
-          <p class="text-xs text-muted mt-1">CLVS and other certifications are flagged and verified where possible.</p>
+          <p class="text-xs text-muted mt-1">CLVS and other certifications are flagged and checked where possible.</p>
         </div>
         <div class="bg-white rounded-lg border border-gray-200 p-4">
           <p class="font-semibold text-default text-sm">Review aggregation</p>
@@ -200,7 +200,7 @@ const metadata = { title, description };
   <section class="bg-primary-600 text-white py-12 sm:py-16">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 text-center">
       <h2 class="text-2xl sm:text-3xl font-bold mb-3">Ready to find a videographer?</h2>
-      <p class="text-primary-100 text-lg mb-6">Search is free. No account needed. Find verified providers in your city in under a minute.</p>
+      <p class="text-primary-100 text-lg mb-6">Search is free. No account needed. Find qualified providers in your city in under a minute.</p>
       <div class="flex flex-col sm:flex-row gap-3 justify-center">
         <a href="/search/" class="bg-white text-primary-700 font-semibold px-8 py-3 rounded-lg no-underline hover:bg-primary-50 transition-colors text-lg">Find Providers &rarr;</a>
         <a href="/advertise/" class="border-2 border-white text-white font-semibold px-8 py-3 rounded-lg no-underline hover:bg-primary-500 transition-colors text-lg">List Your Business</a>
@@ -218,6 +218,7 @@ const metadata = { title, description };
         <a href={`mailto:claims@${config.domain}`} class="text-primary hover:underline">Claim a listing: claims@{config.domain}</a>
         <a href={`mailto:advertise@${config.domain}`} class="text-primary hover:underline">Advertising: advertise@{config.domain}</a>
       </div>
+      <p class="text-xs text-muted mt-4">PO Box 1547, Austin, TX 78767</p>
     </div>
   </section>
 

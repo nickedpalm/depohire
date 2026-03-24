@@ -21,7 +21,9 @@ export default defineConfig({
     tailwind({
       applyBaseStyles: false,
     }),
-    sitemap(),
+    sitemap({
+      filter: (page) => !page.includes('/provider/dashboard'),
+    }),
     mdx(),
     icon({
       include: {
