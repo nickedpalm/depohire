@@ -17,6 +17,19 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).parent.parent
 
 
+def _parse_json_field(val, default=None):
+    """Parse a JSON string field, returning default if invalid."""
+    if val is None:
+        return default if default is not None else []
+    if isinstance(val, (list, dict)):
+        return val
+    try:
+        parsed = json.loads(val)
+        return parsed if isinstance(parsed, list) else [parsed] if parsed else (default if default is not None else [])
+    except (json.JSONDecodeError, TypeError):
+        return [val] if val else (default if default is not None else [])
+
+
 def slugify(text: str) -> str:
     """Convert text to URL-safe slug."""
     text = text.lower().strip()
@@ -90,13 +103,30 @@ def export_listings(vertical: str):
             for c in json.load(f):
                 city_display_names[c["slug"]] = c["city"]
 
-    listings = conn.execute("""
-        SELECT * FROM raw_listings
-        WHERE vertical = ?
-        ORDER BY city, name
-    """, (vertical,)).fetchall()
+    # Check if is_relevant column exists
+    columns = [r[1] for r in conn.execute("PRAGMA table_info(raw_listings)").fetchall()]
+    has_relevance = "is_relevant" in columns
+    has_certifications_col = "certifications" in columns
+    has_equipment_col = "equipment" in columns
+    has_coverage_area_col = "coverage_area" in columns
+    has_years_experience_col = "years_experience" in columns
 
-    print(f"Exporting {len(listings)} listings for {vertical}")
+    if has_relevance:
+        listings = conn.execute("""
+            SELECT * FROM raw_listings
+            WHERE vertical = ? AND (is_relevant = 1 OR is_relevant IS NULL)
+            ORDER BY city, name
+        """, (vertical,)).fetchall()
+        total = conn.execute("SELECT COUNT(*) FROM raw_listings WHERE vertical = ?", (vertical,)).fetchone()[0]
+        filtered = total - len(listings)
+        print(f"Exporting {len(listings)} listings for {vertical} ({filtered} irrelevant filtered out)")
+    else:
+        listings = conn.execute("""
+            SELECT * FROM raw_listings
+            WHERE vertical = ?
+            ORDER BY city, name
+        """, (vertical,)).fetchall()
+        print(f"Exporting {len(listings)} listings for {vertical}")
 
     # Group by city
     by_city: dict[str, list] = {}
@@ -128,13 +158,17 @@ def export_listings(vertical: str):
             "lng": row["lng"] or 0,
             "phone": row["phone"] or "",
             "website": row["website"] or "",
-            "email": enrichments.get("email", raw.get("email", "")),
+            "email": row["email"] or enrichments.get("email", raw.get("email", "")),
+            "contact_form_url": row["contact_form_url"] if "contact_form_url" in row.keys() else "",
+            "contact_method": row["contact_method"] if "contact_method" in row.keys() else "",
             "rating": safe_float(enrichments.get("rating", raw.get("rating"))),
             "review_count": safe_int(enrichments.get("review_count", raw.get("review_count", raw.get("user_ratings_total")))),
-            "description": raw.get("description", ""),
-            "certifications": raw.get("certifications", []),
+            "description": enrichments.get("description") or (row["description"] if "description" in row.keys() and row["description"] else None) or raw.get("description", ""),
+            "certifications": _parse_json_field(row["certifications"] if has_certifications_col and row["certifications"] else None, raw.get("certifications", [])),
             "services": raw.get("services", []),
-            "years_experience": raw.get("years_experience"),
+            "years_experience": (row["years_experience"] if has_years_experience_col and row["years_experience"] else None) or raw.get("years_experience"),
+            "coverage_area": (row["coverage_area"] if has_coverage_area_col and row["coverage_area"] else "") or raw.get("coverage_area", ""),
+            "equipment": _parse_json_field(row["equipment"] if has_equipment_col and row["equipment"] else None, raw.get("equipment", [])),
             "claimed": False,
             "featured": bool(raw.get("featured", False)),
             "source": row["source"],
