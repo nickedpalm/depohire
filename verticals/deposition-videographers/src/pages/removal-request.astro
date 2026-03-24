@@ -5,7 +5,7 @@ import Turnstile from '~/components/common/Turnstile.astro';
 import config from '~/config';
 
 const title = 'Request Listing Removal';
-const description = `Request removal of a business listing from ${config.name}. We process all removal requests within 10 business days.`;
+const description = `Request removal of a business listing from ${config.name}. We process all removal requests within 5 business days.`;
 const metadata = { title, description };
 ---
 <PageLayout metadata={metadata}>
@@ -19,7 +19,7 @@ const metadata = { title, description };
         <h1 class="rm-title">Request Listing Removal</h1>
         <p class="rm-subtitle">
           If you are a business owner or authorized representative and would like your listing removed from {config.name},
-          please fill out the form below. We will process your request within <strong>10 business days</strong>.
+          please fill out the form below. We will process your request within <strong>5 business days</strong>.
         </p>
 
         <form id="removalForm" class="rm-form" novalidate>
@@ -55,7 +55,7 @@ const metadata = { title, description };
           <h2>Request Received</h2>
           <p>
             We have received your removal request. You will receive a confirmation email at the address you provided.
-            We will process your request within <strong>10 business days</strong>.
+            We will process your request within <strong>5 business days</strong>.
           </p>
           <p class="rm-success-note">
             If you don't see a confirmation email, please check your spam folder or contact us at
@@ -94,7 +94,7 @@ const metadata = { title, description };
               <div class="rm-step-num">3</div>
               <div>
                 <strong>Listing removed</strong>
-                <p>Once verified, we remove the listing within 10 business days and send you a confirmation.</p>
+                <p>Once verified, we remove the listing within 5 business days and send you a confirmation.</p>
               </div>
             </li>
           </ol>

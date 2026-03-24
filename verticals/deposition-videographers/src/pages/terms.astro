@@ -4,7 +4,7 @@ import Breadcrumbs from '~/components/directory/Breadcrumbs.astro';
 import config from '~/config';
 
 const title = 'Terms of Service';
-const description = `Terms of Service for ${config.name}. Review the terms governing use of the ${config.domain} directory, quote requests, provider listings, and related services.`;
+const description = `Terms of Service for ${config.brandName}. Review the terms governing use of the ${config.domain} directory, quote requests, provider listings, and related services.`;
 const metadata = { title, description };
 const currentYear = new Date().getFullYear();
 const effectiveDate = 'March 23, 2026';
@@ -21,7 +21,7 @@ const effectiveDate = 'March 23, 2026';
 
       <p>
         These Terms of Service ("Terms") govern your access to and use of the website located at
-        <a href={`https://${config.domain}`}>{config.domain}</a> (the "Site"), operated by {config.name}
+        <a href={`https://${config.domain}`}>{config.domain}</a> (the "Site"), operated by {config.brandName}
         ("we," "us," or "our"). By accessing or using the Site, you agree to be bound by these Terms. If you
         do not agree to these Terms, you must not use the Site.
       </p>
@@ -34,7 +34,7 @@ const effectiveDate = 'March 23, 2026';
 
       <h2>1. Description of Service</h2>
       <p>
-        {config.name} is an online directory that helps attorneys and litigation teams locate and evaluate
+        {config.brandName} is an online directory that helps attorneys and litigation teams locate and evaluate
         {config.primaryKeyword}s across the United States. The Site aggregates publicly available business
         information, allows service providers to claim and manage their listings, and enables visitors to submit
         quote requests directly to listed providers.
@@ -74,7 +74,7 @@ const effectiveDate = 'March 23, 2026';
         <li>You are providing your information voluntarily and understand it will be shared with the selected provider(s)</li>
         <li>We do not guarantee that any provider will respond to your request, or that any response will meet your needs</li>
         <li>Once your information is transmitted to a provider, that provider's handling of your information is governed by their own privacy practices, not ours</li>
-        <li>Submission of a quote request does not create a contract, engagement, or obligation between you and any provider or between you and {config.name}</li>
+        <li>Submission of a quote request does not create a contract, engagement, or obligation between you and any provider or between you and {config.brandName}</li>
         <li>You will not submit quote requests for frivolous, fraudulent, or non-genuine purposes</li>
       </ul>
       <p>
@@ -85,7 +85,7 @@ const effectiveDate = 'March 23, 2026';
 
       <h3>a. Publicly Sourced Listings</h3>
       <p>
-        {config.name} compiles business listing information from publicly available sources including Google Maps,
+        {config.brandName} compiles business listing information from publicly available sources including Google Maps,
         professional registries, licensing boards, trade associations, review platforms, and publicly accessible
         business websites. We organize and present this information to help attorneys find qualified
         {config.primaryKeyword}s.
@@ -93,7 +93,7 @@ const effectiveDate = 'March 23, 2026';
       <p>
         If you are a business owner or authorized representative and wish to correct or remove a listing sourced
         from public data, please contact us at <a href={`mailto:${config.contactEmail}`}>{config.contactEmail}</a>.
-        We will process corrections within 10 business days and removal requests within 10 business days.
+        We will process corrections within 5 business days and removal requests within 5 business days.
       </p>
 
       <h3>b. Claimed and Managed Listings</h3>
@@ -110,7 +110,7 @@ const effectiveDate = 'March 23, 2026';
 
       <h3>c. Paid Listing Tiers</h3>
       <p>
-        {config.name} offers paid listing tiers that provide enhanced visibility and additional features for
+        {config.brandName} offers paid listing tiers that provide enhanced visibility and additional features for
         service providers. Paid listing tiers may include benefits such as priority placement, enhanced profile
         features, and additional analytics. Paid status does not affect editorial content, review ratings, or
         the substance of any listing information.
@@ -135,7 +135,7 @@ const effectiveDate = 'March 23, 2026';
       <h3>a. Our Content</h3>
       <p>
         The Site and its original content (including but not limited to text, graphics, logos, page layouts, city
-        guides, blog articles, and editorial content) are the property of {config.name} and are protected by
+        guides, blog articles, and editorial content) are the property of {config.brandName} and are protected by
         United States copyright, trademark, and other intellectual property laws. You may not reproduce, distribute,
         modify, create derivative works of, publicly display, or otherwise exploit our content without our prior
         written consent.
@@ -153,7 +153,7 @@ const effectiveDate = 'March 23, 2026';
       <p>
         By submitting any content to the Site &mdash; including but not limited to quote request details, listing
         information, photographs, business descriptions, and any other materials ("User Submissions") &mdash; you
-        grant {config.name} a non-exclusive, royalty-free, worldwide, perpetual license to use, reproduce, modify,
+        grant {config.brandName} a non-exclusive, royalty-free, worldwide, perpetual license to use, reproduce, modify,
         adapt, publish, and display such User Submissions in connection with operating and improving the Site.
       </p>
       <p>You represent and warrant that:</p>
@@ -171,7 +171,7 @@ const effectiveDate = 'March 23, 2026';
       <h2>7. Disclaimers</h2>
       <p>
         <strong>The Site is provided on an "as is" and "as available" basis, without warranties of any kind, either
-        express or implied.</strong> To the fullest extent permitted by applicable law, {config.name} disclaims all
+        express or implied.</strong> To the fullest extent permitted by applicable law, {config.brandName} disclaims all
         warranties, including but not limited to implied warranties of merchantability, fitness for a particular
         purpose, and non-infringement.
       </p>
@@ -191,7 +191,7 @@ const effectiveDate = 'March 23, 2026';
 
       <h2>8. Limitation of Liability</h2>
       <p>
-        <strong>To the maximum extent permitted by applicable law, {config.name}, its owners, officers, employees,
+        <strong>To the maximum extent permitted by applicable law, {config.brandName}, its owners, officers, employees,
         agents, and affiliates shall not be liable for any indirect, incidental, special, consequential, or punitive
         damages arising out of or related to your use of or inability to use the Site.</strong> This includes, without
         limitation, damages for lost profits, lost data, loss of goodwill, business interruption, or any other
@@ -199,7 +199,7 @@ const effectiveDate = 'March 23, 2026';
       </p>
       <p>
         Without limiting the foregoing, our total aggregate liability to you for all claims arising out of or related
-        to the Site or these Terms shall not exceed the greater of (a) the amount you have paid to {config.name} in
+        to the Site or these Terms shall not exceed the greater of (a) the amount you have paid to {config.brandName} in
         the twelve (12) months preceding the event giving rise to the claim, or (b) one hundred dollars ($100.00).
       </p>
       <p>
@@ -208,14 +208,14 @@ const effectiveDate = 'March 23, 2026';
         possibility of such damage.
       </p>
       <p>
-        {config.name} is not liable for any act or omission of any {config.primaryKeyword} listed on the Site,
+        {config.brandName} is not liable for any act or omission of any {config.primaryKeyword} listed on the Site,
         including but not limited to the quality of their work product, their failure to appear at a scheduled
         deposition, equipment malfunctions, breaches of confidentiality, or any other aspect of their performance.
       </p>
 
       <h2>9. Indemnification</h2>
       <p>
-        You agree to indemnify, defend, and hold harmless {config.name}, its owners, officers, employees, agents,
+        You agree to indemnify, defend, and hold harmless {config.brandName}, its owners, officers, employees, agents,
         and affiliates from and against any and all claims, liabilities, damages, losses, costs, and expenses
         (including reasonable attorneys' fees) arising out of or related to:
       </p>
@@ -276,15 +276,15 @@ const effectiveDate = 'March 23, 2026';
       <h2>13. Entire Agreement</h2>
       <p>
         These Terms, together with our <a href="/privacy/">Privacy Policy</a> and any applicable listing agreements,
-        constitute the entire agreement between you and {config.name} regarding your use of the Site. These Terms
+        constitute the entire agreement between you and {config.brandName} regarding your use of the Site. These Terms
         supersede all prior or contemporaneous communications, proposals, and agreements, whether oral or written,
-        between you and {config.name} with respect to the Site.
+        between you and {config.brandName} with respect to the Site.
       </p>
 
       <h2>14. Contact Us</h2>
       <p>If you have questions about these Terms of Service, you may contact us at:</p>
       <address class="not-italic">
-        <strong>{config.name}</strong><br />
+        <strong>{config.brandName}</strong><br />
         PO Box 1547<br />
         Austin, TX 78767<br /><br />
         Email: <a href={`mailto:${config.contactEmail}`}>{config.contactEmail}</a><br />

@@ -98,9 +98,12 @@ const API_URL = '/api/leads';
 
     function getCity() {
       // Try to get city from page context
+      // H1 formats: "Deposition Videographers in Houston, Texas"
+      //              "15 Deposition Videographers in Texas (2026)"
+      //              "Company Name" (listing page — no city)
       const h1 = document.querySelector('h1');
-      const match = h1?.textContent?.match(/in (.+)\?/);
-      return match ? match[1] : '';
+      const match = h1?.textContent?.match(/in ([^(]+?)(?:\s*\(|$)/);
+      return match ? match[1].trim() : '';
     }
 
     function updateBar() {

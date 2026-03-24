@@ -179,10 +179,45 @@ const { title, activePage } = Astro.props;
       }
       @keyframes spin { to { transform: rotate(360deg); } }
 
+      /* Mobile top bar */
+      .dash-mobile-bar {
+        display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 60;
+        height: 56px; background: #1a1a2e; padding: 0 16px;
+        align-items: center; justify-content: space-between;
+      }
+      .dash-mobile-bar .dash-logo { padding: 0; font-size: 18px; }
+      .dash-hamburger {
+        background: none; border: none; cursor: pointer; padding: 8px;
+        display: flex; flex-direction: column; gap: 5px;
+      }
+      .dash-hamburger span {
+        display: block; width: 22px; height: 2px; background: #fff; border-radius: 1px;
+      }
+
+      /* Sidebar close button */
+      .dash-sidebar-close {
+        display: none; position: absolute; top: 16px; right: 16px;
+        background: none; border: none; cursor: pointer; color: #94a3b8;
+        font-size: 24px; line-height: 1; padding: 4px;
+      }
+      .dash-sidebar-close:hover { color: #fff; }
+
+      /* Mobile overlay backdrop */
+      .dash-overlay {
+        display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+        z-index: 45;
+      }
+
       /* Mobile */
       @media (max-width: 768px) {
-        .dash-sidebar { display: none; }
-        .dash-main { margin-left: 0; padding: 16px; }
+        .dash-mobile-bar { display: flex; }
+        .dash-sidebar {
+          display: flex; transform: translateX(-100%); transition: transform 0.25s ease;
+        }
+        .dash-sidebar.open { transform: translateX(0); }
+        .dash-sidebar-close { display: block; }
+        .dash-overlay.open { display: block; }
+        .dash-main { margin-left: 0; padding: 72px 16px 16px; }
         .dash-stats { grid-template-columns: repeat(2, 1fr); }
         .dash-two-col { grid-template-columns: 1fr; }
       }
@@ -199,7 +234,18 @@ const { title, activePage } = Astro.props;
 
     <!-- Dashboard layout (hidden until auth verified) -->
     <div id="dash-app" class="dash-layout" style="display:none">
-      <aside class="dash-sidebar">
+      <!-- Mobile top bar -->
+      <div class="dash-mobile-bar">
+        <a href="/" class="dash-logo">Depo<span>Hire</span></a>
+        <button class="dash-hamburger" id="dash-menu-toggle" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+      <!-- Mobile overlay -->
+      <div class="dash-overlay" id="dash-overlay"></div>
+
+      <aside class="dash-sidebar" id="dash-sidebar">
+        <button class="dash-sidebar-close" id="dash-sidebar-close" aria-label="Close menu">&times;</button>
         <a href="/" class="dash-logo">Depo<span>Hire</span></a>
 
         <div class="dash-section">Dashboard</div>
@@ -298,6 +344,29 @@ const { title, activePage } = Astro.props;
         } catch (err) {
           window.location.href = '/provider/login';
         }
+      })();
+    </script>
+
+    <script is:inline>
+      // Mobile sidebar toggle
+      (function() {
+        var toggle = document.getElementById('dash-menu-toggle');
+        var sidebar = document.getElementById('dash-sidebar');
+        var overlay = document.getElementById('dash-overlay');
+        var close = document.getElementById('dash-sidebar-close');
+
+        function openMenu() {
+          sidebar.classList.add('open');
+          overlay.classList.add('open');
+        }
+        function closeMenu() {
+          sidebar.classList.remove('open');
+          overlay.classList.remove('open');
+        }
+
+        toggle.addEventListener('click', openMenu);
+        close.addEventListener('click', closeMenu);
+        overlay.addEventListener('click', closeMenu);
       })();
     </script>
   </body>

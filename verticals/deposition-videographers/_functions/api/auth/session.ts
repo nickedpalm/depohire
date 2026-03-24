@@ -3,7 +3,7 @@
  * DELETE /api/auth/session — logout (clear session)
  */
 import type { Env } from '../../_types';
-import { getProvider, getSessionToken, jsonResponse, optionsResponse, sessionCookie } from '../../_auth';
+import { getProvider, getSessionToken, jsonResponse, optionsResponse, sessionCookie, corsHeaders } from '../../_auth';
 
 export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
   const origin = request.headers.get('Origin') || undefined;
@@ -42,7 +42,7 @@ export const onRequestDelete: PagesFunction<Env> = async ({ request, env }) => {
     headers: {
       'Content-Type': 'application/json',
       'Set-Cookie': sessionCookie('deleted', 0),
-      ...(origin ? { 'Access-Control-Allow-Origin': origin } : {}),
+      ...corsHeaders(origin),
     },
   });
 };

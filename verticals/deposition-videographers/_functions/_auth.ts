@@ -8,13 +8,30 @@ export function generateToken(): string {
   return Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
 }
 
+const ALLOWED_ORIGINS = [
+  'https://depohire.com',
+  'https://www.depohire.com',
+  'http://localhost:4321',
+  'http://localhost:3000',
+];
+
+export function isAllowedOrigin(origin: string | null | undefined): string | null {
+  if (!origin) return null;
+  if (ALLOWED_ORIGINS.includes(origin)) return origin;
+  // Allow *.depohire.com subdomains (e.g. staging, preview deploys)
+  if (/^https:\/\/[a-z0-9-]+\.depohire\.com$/.test(origin)) return origin;
+  return null;
+}
+
 export function corsHeaders(origin?: string, env?: { SITE_DOMAIN?: string }) {
   const defaultOrigin = env?.SITE_DOMAIN ? `https://${env.SITE_DOMAIN}` : 'https://depohire.com';
+  const allowedOrigin = isAllowedOrigin(origin) || defaultOrigin;
   return {
-    'Access-Control-Allow-Origin': origin || defaultOrigin,
+    'Access-Control-Allow-Origin': allowedOrigin,
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Allow-Credentials': 'true',
+    'Vary': 'Origin',
   };
 }
 

@@ -271,6 +271,7 @@ const metadata = {
                         </div>
                         {listing.email ? (
                           <button class="btn-action-primary select-quote-btn" data-selected="false" data-provider-name={listing.name} data-provider-email={listing.email} data-provider-slug={listing.slug}>
+                            <svg class="w-4 h-4 hidden check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                             <span class="btn-label">+ Request Quote</span>
                           </button>
                         ) : listing.website ? (
@@ -330,6 +331,7 @@ const metadata = {
                       {listing.phone ? <span class="city-provider-phone text-[13px] font-semibold text-navy-950">&#x1F4DE; {listing.phone}</span> : <span></span>}
                       {listing.email ? (
                         <button class="btn-action-secondary select-quote-btn" data-selected="false" data-provider-name={listing.name} data-provider-email={listing.email} data-provider-slug={listing.slug}>
+                          <svg class="w-4 h-4 hidden check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                           <span class="btn-label">+ Quote</span>
                         </button>
                       ) : listing.website ? (
@@ -405,6 +407,7 @@ const metadata = {
                       )}
                       {listing.email ? (
                         <button class="btn-action-secondary select-quote-btn" data-selected="false" data-provider-name={listing.name} data-provider-email={listing.email} data-provider-slug={listing.slug}>
+                          <svg class="w-4 h-4 hidden check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                           <span class="btn-label">+ Quote</span>
                         </button>
                       ) : listing.website ? (
@@ -727,7 +730,7 @@ const metadata = {
               quoteBtn.dataset.providerName = data.name || card.dataset.providerName;
               quoteBtn.dataset.providerEmail = data.email || card.dataset.providerEmail;
               quoteBtn.dataset.providerSlug = slug;
-              quoteBtn.innerHTML = '<span class="btn-label">+ Quote</span>';
+              quoteBtn.innerHTML = '<svg class="w-4 h-4 hidden check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span class="btn-label">+ Quote</span>';
               unavailBtn.replaceWith(quoteBtn);
             }
           }

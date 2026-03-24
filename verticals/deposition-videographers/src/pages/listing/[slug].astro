@@ -86,6 +86,7 @@ const schema = {
 const ogImage = `/og/listing/${listing.slug}.png`;
 const metadata = {
   title,
+  ignoreTitleTemplate: true,
   description,
   openGraph: { images: [{ url: ogImage, width: 1200, height: 630 }] },
 };
