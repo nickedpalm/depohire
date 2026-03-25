@@ -64,3 +64,12 @@ extra_fields:
   - services
   - coverage_area
   - equipment
+
+# Brand
+brand_name: StenoScout
+
+# Payments & integrations (placeholders — configure in Stripe/CF/GA when ready)
+stripe_sponsored_link: ""
+stripe_city_pro_link: ""
+turnstile_sitekey: ""
+google_analytics_id: ""
