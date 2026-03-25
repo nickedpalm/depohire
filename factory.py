@@ -36,14 +36,17 @@ def load_config(config_path: str) -> dict:
 def yaml_to_vertical_json(config: dict) -> dict:
     """Convert YAML config to the vertical.json format expected by Astro."""
     domain = config.get("domain", "example.com")
+    name = config["name"]
+    brand = config.get("brand_name", domain.split(".")[0].capitalize())
     editorial = config.get("editorial_author", {})
     return {
-        "name": config["name"],
+        "name": name,
+        "brandName": brand,
         "slug": config["slug"],
         "domain": domain,
         "siteUrl": f"https://{domain}",
-        "tagline": config.get("tagline", f"Find {config['name'].lower()} near you"),
-        "description": config.get("description", f"A directory of {config['name'].lower()}"),
+        "tagline": config.get("tagline", f"Find {name.lower()} near you"),
+        "description": config.get("description", f"A directory of {name.lower()}"),
         "jobValue": config.get("job_value", ""),
         "industry": config.get("industry", ""),
         "primaryKeyword": config.get("primary_keyword", config["slug"].replace("-", " ")),
@@ -55,9 +58,13 @@ def yaml_to_vertical_json(config: dict) -> dict:
         "editorialAuthor": {
             "name": editorial.get("name", "Editorial Team"),
             "title": editorial.get("title", "Directory Editor"),
-            "bio": editorial.get("bio", f"Expert contributor at {config['name']}."),
+            "bio": editorial.get("bio", f"Expert contributor at {name}."),
             "linkedin": editorial.get("linkedin"),
         },
+        "stripeSponsoredLink": config.get("stripe_sponsored_link", ""),
+        "stripeCityProLink": config.get("stripe_city_pro_link", ""),
+        "turnsiteSitekey": config.get("turnstile_sitekey", ""),
+        "googleAnalyticsId": config.get("google_analytics_id", ""),
         "foundedYear": config.get("founded_year", 2026),
     }
 
@@ -97,12 +104,33 @@ def cmd_create(args):
         json.dump(vertical_json, f, indent=2)
     print(f"  Wrote vertical.json")
 
-    # Patch robots.txt with actual site URL
+    # Patch robots.txt with actual domain
+    domain = config.get("domain", "example.com")
+    site_url = f"https://{domain}"
     robots_path = vertical_dir / "public" / "robots.txt"
     if robots_path.exists():
-        site_url = f"https://{config.get('domain', 'example.com')}"
-        robots_path.write_text(robots_path.read_text().replace("SITE_URL", site_url))
+        txt = robots_path.read_text()
+        txt = txt.replace("SITE_URL", site_url).replace("SITE_DOMAIN", domain)
+        robots_path.write_text(txt)
         print(f"  Patched robots.txt")
+
+    # Patch package.json deploy script with project name
+    pkg_path = vertical_dir / "package.json"
+    if pkg_path.exists():
+        pkg = pkg_path.read_text()
+        project_name = config["slug"].replace("_", "-")
+        pkg = pkg.replace("PROJECT_NAME", project_name)
+        pkg_path.write_text(pkg)
+        print(f"  Patched package.json (project: {project_name})")
+
+    # Patch site.webmanifest with brand name
+    manifest_path = vertical_dir / "public" / "site.webmanifest"
+    if manifest_path.exists():
+        brand = config.get("brand_name", domain.split(".")[0].capitalize())
+        txt = manifest_path.read_text()
+        txt = txt.replace("BRAND_NAME", brand)
+        manifest_path.write_text(txt)
+        print(f"  Patched site.webmanifest")
 
     # npm install
     print(f"  Running npm install...")

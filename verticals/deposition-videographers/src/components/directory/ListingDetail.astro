@@ -196,7 +196,7 @@ const completenessPercent = Math.round((completedCount / completenessItems.lengt
 
       <!-- Description -->
       {listing.description ? (
-        <p class="description" id="listing-description">{listing.description}</p>
+        <p class="description" id="listing-description" set:html={listing.description.replace(/\n/g, '<br />')} />
       ) : (
         <div class="description placeholder provider-only hidden">
           No description added yet. Attorneys see this when evaluating providers — tell them why you're the right choice.
@@ -480,7 +480,7 @@ const completenessPercent = Math.round((completedCount / completenessItems.lengt
         <div class="upgrade-feature"><span class="check">✓</span> Priority in searches</div>
         <div class="upgrade-feature"><span class="check">✓</span> Verified badge</div>
       </div>
-      <a href="{config.stripeSponsoredLink}" target="_blank" rel="noopener"
+      <a href={config.stripeSponsoredLink} target="_blank" rel="noopener"
         class="btn-action-amber">
         Get Sponsored — $79/mo
       </a>
@@ -1094,7 +1094,7 @@ const completenessPercent = Math.round((completedCount / completenessItems.lengt
     if (!modal || !form) return;
 
     var pendingBtn = null;
-    var GATE_KEY = 'depohire_contact_unlocked';
+    var GATE_KEY = 'df_contact_unlocked';
 
     // Check if already unlocked
     function isUnlocked() {

@@ -1,6 +1,7 @@
 name: Deposition Videographers
+brand_name: DepoHire
 slug: deposition-videographers
-domain: depositionvideographers.com
+domain: depohire.com
 tagline: "Find certified deposition videographers near you"
 description: "The most comprehensive directory of deposition videographers in the United States"
 
@@ -29,7 +30,7 @@ city_page_prompt_context: |
   personal injury cases, and corporate disputes.
 
 # Editorial
-contact_email: "contact@depositionvideographers.com"
+contact_email: "contact@depohire.com"
 founded_year: 2026
 editorial_author:
   name: "Nick Palmer"
@@ -52,3 +53,9 @@ extra_fields:
   - services
   - coverage_area
   - equipment
+
+# Payments & integrations
+stripe_sponsored_link: "https://buy.stripe.com/4gM14m8rggWc0yU5Ada3u01"
+stripe_city_pro_link: "https://buy.stripe.com/6oUcN49vkeO495q9Qta3u00"
+turnstile_sitekey: "0x4AAAAAACs3PKhmjD-LkBwo"
+google_analytics_id: "G-0RRY5J28FH"

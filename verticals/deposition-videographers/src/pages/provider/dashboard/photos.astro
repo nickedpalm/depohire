@@ -72,8 +72,11 @@ import DashboardLayout from '~/layouts/DashboardLayout.astro';
       dropZone.addEventListener('drop', function(e) { e.preventDefault(); dropZone.style.borderColor = '#d1d5db'; if (e.dataTransfer.files[0]) uploadPhoto(e.dataTransfer.files[0]); });
       fileInput.addEventListener('change', function() { if (this.files[0]) uploadPhoto(this.files[0]); this.value = ''; });
 
+      var ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+
       async function uploadPhoto(file) {
         if (photos.length >= 8) { showStatus('Maximum 8 photos allowed.', true); return; }
+        if (!ALLOWED_TYPES.includes(file.type)) { showStatus('Only JPG, PNG, and WebP files are allowed.', true); return; }
         if (file.size > 5 * 1024 * 1024) { showStatus('File too large. Maximum 5MB.', true); return; }
 
         showStatus('Uploading...', false);
@@ -116,6 +119,8 @@ import DashboardLayout from '~/layouts/DashboardLayout.astro';
         }
       }
 
+      function escAttr(str) { var d = document.createElement('div'); d.textContent = str || ''; return d.innerHTML.replace(/"/g, '&quot;'); }
+
       function renderPhotos() {
         var grid = document.getElementById('photos-grid');
         if (photos.length === 0) {
@@ -126,9 +131,9 @@ import DashboardLayout from '~/layouts/DashboardLayout.astro';
         grid.innerHTML = photos.map(function(p, i) {
           return '<div style="position:relative;aspect-ratio:1;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb">' +
             (i === 0 ? '<div style="position:absolute;top:8px;left:8px;background:#2563eb;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;z-index:2">Cover</div>' : '') +
-            '<img src="' + p.url + '" style="width:100%;height:100%;object-fit:cover" />' +
+            '<img src="' + escAttr(p.url) + '" style="width:100%;height:100%;object-fit:cover" />' +
             '<div style="position:absolute;inset:0;background:rgba(0,0,0,0.4);opacity:0;transition:opacity 0.15s;display:flex;align-items:center;justify-content:center" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">' +
-              '<button data-delete="' + p.id + '" style="background:#ef4444;color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer">Delete</button>' +
+              '<button data-delete="' + escAttr(String(p.id)) + '" style="background:#ef4444;color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer">Delete</button>' +
             '</div>' +
           '</div>';
         }).join('');
@@ -140,7 +145,10 @@ import DashboardLayout from '~/layouts/DashboardLayout.astro';
           fetch('/api/provider/photos', {
             method:'DELETE', headers:{'Content-Type':'application/json'}, credentials:'include',
             body: JSON.stringify({ photo_id: parseInt(btn.dataset.delete) })
-          }).then(function() { loadPhotos(); });
+          }).then(function(resp) {
+            if (resp.ok) { loadPhotos(); }
+            else { showStatus('Failed to delete photo.', true); }
+          }).catch(function() { showStatus('Network error.', true); });
         }
       });
 

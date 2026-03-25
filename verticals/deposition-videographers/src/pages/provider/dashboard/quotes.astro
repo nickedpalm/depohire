@@ -96,6 +96,24 @@ import DashboardLayout from '~/layouts/DashboardLayout.astro';
       }
 
       function escapeHtml(str) { var d = document.createElement('div'); d.textContent = str || ''; return d.innerHTML; }
+
+      // Wire up filter buttons
+      document.querySelectorAll('.quote-filter').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var filter = this.dataset.filter;
+          document.querySelectorAll('.quote-filter').forEach(function(b) {
+            b.style.background = '#f3f4f6'; b.style.color = '#6b7280';
+          });
+          this.style.background = '#1a1a2e'; this.style.color = '#fff';
+
+          document.querySelectorAll('.dash-quote').forEach(function(q) {
+            if (filter === 'all') { q.style.display = ''; return; }
+            var isNew = q.classList.contains('unread');
+            if (filter === 'new') q.style.display = isNew ? '' : 'none';
+            else if (filter === 'replied') q.style.display = isNew ? 'none' : '';
+          });
+        });
+      });
     });
   </script>
 

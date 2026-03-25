@@ -101,6 +101,9 @@ import DashboardLayout from '~/layouts/DashboardLayout.astro';
           }
           if (d.rush_available) document.getElementById('rush-toggle').checked = true;
           if (d.travel_policy) document.getElementById('travel-policy').value = d.travel_policy;
+          // Populate city/state from listing data
+          var cityState = [d.city, d.state].filter(Boolean).join(', ');
+          if (cityState) document.getElementById('area-location').value = cityState;
           if (d.availability_days && Array.isArray(d.availability_days)) {
             document.querySelectorAll('.day-btn').forEach(function(btn) {
               var day = btn.getAttribute('data-day');
@@ -158,10 +161,21 @@ import DashboardLayout from '~/layouts/DashboardLayout.astro';
           var resp = await fetch('/api/provider/listing', { method:'PUT', headers:{'Content-Type':'application/json'}, credentials:'include', body:JSON.stringify(payload) });
           if (resp.ok) {
             banner.textContent = 'Service area saved!';
+            banner.style.background = '#ecfdf5'; banner.style.color = '#065f46'; banner.style.border = '1px solid #a7f3d0';
             banner.style.display = 'block';
             setTimeout(function() { banner.style.display = 'none'; }, 3000);
+          } else {
+            banner.textContent = 'Failed to save. Please try again.';
+            banner.style.background = '#fef2f2'; banner.style.color = '#991b1b'; banner.style.border = '1px solid #fecaca';
+            banner.style.display = 'block';
+            setTimeout(function() { banner.style.display = 'none'; }, 4000);
           }
-        } catch(e) {}
+        } catch(e) {
+          banner.textContent = 'Network error. Please try again.';
+          banner.style.background = '#fef2f2'; banner.style.color = '#991b1b'; banner.style.border = '1px solid #fecaca';
+          banner.style.display = 'block';
+          setTimeout(function() { banner.style.display = 'none'; }, 4000);
+        }
         btn.textContent = 'Save Changes'; btn.disabled = false;
       });
     });

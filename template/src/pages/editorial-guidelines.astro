@@ -3,7 +3,7 @@ import PageLayout from '~/layouts/PageLayout.astro';
 import Breadcrumbs from '~/components/directory/Breadcrumbs.astro';
 import config from '~/config';
 
-const title = `Editorial Guidelines — ${config.name}`;
+const title = 'Editorial Guidelines';
 const description = `How ${config.name} curates, verifies, and ranks ${config.primaryKeyword} listings. Our methodology, scoring criteria, and update process.`;
 const metadata = { title, description };
 ---
@@ -40,12 +40,12 @@ const metadata = { title, description };
       <h2>Ranking & Display Order</h2>
       <p>Listings within each city are ordered by a combination of factors:</p>
       <ul>
-        <li><strong>Featured status</strong> — Businesses that sponsor their listing appear first, clearly labeled as "Featured"</li>
+        <li><strong>Sponsored status</strong> — Businesses that sponsor their listing appear first, clearly labeled as "Sponsored"</li>
         <li><strong>Aggregate rating</strong> — Higher-rated businesses appear above lower-rated ones</li>
         <li><strong>Review volume</strong> — Businesses with more reviews receive a secondary boost</li>
-        <li><strong>Data completeness</strong> — Listings with verified websites, certifications, and detailed service descriptions rank higher</li>
+        <li><strong>Data completeness</strong> — Listings with confirmed websites, certifications, and detailed service descriptions rank higher</li>
       </ul>
-      <p>We never accept payment to artificially inflate a listing's rating or reviews. Featured placements are clearly disclosed with a visual badge.</p>
+      <p>We never accept payment to artificially inflate a listing's rating or reviews. Sponsored placements are clearly disclosed with a visual badge.</p>
 
       <h2>Review & Sentiment Analysis</h2>
       <p>Where available, we aggregate review data from public sources and compute a sentiment score. Our sentiment analysis considers:</p>
@@ -56,9 +56,19 @@ const metadata = { title, description };
         <li>Positive/negative/mixed classification</li>
       </ul>
 
+      <h3>FTC Review Compliance</h3>
+      <p>In accordance with the <a href="https://www.ftc.gov/legal-library/browse/federal-register-notices/trade-regulation-rule-use-consumer-reviews-testimonials" rel="noopener noreferrer" target="_blank">FTC Rule on the Use of Consumer Reviews and Testimonials</a> (effective October 2024), {config.brandName} adheres to the following review policies:</p>
+      <ul>
+        <li><strong>No fake or fabricated reviews</strong> — All reviews displayed on this site originate from verifiable sources. We do not create, purchase, or generate artificial reviews.</li>
+        <li><strong>No review suppression</strong> — We do not selectively hide or remove negative reviews to inflate a provider's reputation. Reviews are displayed as aggregated from their source.</li>
+        <li><strong>No incentivized sentiment</strong> — We do not offer compensation, discounts, or other incentives in exchange for positive reviews specifically. Any future review incentive programs will be disclosed and will not condition the incentive on positive sentiment.</li>
+        <li><strong>Insider disclosure required</strong> — Reviews submitted by individuals with a financial or personal relationship to the provider must include a disclosure. This includes business owners, employees, family members, and paid endorsers.</li>
+        <li><strong>Client attestation</strong> — When our native review system launches, all reviewers will be required to attest: "I am or was a client of this provider and my review reflects my genuine experience."</li>
+      </ul>
+
       <h2>Update Cadence</h2>
       <p>
-        Our database is updated regularly. Listings are re-verified on a rolling basis to ensure accuracy.
+        Our database is updated regularly. Listings are re-checked on a rolling basis to ensure accuracy.
         If you notice outdated or incorrect information, please email
         <a href={`mailto:corrections@${config.domain}`}>corrections@{config.domain}</a>.
       </p>
@@ -71,6 +81,25 @@ const metadata = { title, description };
         <li><strong>No pay-for-play</strong> — Editorial recommendations are never influenced by advertising relationships</li>
         <li><strong>Regular updates</strong> — Content is reviewed and updated to reflect current pricing, regulations, and market conditions</li>
       </ul>
+
+      <h2>Licensing & Credentials Disclaimer</h2>
+      <p>
+        {config.brandName} is a directory service, not a credentialing or licensing body. <strong>Listings on this site do not constitute verification of professional licensing, certification, or legal qualifications.</strong> While we display certifications (such as CLVS) as reported by providers and public sources, we do not independently verify the current status of these credentials.
+      </p>
+      <p>It is the responsibility of the hiring attorney or firm to:</p>
+      <ul>
+        <li>Verify that the provider holds any certifications they claim</li>
+        <li>Confirm compliance with applicable state and local regulations</li>
+        <li>Ensure the provider meets the requirements of their jurisdiction for deposition video recording</li>
+      </ul>
+      <p>
+        Deposition videography licensing requirements vary by state. Some states require videographers to be supervised by or work in coordination with a licensed court reporter. {config.brandName} does not provide legal advice regarding state-specific requirements. Consult your state's court reporting board or bar association for current regulations.
+      </p>
+
+      <h2>Terminology</h2>
+      <p>
+        {config.brandName} uses the term "deposition videographer" to refer to professionals who specialize in video recording of depositions and other legal proceedings. This is distinct from the legally regulated title of "court reporter" (also known as "certified shorthand reporter" or "stenographer"), which is a licensed profession in most states. We do not use the terms interchangeably. References to the "National Court Reporters Association" (NCRA) and its CLVS certification reflect the official name of the certifying organization.
+      </p>
 
       <div class="not-prose bg-gray-50 border border-gray-200 rounded-xl p-5 mt-6">
         <p class="text-sm text-muted">

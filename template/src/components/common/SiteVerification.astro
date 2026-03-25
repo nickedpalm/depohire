@@ -1,3 +1,5 @@
 ---
-// Site verification placeholder — add verification meta tags here when needed
+import { SITE } from '~/utils/astrowind-config';
 ---
+
+{SITE.googleSiteVerificationId && <meta name="google-site-verification" content={SITE.googleSiteVerificationId} />}

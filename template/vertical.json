@@ -1,5 +1,6 @@
 {
   "name": "Example Directory",
+  "brandName": "ExampleDir",
   "slug": "example-directory",
   "domain": "example.com",
   "siteUrl": "https://example.com",
@@ -11,5 +12,17 @@
   "secondaryKeywords": [],
   "certifications": [],
   "extraFields": [],
-  "cityPagePromptContext": ""
+  "cityPagePromptContext": "",
+  "contactEmail": "contact@example.com",
+  "editorialAuthor": {
+    "name": "Editorial Team",
+    "title": "Directory Editor",
+    "bio": "Expert contributor at the directory.",
+    "linkedin": ""
+  },
+  "stripeSponsoredLink": "",
+  "stripeCityProLink": "",
+  "turnsiteSitekey": "",
+  "googleAnalyticsId": "",
+  "foundedYear": 2026
 }

@@ -11,46 +11,395 @@ const allPosts = (await getCollection('blog'))
 const pillar = allPosts.find(p => p.data.tags.includes('pillar'));
 const posts = allPosts.filter(p => p !== pillar);
 
+// Categorize posts by tags
+type Category = 'guide' | 'cost' | 'cert' | 'city' | 'hiring' | 'industry';
+
+function getCategory(tags: string[]): Category {
+  if (tags.some(t => ['city-guide', 'houston', 'new-york', 'los-angeles', 'chicago', 'miami', 'dallas', 'phoenix', 'atlanta', 'denver', 'seattle', 'boston', 'san-francisco'].includes(t))) return 'city';
+  if (tags.some(t => ['pricing', 'salary', 'earnings', 'states'].includes(t))) return 'cost';
+  if (tags.some(t => ['certification', 'clvs', 'equipment', 'technology'].includes(t))) return 'cert';
+  if (tags.some(t => ['hiring', 'warnings', 'checklist', 'mistakes'].includes(t))) return 'hiring';
+  if (tags.some(t => ['trends', 'industry', 'statistics', 'AI', 'future'].includes(t))) return 'industry';
+  return 'guide';
+}
+
+const categoryLabels: Record<string, string> = {
+  all: 'All Articles',
+  guide: 'Guides',
+  cost: 'Cost & Pricing',
+  cert: 'Certification',
+  city: 'City Guides',
+  hiring: 'Hiring Tips',
+  industry: 'Industry',
+};
+
+const categoryColors: Record<string, { bg: string; text: string; accent: string }> = {
+  guide: { bg: 'bg-blue-50', text: 'text-blue-700', accent: 'border-l-blue-500' },
+  cost: { bg: 'bg-emerald-50', text: 'text-emerald-700', accent: 'border-l-emerald-500' },
+  cert: { bg: 'bg-amber-50', text: 'text-amber-700', accent: 'border-l-amber-500' },
+  city: { bg: 'bg-purple-50', text: 'text-purple-700', accent: 'border-l-purple-500' },
+  hiring: { bg: 'bg-rose-50', text: 'text-rose-700', accent: 'border-l-rose-500' },
+  industry: { bg: 'bg-cyan-50', text: 'text-cyan-700', accent: 'border-l-cyan-500' },
+};
+
+const categorizedPosts = posts.map(post => ({
+  ...post,
+  category: getCategory(post.data.tags),
+}));
+
+const INITIAL_VISIBLE = 9;
+
+// JSON-LD structured data
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Deposition Videographer Guides & Resources',
+  description: 'Expert guides on hiring deposition videographers — CLVS certification, cost breakdowns, equipment checklists, and tips for litigation attorneys.',
+  url: `${config.siteUrl}/blog`,
+  publisher: {
+    '@type': 'Organization',
+    name: config.brandName,
+    url: config.siteUrl,
+    logo: {
+      '@type': 'ImageObject',
+      url: `${config.siteUrl}/og-image.png`,
+    },
+  },
+  mainEntity: {
+    '@type': 'ItemList',
+    numberOfItems: allPosts.length,
+    itemListElement: [
+      // Pillar first
+      ...(pillar ? [{
+        '@type': 'ListItem' as const,
+        position: 1,
+        url: `${config.siteUrl}/blog/${pillar.id}/`,
+        name: pillar.data.title,
+      }] : []),
+      ...posts.map((post, i) => ({
+        '@type': 'ListItem' as const,
+        position: (pillar ? 2 : 1) + i,
+        url: `${config.siteUrl}/blog/${post.id}/`,
+        name: post.data.title,
+      })),
+    ],
+  },
+};
+
 const metadata = {
-  title: 'Expert Insights & Guides',
-  description: `Expert guides on hiring ${config.primaryKeyword}s — costs, certifications, city guides, and industry trends.`,
+  title: `Deposition Videographer Guides & Hiring Tips (${new Date().getFullYear()})`,
+  description: `Expert guides on hiring deposition videographers — CLVS certification, cost breakdowns, equipment checklists, and tips for litigation attorneys.`,
 };
 ---
 <PageLayout metadata={metadata}>
   <Fragment slot="announcement"><span></span></Fragment>
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <Breadcrumbs crumbs={[{ label: 'Blog' }]} />
-    <h1 class="text-3xl font-bold text-default mb-2">Blog</h1>
-    <p class="text-muted mb-8">Expert guides and insights on {config.primaryKeyword}s</p>
 
-    {pillar && (
-      <a href={`/blog/${pillar.id}/`} class="block mb-12 rounded-xl border-2 border-blue-100 bg-gradient-to-br from-blue-50 to-white p-8 no-underline group hover:border-blue-200 hover:shadow-lg transition-all">
-        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-700 mb-3">Complete Guide</span>
-        <h2 class="text-2xl sm:text-3xl font-bold text-default group-hover:text-primary transition-colors">{pillar.data.title}</h2>
-        <p class="text-muted mt-3 text-lg leading-relaxed">{pillar.data.description}</p>
-        <span class="inline-flex items-center mt-4 text-primary font-medium text-sm group-hover:gap-2 transition-all">
-          Read the complete guide <span class="ml-1">&rarr;</span>
-        </span>
-      </a>
-    )}
-
-    <div class="grid sm:grid-cols-2 gap-4">
-      {posts.map(post => (
-        <a href={`/blog/${post.id}/`} class="block bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow p-5 no-underline group">
-          <h2 class="text-base font-semibold text-default group-hover:text-primary transition-colors leading-snug">{post.data.title}</h2>
-          <p class="text-muted mt-1 text-sm">
-            {post.data.pubDate?.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
-          </p>
-          <p class="text-muted mt-2 text-sm line-clamp-2">{post.data.description}</p>
-          {post.data.tags.length > 0 && (
-            <div class="flex flex-wrap gap-1 mt-3">
-              {post.data.tags.slice(0, 3).map((tag: string) => (
-                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-muted">{tag}</span>
-              ))}
-            </div>
-          )}
-        </a>
-      ))}
+  <!-- Hero Section -->
+  <div class="hero-gradient text-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-16">
+      <Breadcrumbs crumbs={[{ label: 'Blog' }]} dark />
+      <div class="mt-6">
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight">
+          Deposition Videographer<br class="hidden sm:block" /> Guides & Resources
+        </h1>
+        <p class="mt-4 text-lg text-blue-100 max-w-2xl leading-relaxed">
+          Expert guides on hiring deposition videographers — costs, CLVS certification,
+          city guides, and industry analysis for litigation attorneys.
+        </p>
+        <div class="mt-6 flex items-center gap-6 text-sm text-blue-200">
+          <span>{allPosts.length} articles</span>
+          <span class="w-1 h-1 rounded-full bg-blue-400"></span>
+          <span>Updated {new Date().getFullYear()}</span>
+        </div>
+      </div>
     </div>
   </div>
+
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Featured Pillar Article -->
+    {pillar && (
+      <div class="relative -mt-8 mb-12">
+        <a href={`/blog/${pillar.id}/`}
+           class="block rounded-2xl border border-blue-100 bg-white shadow-lg hover:shadow-xl transition-all no-underline group overflow-hidden">
+          <div class="grid md:grid-cols-5 gap-0">
+            <div class="md:col-span-3 p-8 sm:p-10">
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700 mb-4">
+                Complete Guide
+              </span>
+              <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors leading-tight">
+                {pillar.data.title}
+              </h2>
+              <p class="text-gray-500 mt-4 text-base leading-relaxed">
+                {pillar.data.description}
+              </p>
+              <span class="inline-flex items-center mt-6 text-blue-600 font-semibold text-sm group-hover:gap-2 transition-all">
+                Read the complete guide <span class="ml-1 transition-transform group-hover:translate-x-1">&rarr;</span>
+              </span>
+            </div>
+            <div class="hidden md:flex md:col-span-2 bg-gradient-to-br from-[#1e3a5f] to-[#2a4a6b] items-center justify-center p-10">
+              <div class="text-center text-white">
+                <div class="text-5xl mb-3 opacity-80">&#9654;</div>
+                <div class="text-sm font-medium text-blue-200">Everything you need to know</div>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+    )}
+
+    <!-- Editorial intro -->
+    <p class="text-gray-600 text-base leading-relaxed mb-8 max-w-3xl">
+      Our editorial team researches deposition videography services across the United States, covering
+      pricing data, certification requirements, and hiring best practices. Whether you're booking your
+      first videographer or comparing providers in a new city, these guides give you the information
+      you need to make confident decisions.
+    </p>
+
+    <!-- Category Filter -->
+    <div class="mb-8">
+      <p class="text-sm font-medium text-gray-500 mb-3">Filter by topic</p>
+      <div class="flex overflow-x-auto gap-2 pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap" id="category-tabs" aria-label="Filter articles by category">
+        {Object.entries(categoryLabels).map(([key, label]) => (
+          <button
+            data-category={key}
+            class:list={[
+              'tab-btn flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all border whitespace-nowrap',
+              key === 'all'
+                ? 'bg-[#1e3a5f] text-white border-[#1e3a5f]'
+                : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300 hover:text-blue-600',
+            ]}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <!-- Article Grid -->
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" id="article-grid">
+      {categorizedPosts.map((post, i) => {
+        const cat = post.category;
+        const colors = categoryColors[cat];
+        return (
+          <a href={`/blog/${post.id}/`}
+             data-category={cat}
+             class:list={[
+               'article-card block bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all no-underline group border-l-4',
+               colors.accent,
+               i >= INITIAL_VISIBLE ? 'initially-hidden' : '',
+             ]}>
+            <div class="p-5">
+              <div class="flex items-center gap-2 mb-3">
+                <span class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${colors.bg} ${colors.text}`}>
+                  {categoryLabels[cat]}
+                </span>
+                <span class="text-xs text-gray-500 ml-auto">
+                  By {config.brandName} Editorial
+                </span>
+              </div>
+              <h3 class="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors leading-snug line-clamp-2">
+                {post.data.title}
+              </h3>
+              <p class="text-gray-500 mt-2 text-sm line-clamp-2">{post.data.description}</p>
+              <span class="inline-flex items-center mt-3 text-sm text-blue-600 font-medium group-hover:underline">
+                Read more &rarr;
+              </span>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+
+    <!-- Show More Button -->
+    {categorizedPosts.length > INITIAL_VISIBLE && (
+      <div class="text-center mb-16" id="show-more-wrap">
+        <button
+          id="show-more-btn"
+          class="px-6 py-3 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-colors"
+        >
+          Show all {categorizedPosts.length} articles
+        </button>
+      </div>
+    )}
+
+    <!-- Newsletter Signup (placed after initial cards for visibility) -->
+    <div class="mb-16">
+      <div class="hero-gradient rounded-2xl p-8 sm:p-12 text-center text-white">
+        <h2 class="text-2xl sm:text-3xl font-bold mb-3">Monthly Cost & Compliance Updates</h2>
+        <p class="text-blue-100 mb-8 max-w-lg mx-auto">
+          Pricing data, certification changes, and hiring tips for litigation teams.
+          No spam — just useful content, once a month.
+        </p>
+        <form class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto" id="newsletter-form">
+          <label for="newsletter-email" class="sr-only">Email address</label>
+          <input
+            id="newsletter-email"
+            type="email"
+            name="email"
+            placeholder="you@lawfirm.com"
+            required
+            autocomplete="email"
+            class="flex-1 px-4 py-3 rounded-lg text-gray-900 placeholder-gray-400 border-0 focus:ring-2 focus:ring-blue-300 outline-none"
+          />
+          <button
+            type="submit"
+            class="px-6 py-3 bg-white text-[#1e3a5f] font-semibold rounded-lg hover:bg-blue-50 transition-colors whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            Subscribe
+          </button>
+        </form>
+        <p id="newsletter-msg" class="text-xs text-blue-200 mt-4">Free. Unsubscribe anytime.</p>
+      </div>
+    </div>
+
+    <!-- Provider CTA -->
+    <div class="mb-16">
+      <div class="bg-amber-50 border border-amber-200 rounded-2xl p-8 sm:p-10 text-center">
+        <h2 class="text-xl sm:text-2xl font-bold text-gray-900 mb-3">Are You a Deposition Videographer?</h2>
+        <p class="text-gray-600 mb-6 max-w-lg mx-auto">
+          Claim your free listing on {config.brandName} and start receiving quote requests from attorneys in your area.
+        </p>
+        <a href="/provider/login/"
+           class="inline-flex items-center px-6 py-3 bg-[#1e3a5f] text-white font-semibold rounded-lg hover:bg-[#2a4a6b] transition-colors">
+          Claim Your Listing &rarr;
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 </PageLayout>
+
+<style>
+  .article-card.hidden-by-filter {
+    display: none;
+  }
+  .article-card.initially-hidden {
+    display: none;
+  }
+  .article-card.initially-hidden.show-all {
+    display: block;
+  }
+</style>
+
+<script>
+  function initBlogPage() {
+    // Show more / show all
+    const showBtn = document.getElementById('show-more-btn');
+    const showWrap = document.getElementById('show-more-wrap');
+    showBtn?.addEventListener('click', () => {
+      document.querySelectorAll('.initially-hidden').forEach((el) => {
+        el.classList.add('show-all');
+      });
+      if (showWrap) showWrap.style.display = 'none';
+    });
+
+    // Category tab filtering
+    function activateCategory(cat: string) {
+      const tabs = document.querySelectorAll<HTMLButtonElement>('.tab-btn');
+      const cards = document.querySelectorAll<HTMLElement>('.article-card');
+
+      tabs.forEach((t) => {
+        const isActive = t.dataset.category === cat;
+        t.classList.toggle('bg-[#1e3a5f]', isActive);
+        t.classList.toggle('text-white', isActive);
+        t.classList.toggle('border-[#1e3a5f]', isActive);
+        t.classList.toggle('bg-white', !isActive);
+        t.classList.toggle('text-gray-600', !isActive);
+        t.classList.toggle('border-gray-200', !isActive);
+      });
+
+      // When filtering, show all cards in that category (remove initial-hide)
+      let visibleCount = 0;
+      cards.forEach((card) => {
+        const matchesFilter = cat === 'all' || card.dataset.category === cat;
+        if (matchesFilter) {
+          card.classList.remove('hidden-by-filter');
+          card.classList.add('show-all');
+          visibleCount++;
+        } else {
+          card.classList.add('hidden-by-filter');
+        }
+      });
+
+      // Hide show-more button when filtering
+      if (showWrap) {
+        showWrap.style.display = cat === 'all' ? '' : 'none';
+      }
+
+      // Show "no results" or hide it
+      let noResults = document.getElementById('no-results');
+      if (visibleCount === 0) {
+        if (!noResults) {
+          noResults = document.createElement('p');
+          noResults.id = 'no-results';
+          noResults.className = 'text-center text-gray-400 py-12 col-span-full';
+          noResults.textContent = 'No articles in this category yet.';
+          document.getElementById('article-grid')?.appendChild(noResults);
+        }
+        noResults.style.display = '';
+      } else if (noResults) {
+        noResults.style.display = 'none';
+      }
+
+      document.getElementById('article-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    document.querySelectorAll<HTMLButtonElement>('.tab-btn').forEach((tab) => {
+      tab.addEventListener('click', () => activateCategory(tab.dataset.category || 'all'));
+    });
+
+    // Newsletter form
+    const form = document.getElementById('newsletter-form') as HTMLFormElement | null;
+    const msg = document.getElementById('newsletter-msg');
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = (form.querySelector('input[type="email"]') as HTMLInputElement)?.value;
+      if (!email) return;
+
+      const btn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+      if (btn.disabled) return; // prevent double-submit
+      btn.disabled = true;
+      btn.textContent = 'Subscribing...';
+
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 10000);
+
+      try {
+        const resp = await fetch('/api/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+          signal: controller.signal,
+        });
+        clearTimeout(timeout);
+        if (resp.ok) {
+          if (msg) {
+            msg.textContent = 'You\'re subscribed! Check your inbox.';
+            msg.classList.remove('text-blue-200');
+            msg.classList.add('text-green-300', 'font-medium');
+          }
+          form.reset();
+          btn.disabled = true; // keep disabled after success
+          btn.textContent = 'Subscribed';
+        } else {
+          throw new Error('Failed');
+        }
+      } catch {
+        clearTimeout(timeout);
+        if (msg) {
+          msg.textContent = 'Something went wrong. Please try again.';
+          msg.classList.remove('text-blue-200');
+          msg.classList.add('text-red-300');
+        }
+        btn.disabled = false;
+        btn.textContent = 'Subscribe';
+      }
+    });
+  }
+
+  // Support Astro View Transitions
+  document.addEventListener('astro:page-load', initBlogPage);
+</script>

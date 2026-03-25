@@ -156,11 +156,59 @@ import DashboardLayout from '~/layouts/DashboardLayout.astro';
       document.getElementById('new-service').addEventListener('keydown', function(e) { if (e.key==='Enter') { e.preventDefault(); document.getElementById('add-service').click(); }});
       document.getElementById('new-cert').addEventListener('keydown', function(e) { if (e.key==='Enter') { e.preventDefault(); document.getElementById('add-cert').click(); }});
 
+      // Validation
+      function validateProfile() {
+        var form = document.getElementById('profile-form');
+        var email = form.querySelector('[name="email"]').value.trim();
+        var website = form.querySelector('[name="website"]').value.trim();
+        var phone = form.querySelector('[name="phone"]').value.trim();
+        var demoUrl = form.querySelector('[name="demo_reel_url"]').value.trim();
+        var errors = [];
+        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.push('Invalid email address.');
+        if (website && !/^https?:\/\/.+/.test(website)) errors.push('Website must start with http:// or https://');
+        if (phone && phone.replace(/[\s\-\(\)\.+]/g, '').length < 7) errors.push('Phone number is too short.');
+        if (demoUrl && !/^https?:\/\/.+/.test(demoUrl)) errors.push('Demo reel URL must start with http:// or https://');
+        return errors;
+      }
+
+      // Unsaved changes detection
+      var savedState = '';
+      function getFormState() {
+        var form = document.getElementById('profile-form');
+        var fields = {};
+        ['name','phone','website','email','description','coverage_area','years_experience','demo_reel_url'].forEach(function(f) {
+          var el = form.querySelector('[name="'+f+'"]');
+          fields[f] = el ? el.value : '';
+        });
+        fields.services = services.slice().sort().join(',');
+        fields.certifications = certifications.slice().sort().join(',');
+        return JSON.stringify(fields);
+      }
+      function markSaved() { savedState = getFormState(); }
+      function hasUnsavedChanges() { return savedState !== getFormState(); }
+
+      // Track changes after initial load
+      setTimeout(markSaved, 500);
+
+      window.addEventListener('beforeunload', function(e) {
+        if (hasUnsavedChanges()) { e.preventDefault(); }
+      });
+
       // Save
       document.getElementById('save-btn').addEventListener('click', async function() {
         var btn = this;
         var banner = document.getElementById('save-banner');
         var form = document.getElementById('profile-form');
+
+        var errors = validateProfile();
+        if (errors.length > 0) {
+          banner.textContent = errors[0];
+          banner.style.display = 'block';
+          banner.style.background = '#fef2f2'; banner.style.borderColor = '#fecaca'; banner.style.color = '#991b1b';
+          setTimeout(function() { banner.style.display = 'none'; }, 4000);
+          return;
+        }
+
         btn.textContent = 'Saving...'; btn.disabled = true;
 
         var payload = {
@@ -184,6 +232,7 @@ import DashboardLayout from '~/layouts/DashboardLayout.astro';
             banner.style.display = 'block';
             banner.style.background = '#ecfdf5'; banner.style.borderColor = '#a7f3d0'; banner.style.color = '#065f46';
             updatePreview();
+            markSaved();
             setTimeout(function() { banner.style.display = 'none'; }, 3000);
           } else {
             var err = await resp.json();
@@ -194,6 +243,7 @@ import DashboardLayout from '~/layouts/DashboardLayout.astro';
         } catch(e) {
           banner.textContent = 'Network error.';
           banner.style.display = 'block';
+          banner.style.background = '#fef2f2'; banner.style.borderColor = '#fecaca'; banner.style.color = '#991b1b';
         }
         btn.textContent = 'Save Changes'; btn.disabled = false;
       });

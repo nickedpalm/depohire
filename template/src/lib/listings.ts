@@ -25,6 +25,8 @@ export interface Listing {
   phone?: string;
   website?: string;
   email?: string;
+  contact_form_url?: string;
+  contact_method?: string;
   rating: number;
   review_count: number;
   description?: string;
@@ -33,6 +35,9 @@ export interface Listing {
   years_experience?: number;
   coverage_area?: string;
   equipment?: string[];
+  demo_reel_url?: string;
+  demo_reel_thumbnail?: string;
+  photos?: { url: string; alt?: string }[];
   claimed: boolean;
   featured: boolean;
   source: string;
@@ -60,8 +65,9 @@ export function getListingBySlug(slug: string): Listing | undefined {
 
 export function getListingCountByCity(): Record<string, number> {
   const counts: Record<string, number> = {};
-  for (const listing of getAllListings()) {
-    counts[listing.city] = (counts[listing.city] || 0) + 1;
+  for (const [path, mod] of Object.entries(listingModules)) {
+    const slug = path.split('/').pop()?.replace('.json', '') || '';
+    counts[slug] = (mod.default || []).length;
   }
   return counts;
 }

@@ -10,6 +10,8 @@ import DashboardLayout from '~/layouts/DashboardLayout.astro';
     </div>
   </div>
 
+  <div id="settings-save-banner" style="display:none;padding:10px 20px;border-radius:12px;font-size:13px;font-weight:600;text-align:center;margin-bottom:16px" role="status" aria-live="polite"></div>
+
   <!-- Account info -->
   <div class="dash-card" style="margin-bottom:20px">
     <div class="dash-card-header"><h2>Account Information</h2></div>
@@ -123,12 +125,14 @@ import DashboardLayout from '~/layouts/DashboardLayout.astro';
       document.getElementById('settings-email').textContent = state.provider.email;
 
       // Claimed listings
+      function escHtml(str) { var d = document.createElement('div'); d.textContent = str || ''; return d.innerHTML; }
       var el = document.getElementById('claimed-listings');
       if (state.listings.length === 0) {
         el.innerHTML = '<p style="color:#9ca3af;font-size:13px">No claimed listings.</p>';
       } else {
         el.innerHTML = state.listings.map(function(s) {
-          return '<a href="/listing/' + s + '/" target="_blank" style="display:block;background:#f9fafb;padding:12px 16px;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:8px;font-size:14px;color:#2563eb;text-decoration:none;font-weight:500">' + s + ' &rarr;</a>';
+          var safe = escHtml(s);
+          return '<a href="/listing/' + encodeURIComponent(s) + '/" target="_blank" rel="noopener" style="display:block;background:#f9fafb;padding:12px 16px;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:8px;font-size:14px;color:#2563eb;text-decoration:none;font-weight:500">' + safe + ' &rarr;</a>';
         }).join('');
       }
 
@@ -165,12 +169,29 @@ import DashboardLayout from '~/layouts/DashboardLayout.astro';
         checkbox.addEventListener('change', function() {
           var body = { slug: slug };
           body[pair[1]] = checkbox.checked;
+          var banner = document.getElementById('settings-save-banner');
           fetch('/api/provider/listing', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
             body: JSON.stringify(body),
-          }).catch(function(e) { console.error('Save failed:', e); });
+          }).then(function(resp) {
+            if (resp.ok) {
+              banner.textContent = 'Setting saved.';
+              banner.style.background = '#ecfdf5'; banner.style.color = '#065f46'; banner.style.border = '1px solid #a7f3d0';
+            } else {
+              banner.textContent = 'Failed to save setting.';
+              banner.style.background = '#fef2f2'; banner.style.color = '#991b1b'; banner.style.border = '1px solid #fecaca';
+            }
+            banner.style.display = 'block';
+            setTimeout(function() { banner.style.display = 'none'; }, 2500);
+          }).catch(function(e) {
+            console.error('Save failed:', e);
+            banner.textContent = 'Network error saving setting.';
+            banner.style.background = '#fef2f2'; banner.style.color = '#991b1b'; banner.style.border = '1px solid #fecaca';
+            banner.style.display = 'block';
+            setTimeout(function() { banner.style.display = 'none'; }, 3000);
+          });
         });
       });
 

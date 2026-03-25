@@ -21,10 +21,30 @@ export default {
           900: '#1e3a8a',
           950: '#172554',
         },
+        navy: {
+          800: '#1e3a5f',
+          900: '#2d2b55',
+          950: '#1a1a2e',
+        },
+        surface: {
+          page: '#f8fafc',
+          muted: '#f0f2f5',
+        },
         secondary: 'var(--aw-color-secondary)',
         accent: 'var(--aw-color-accent)',
         default: 'var(--aw-color-text-default)',
         muted: 'var(--aw-color-text-muted)',
+      },
+      borderRadius: {
+        'card': '16px',
+        'btn': '12px',
+        'input': '10px',
+        'badge': '8px',
+      },
+      boxShadow: {
+        'card': '0 1px 3px rgba(0,0,0,0.06)',
+        'card-hover': '0 8px 24px rgba(37,99,235,0.08)',
+        'card-elevated': '0 4px 20px rgba(37,99,235,0.1)',
       },
       fontFamily: {
         sans: ['var(--aw-font-sans, ui-sans-serif)', ...defaultTheme.fontFamily.sans],

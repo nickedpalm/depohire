@@ -42,12 +42,12 @@ for (const l of listings) {
           </button>
         </form>
 
-        <div id="success-msg" class="hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-xl text-sm text-green-800 text-center">
+        <div id="success-msg" class="hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-xl text-sm text-green-800 text-center" role="status" aria-live="polite">
           <p class="font-semibold">Check your inbox</p>
           <p class="mt-1 text-green-600">We sent a login link. It expires in 15 minutes.</p>
         </div>
 
-        <div id="error-msg" class="hidden mt-4 p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700 text-center"></div>
+        <div id="error-msg" class="hidden mt-4 p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700 text-center" role="alert" aria-live="assertive"></div>
       </div>
 
       <div class="mt-6 text-center">

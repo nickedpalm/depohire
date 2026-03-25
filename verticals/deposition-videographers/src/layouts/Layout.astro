@@ -45,7 +45,9 @@ const { language, textDirection } = I18N;
 
   <body class="antialiased text-default bg-page tracking-tight">
     <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:rounded-lg focus:shadow-lg focus:text-primary-600 focus:font-semibold">Skip to content</a>
-    <slot />
+    <main id="main-content">
+      <slot />
+    </main>
 
     <BasicScripts />
   </body>

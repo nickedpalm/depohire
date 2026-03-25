@@ -293,8 +293,8 @@ const metadata = {
             Get Quotes from Providers Near Me &rarr;
           </button>
         </form>
-        <p id="qq-success" class="hidden text-center text-sm text-green-700 mt-4 font-medium"></p>
-        <p id="qq-error" class="hidden text-center text-sm text-red-600 mt-4"></p>
+        <p id="qq-success" class="hidden text-center text-sm text-green-700 mt-4 font-medium" role="status" aria-live="polite"></p>
+        <p id="qq-error" class="hidden text-center text-sm text-red-600 mt-4" role="alert" aria-live="assertive"></p>
         <p class="text-center text-xs text-slate-400 mt-4">No spam, no obligation. We only share your info with matched providers.</p>
       </div>
     </div>
@@ -492,13 +492,12 @@ const metadata = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              name: 'Quick Quote Request',
-              email: data.email,
+              providers: [],
+              attorney_name: data.name || 'Quick Quote Request',
+              attorney_email: data.email,
+              attorney_phone: '',
+              case_details: 'Quick quote from homepage — needs a deposition videographer in ' + data.city + ' on ' + data.date,
               city: data.city,
-              date: data.date,
-              message: 'Quick quote from homepage — needs a deposition videographer in ' + data.city + ' on ' + data.date,
-              provider_name: 'General Inquiry',
-              provider_email: '',
               source: 'homepage-quick-quote',
               turnstile_token: turnstileInput ? turnstileInput.value : '',
             }),

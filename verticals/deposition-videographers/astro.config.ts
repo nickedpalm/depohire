@@ -10,6 +10,7 @@ import mdx from '@astrojs/mdx';
 import icon from 'astro-icon';
 
 import { readingTimeRemarkPlugin, responsiveTablesRehypePlugin, lazyImagesRehypePlugin } from './src/utils/frontmatter';
+import verticalData from './vertical.json' with { type: 'json' };
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -29,7 +30,7 @@ function listingContactsIntegration() {
 }
 
 export default defineConfig({
-  site: 'https://depohire.com',
+  site: (verticalData as any).siteUrl || `https://${(verticalData as any).domain || 'localhost'}`,
 
   output: 'static',
 

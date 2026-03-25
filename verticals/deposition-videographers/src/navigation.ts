@@ -1,4 +1,5 @@
 import { getPermalink, getBlogPermalink } from './utils/permalinks';
+import config from '~/config';
 
 export const headerData = {
   links: [
@@ -67,5 +68,5 @@ export const footerData = {
     { text: 'Editorial Guidelines', href: getPermalink('/editorial-guidelines') },
   ],
   socialLinks: [],
-  footNote: `© ${new Date().getFullYear()} DepoHire. All rights reserved. The only directory built for litigation teams.`,
+  footNote: `© ${new Date().getFullYear()} ${config.brandName}. All rights reserved.`,
 };

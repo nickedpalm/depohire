@@ -3,6 +3,8 @@ import '~/assets/styles/tailwind.css';
 
 import { I18N } from '~/utils/astrowind-config';
 
+import interLatinUrl from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+
 import CommonMeta from '~/components/common/CommonMeta.astro';
 import Favicons from '~/components/Favicons.astro';
 import CustomStyles from '~/components/CustomStyles.astro';
@@ -28,6 +30,7 @@ const { language, textDirection } = I18N;
 <!doctype html>
 <html lang={language} dir={textDirection} class="2xl:text-[20px]">
   <head>
+    <link rel="preload" as="font" type="font/woff2" href={interLatinUrl} crossorigin />
     <CommonMeta />
     <Favicons />
     <CustomStyles />
@@ -41,7 +44,10 @@ const { language, textDirection } = I18N;
   </head>
 
   <body class="antialiased text-default bg-page tracking-tight">
-    <slot />
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:rounded-lg focus:shadow-lg focus:text-primary-600 focus:font-semibold">Skip to content</a>
+    <main id="main-content">
+      <slot />
+    </main>
 
     <BasicScripts />
   </body>

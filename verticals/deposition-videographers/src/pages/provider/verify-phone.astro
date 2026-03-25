@@ -23,18 +23,18 @@ const metadata = {
         <form id="verify-form" class="space-y-5">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-3 text-center">Enter verification code</label>
-            <div id="code-inputs" class="flex justify-center gap-2">
-              <input type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" data-idx="0" autocomplete="one-time-code"
+            <div id="code-inputs" class="flex justify-center gap-2" role="group" aria-label="Verification code">
+              <input type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" data-idx="0" autocomplete="one-time-code" aria-label="Digit 1 of 6"
                 class="w-12 h-14 text-center text-xl font-semibold rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary-300 focus:border-primary-300" />
-              <input type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" data-idx="1"
+              <input type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" data-idx="1" aria-label="Digit 2 of 6"
                 class="w-12 h-14 text-center text-xl font-semibold rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary-300 focus:border-primary-300" />
-              <input type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" data-idx="2"
+              <input type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" data-idx="2" aria-label="Digit 3 of 6"
                 class="w-12 h-14 text-center text-xl font-semibold rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary-300 focus:border-primary-300" />
-              <input type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" data-idx="3"
+              <input type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" data-idx="3" aria-label="Digit 4 of 6"
                 class="w-12 h-14 text-center text-xl font-semibold rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary-300 focus:border-primary-300" />
-              <input type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" data-idx="4"
+              <input type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" data-idx="4" aria-label="Digit 5 of 6"
                 class="w-12 h-14 text-center text-xl font-semibold rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary-300 focus:border-primary-300" />
-              <input type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" data-idx="5"
+              <input type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" data-idx="5" aria-label="Digit 6 of 6"
                 class="w-12 h-14 text-center text-xl font-semibold rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary-300 focus:border-primary-300" />
             </div>
           </div>
@@ -45,7 +45,7 @@ const metadata = {
           </button>
         </form>
 
-        <div id="error-msg" class="hidden mt-4 p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700 text-center"></div>
+        <div id="error-msg" class="hidden mt-4 p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700 text-center" role="alert" aria-live="assertive"></div>
 
         <div id="max-attempts-msg" class="hidden mt-4 p-4 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800 text-center">
           <p class="font-semibold">Your claim has been submitted for manual review.</p>

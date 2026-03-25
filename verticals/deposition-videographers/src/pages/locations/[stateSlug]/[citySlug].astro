@@ -1,6 +1,7 @@
 ---
 import PageLayout from '~/layouts/PageLayout.astro';
 import MultiQuoteBar from '~/components/directory/MultiQuoteBar.astro';
+import StickyCTA from '~/components/directory/StickyCTA.astro';
 import LeafletMap from '~/components/directory/LeafletMap.astro';
 import RelatedContent from '~/components/directory/RelatedContent.astro';
 import Breadcrumbs from '~/components/directory/Breadcrumbs.astro';
@@ -385,25 +386,25 @@ const metadata = {
                             <span class="text-[13px] text-gray-400">({listing.review_count} reviews)</span>
                           </div>
                         ) : (
-                          <div class="text-xs text-gray-300 italic mt-1">No reviews yet</div>
+                          <div class="text-xs text-gray-500 italic mt-1">No reviews yet</div>
                         )}
                       </div>
                     </div>
                     {listing.review_count > 0 && desc ? (
                       <div class="city-provider-desc text-[13px] text-gray-500 leading-snug mt-2.5 line-clamp-2">{desc}</div>
                     ) : (
-                      <div class="city-unclaimed-desc text-[13px] text-gray-300 italic leading-snug mt-2.5">No description available. This listing has not been claimed by the business owner.</div>
+                      <div class="city-unclaimed-desc text-[13px] text-gray-500 italic leading-snug mt-2.5">No description available. This listing has not been claimed by the business owner.</div>
                     )}
                     {tags.length > 0 && (
                       <div class="city-provider-tags flex flex-wrap gap-1.5 mt-2.5">
-                        {tags.map(t => <span class="city-tag-faded bg-gray-100 text-gray-300 text-[11px] font-semibold px-2.5 py-1 rounded-md">{t}</span>)}
+                        {tags.map(t => <span class="city-tag-faded bg-gray-100 text-gray-500 text-[11px] font-semibold px-2.5 py-1 rounded-md">{t}</span>)}
                       </div>
                     )}
                     <div class="flex items-center justify-between mt-3.5 pt-3 border-t border-gray-100 flex-wrap gap-2">
                       {listing.phone ? (
-                        <span class="city-phone-blurred text-[13px] text-gray-300 tracking-wider">&#x2022;&#x2022;&#x2022;-&#x2022;&#x2022;&#x2022;-&#x2022;&#x2022;&#x2022;&#x2022;</span>
+                        <span class="city-phone-blurred text-[13px] text-gray-400 tracking-wider">&#x2022;&#x2022;&#x2022;-&#x2022;&#x2022;&#x2022;-&#x2022;&#x2022;&#x2022;&#x2022;</span>
                       ) : (
-                        <span class="city-phone-blurred text-[13px] text-gray-300 tracking-wider">&#x2022;&#x2022;&#x2022;-&#x2022;&#x2022;&#x2022;-&#x2022;&#x2022;&#x2022;&#x2022;</span>
+                        <span class="text-[13px] text-gray-400">No phone listed</span>
                       )}
                       {listing.email ? (
                         <button class="btn-action-secondary select-quote-btn" data-selected="false" data-provider-name={listing.name} data-provider-email={listing.email} data-provider-slug={listing.slug}>
@@ -441,6 +442,7 @@ const metadata = {
       </div>
     )}
 
+    <StickyCTA />
     <MultiQuoteBar />
 
     {/* How It Works */}

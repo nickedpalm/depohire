@@ -1,0 +1,292 @@
+---
+import PageLayout from '~/layouts/PageLayout.astro';
+import Breadcrumbs from '~/components/directory/Breadcrumbs.astro';
+import Turnstile from '~/components/common/Turnstile.astro';
+import config from '~/config';
+
+const title = 'Request Listing Removal';
+const description = `Request removal of a business listing from ${config.name}. We process all removal requests within 5 business days.`;
+const metadata = { title, description };
+---
+<PageLayout metadata={metadata}>
+  <Fragment slot="announcement"><span></span></Fragment>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <Breadcrumbs crumbs={[{ label: 'Removal Request' }]} />
+
+    <div class="rm-layout">
+      {/* Left column: form */}
+      <div class="rm-form-col">
+        <h1 class="rm-title">Request Listing Removal</h1>
+        <p class="rm-subtitle">
+          If you are a business owner or authorized representative and would like your listing removed from {config.name},
+          please fill out the form below. We will process your request within <strong>5 business days</strong>.
+        </p>
+
+        <form id="removalForm" class="rm-form" novalidate>
+          <div class="rm-field">
+            <label for="rm-email" class="rm-label">Your Email Address <span class="rm-req">*</span></label>
+            <input type="email" id="rm-email" name="email" required class="rm-input" placeholder="you@example.com" />
+            <p class="rm-hint">We will send a confirmation to this address.</p>
+          </div>
+
+          <div class="rm-field">
+            <label for="rm-business" class="rm-label">Business Name <span class="rm-req">*</span></label>
+            <input type="text" id="rm-business" name="business_name" required class="rm-input" placeholder="e.g. Acme Legal Video" />
+          </div>
+
+          <div class="rm-field">
+            <label for="rm-slug" class="rm-label">Listing URL or Slug <span class="rm-req">*</span></label>
+            <input type="text" id="rm-slug" name="listing_slug" required class="rm-input" placeholder="e.g. acme-legal-video or full listing URL" />
+            <p class="rm-hint">The slug appears in the listing page URL: {config.domain}/locations/.../[slug]/</p>
+          </div>
+
+          <div class="rm-field">
+            <label for="rm-reason" class="rm-label">Reason for Removal</label>
+            <textarea id="rm-reason" name="reason" rows="4" class="rm-textarea" placeholder="Optional: let us know why you'd like this listing removed."></textarea>
+          </div>
+
+          <div class="cf-turnstile" data-sitekey={config.turnsiteSitekey} data-theme="light" style="margin-bottom:8px"></div>
+          <button type="submit" id="rmSubmitBtn" class="rm-submit-btn">Submit Removal Request</button>
+        </form>
+
+        {/* Success state */}
+        <div id="rmSuccess" class="rm-success" style="display:none;">
+          <div class="rm-success-icon">&#10003;</div>
+          <h2>Request Received</h2>
+          <p>
+            We have received your removal request. You will receive a confirmation email at the address you provided.
+            We will process your request within <strong>5 business days</strong>.
+          </p>
+          <p class="rm-success-note">
+            If you don't see a confirmation email, please check your spam folder or contact us at
+            <a href={`mailto:${config.contactEmail}`}>{config.contactEmail}</a>.
+          </p>
+        </div>
+
+        {/* Error state */}
+        <div id="rmError" class="rm-error" style="display:none;">
+          <p><strong>Something went wrong.</strong> Please try again or contact us directly at
+            <a href={`mailto:${config.contactEmail}`}>{config.contactEmail}</a>.
+          </p>
+        </div>
+      </div>
+
+      {/* Right column: info sidebar */}
+      <div class="rm-info-col">
+        <div class="rm-info-card">
+          <h3>How It Works</h3>
+          <ol class="rm-steps">
+            <li>
+              <div class="rm-step-num">1</div>
+              <div>
+                <strong>Submit your request</strong>
+                <p>Fill out the form with your contact info and the listing you want removed.</p>
+              </div>
+            </li>
+            <li>
+              <div class="rm-step-num">2</div>
+              <div>
+                <strong>We verify your identity</strong>
+                <p>We may contact you to confirm you are the business owner or an authorized representative.</p>
+              </div>
+            </li>
+            <li>
+              <div class="rm-step-num">3</div>
+              <div>
+                <strong>Listing removed</strong>
+                <p>Once verified, we remove the listing within 5 business days and send you a confirmation.</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <div class="rm-info-card">
+          <h3>Other Options</h3>
+          <ul class="rm-options">
+            <li>
+              <strong>Claim your listing instead</strong> &mdash; Take control of your listing to update details, add photos, and manage your profile.
+              <a href="/advertise/">Learn more</a>.
+            </li>
+            <li>
+              <strong>Request a correction</strong> &mdash; If the listing has incorrect information, email us at
+              <a href={`mailto:${config.contactEmail}`}>{config.contactEmail}</a> and we will update it.
+            </li>
+          </ul>
+        </div>
+
+        <div class="rm-info-card rm-info-contact">
+          <h3>Need Help?</h3>
+          <p>
+            Contact us directly at <a href={`mailto:${config.contactEmail}`}>{config.contactEmail}</a>
+            and include the listing URL in your message.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline>
+    (function() {
+      // Pre-fill from URL params
+      var params = new URLSearchParams(window.location.search);
+      var listing = params.get('listing');
+      var name = params.get('name');
+      if (listing) {
+        var slugField = document.getElementById('rm-slug');
+        if (slugField) slugField.value = listing;
+      }
+      if (name) {
+        var nameField = document.getElementById('rm-business');
+        if (nameField) nameField.value = decodeURIComponent(name);
+      }
+
+      var form = document.getElementById('removalForm');
+      var successEl = document.getElementById('rmSuccess');
+      var errorEl = document.getElementById('rmError');
+      var submitBtn = document.getElementById('rmSubmitBtn');
+
+      if (!form) return;
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        errorEl.style.display = 'none';
+
+        // Basic validation
+        var email = document.getElementById('rm-email').value.trim();
+        var businessName = document.getElementById('rm-business').value.trim();
+        var slug = document.getElementById('rm-slug').value.trim();
+
+        if (!email || !businessName || !slug) {
+          errorEl.querySelector('p').innerHTML = '<strong>Please fill out all required fields.</strong>';
+          errorEl.style.display = '';
+          return;
+        }
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          errorEl.querySelector('p').innerHTML = '<strong>Please enter a valid email address.</strong>';
+          errorEl.style.display = '';
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting...';
+
+        var reason = document.getElementById('rm-reason').value.trim();
+
+        // POST to API endpoint
+        var turnstileInput = form.querySelector('[name="cf-turnstile-response"]');
+        fetch('/api/removal-request', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: email,
+            listing_slug: slug,
+            business_name: businessName,
+            reason: reason,
+            turnstile_token: turnstileInput ? turnstileInput.value : '',
+          }),
+        })
+        .then(function(res) {
+          if (res.ok) {
+            form.style.display = 'none';
+            successEl.style.display = '';
+          } else {
+            throw new Error('Request failed');
+          }
+        })
+        .catch(function() {
+          errorEl.style.display = '';
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Submit Removal Request';
+          if (window.turnstile) turnstile.reset();
+        });
+      });
+    })();
+  </script>
+</PageLayout>
+
+<style is:global>
+  /* Layout */
+  .rm-layout { display: grid; grid-template-columns: 1fr 380px; gap: 40px; align-items: start; }
+
+  /* Form column */
+  .rm-form-col { min-width: 0; }
+  .rm-title { font-size: 28px; font-weight: 800; color: #1a1a2e; margin-bottom: 8px; }
+  .rm-subtitle { font-size: 15px; color: #6b7280; line-height: 1.6; margin-bottom: 28px; }
+
+  .rm-form { display: flex; flex-direction: column; gap: 20px; }
+  .rm-field { display: flex; flex-direction: column; gap: 4px; }
+  .rm-label { font-size: 14px; font-weight: 600; color: #374151; }
+  .rm-req { color: #ef4444; }
+  .rm-input, .rm-textarea {
+    padding: 10px 14px; border: 1.5px solid #d1d5db; border-radius: 8px;
+    font-size: 14px; font-family: inherit; transition: border-color 0.2s;
+  }
+  .rm-input:focus, .rm-textarea:focus { outline: none; border-color: #2563eb; }
+  .rm-textarea { resize: vertical; }
+  .rm-hint { font-size: 12px; color: #9ca3af; }
+
+  .rm-submit-btn {
+    background: #2563eb; color: #fff; border: none; border-radius: 10px;
+    padding: 14px 28px; font-size: 15px; font-weight: 600; cursor: pointer;
+    font-family: inherit; transition: background 0.2s;
+    align-self: flex-start;
+  }
+  .rm-submit-btn:hover { background: #1d4ed8; }
+  .rm-submit-btn:disabled { background: #93c5fd; cursor: not-allowed; }
+
+  /* Success */
+  .rm-success {
+    background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px;
+    padding: 28px; text-align: center;
+  }
+  .rm-success-icon {
+    width: 48px; height: 48px; border-radius: 50%; background: #22c55e; color: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 24px; font-weight: 700; margin-bottom: 12px;
+  }
+  .rm-success h2 { font-size: 20px; font-weight: 700; color: #166534; margin-bottom: 8px; }
+  .rm-success p { font-size: 14px; color: #4b5563; line-height: 1.6; }
+  .rm-success-note { margin-top: 12px; font-size: 13px; color: #6b7280; }
+  .rm-success a { color: #2563eb; }
+
+  /* Error */
+  .rm-error {
+    background: #fef2f2; border: 1px solid #fecaca; border-radius: 10px;
+    padding: 14px 18px; margin-top: 12px;
+  }
+  .rm-error p { font-size: 14px; color: #991b1b; }
+  .rm-error a { color: #2563eb; }
+
+  /* Info sidebar */
+  .rm-info-col { display: flex; flex-direction: column; gap: 16px; }
+  .rm-info-card {
+    background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px;
+  }
+  .rm-info-card h3 { font-size: 15px; font-weight: 700; color: #1a1a2e; margin-bottom: 12px; }
+
+  .rm-steps { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px; }
+  .rm-steps li { display: flex; gap: 12px; align-items: flex-start; }
+  .rm-step-num {
+    width: 28px; height: 28px; border-radius: 8px; background: #2563eb; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .rm-steps li strong { font-size: 14px; color: #1a1a2e; }
+  .rm-steps li p { font-size: 13px; color: #6b7280; margin-top: 2px; line-height: 1.4; }
+
+  .rm-options { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+  .rm-options li { font-size: 13px; color: #6b7280; line-height: 1.5; }
+  .rm-options li strong { color: #374151; }
+  .rm-options a { color: #2563eb; }
+
+  .rm-info-contact p { font-size: 13px; color: #6b7280; line-height: 1.5; }
+  .rm-info-contact a { color: #2563eb; font-weight: 600; }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    .rm-layout { grid-template-columns: 1fr; gap: 24px; }
+    .rm-title { font-size: 24px; }
+  }
+</style>
+<Turnstile />

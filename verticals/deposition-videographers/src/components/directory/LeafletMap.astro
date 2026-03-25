@@ -36,7 +36,9 @@ const { pins, centerLat, centerLng, zoom = 11 } = Astro.props;
     var lat = parseFloat(el.dataset.centerLat);
     var lng = parseFloat(el.dataset.centerLng);
     var zoom = parseInt(el.dataset.zoom);
-    var pins = JSON.parse(el.dataset.pins || '[]');
+    var pins = JSON.parse(el.dataset.pins || '[]').filter(function(p) {
+      return p.lat && p.lng && !(p.lat === 0 && p.lng === 0);
+    });
 
     var map = L.map(el).setView([lat, lng], zoom);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

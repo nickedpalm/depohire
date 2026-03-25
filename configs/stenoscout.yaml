@@ -1,0 +1,66 @@
+name: Court Reporters
+slug: court-reporters
+domain: stenoscout.com
+tagline: "Find certified court reporters and stenographers near you"
+description: "The most comprehensive directory of court reporters and stenographers in the United States"
+
+# Business context
+job_value: "$250-1,500+ per session"
+industry: legal
+certifications:
+  - "RPR (Registered Professional Reporter)"
+  - "RMR (Registered Merit Reporter)"
+  - "RDR (Registered Diplomate Reporter)"
+  - "CRR (Certified Realtime Reporter)"
+  - "CLVS (Certified Legal Video Specialist)"
+  - "CSR (Certified Shorthand Reporter)"
+
+# Scraping targets
+scrape_sources:
+  - type: google_maps
+    query: "court reporter"
+  - type: google_maps
+    query: "stenographer"
+  - type: google_maps
+    query: "court reporting service"
+  - type: yelp
+    query: "court reporter"
+  - type: custom
+    url: "https://www.ncra.org/home/professionals-resources"
+    note: "NCRA directory"
+
+# Content config
+city_page_prompt_context: |
+  Court reporters (also called stenographers) create verbatim transcripts
+  of legal proceedings including depositions, trials, hearings, and
+  arbitrations. They use stenotype machines, voice writing, or digital
+  recording to capture testimony. Many offer realtime reporting, rough
+  drafts, and expedited transcript delivery. Attorneys, law firms, and
+  courts hire them for civil and criminal proceedings.
+
+# Editorial
+contact_email: "contact@stenoscout.com"
+founded_year: 2026
+editorial_author:
+  name: "Nick Palmer"
+  title: "Founder & Lead Researcher"
+  bio: "After years working in the legal services industry, Nick built this directory to help attorneys and legal professionals find qualified court reporters without the guesswork."
+  linkedin: "https://linkedin.com/in/nickedpalmer"
+
+# SEO
+primary_keyword: "court reporter"
+secondary_keywords:
+  - "stenographer"
+  - "court reporting service"
+  - "certified court reporter"
+  - "realtime reporter"
+  - "deposition reporter"
+  - "legal transcription"
+
+# Listing schema fields (beyond standard name/address/phone)
+extra_fields:
+  - certifications
+  - years_experience
+  - services
+  - coverage_area
+  - equipment

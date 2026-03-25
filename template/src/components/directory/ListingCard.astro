@@ -13,46 +13,93 @@ interface Props {
   rating: number;
   review_count: number;
   phone?: string;
+  email?: string;
   certifications?: string[];
   services?: string[];
   description?: string;
   sentiment?: Sentiment | null;
   featured?: boolean;
+  selectable?: boolean;
+  demo_reel_url?: string;
+  demo_reel_thumbnail?: string;
 }
 
-const { slug, name, city, state, rating, review_count, phone, certifications = [], services = [], description, sentiment, featured = false } = Astro.props;
+const { slug, name, city, state, rating, review_count, phone, email = '', certifications = [], services = [], description, sentiment, featured = false, selectable = false, demo_reel_url, demo_reel_thumbnail } = Astro.props;
 const shortDesc = description && description.length > 120 ? description.slice(0, 120) + '...' : description;
+const hasCLVS = certifications.some(c => c.toUpperCase().includes('CLVS'));
 ---
-<a href={`/listing/${slug}/`} class={`card block p-5 no-underline group ${featured ? 'ring-2 ring-amber-400 bg-amber-50/30' : ''}`}>
-  <div class="flex items-start justify-between gap-3">
-    <InitialsAvatar name={name} size="sm" />
-    <div class="flex-1 min-w-0">
-      <div class="flex items-center gap-2">
-        <h3 class="font-semibold text-gray-900 group-hover:text-primary-600 truncate">{name}</h3>
-        {featured && <FeaturedBadge size="sm" />}
+<div
+  class={`card block p-5 relative ${featured ? 'ring-2 ring-amber-400 bg-amber-50/30' : ''}`}
+  data-listing-card
+  data-has-reviews={review_count > 0 ? 'true' : 'false'}
+  data-clvs={hasCLVS ? 'true' : 'false'}
+  data-rating={String(rating || 0)}
+  data-review-count={String(review_count || 0)}
+  data-name={name}
+  data-provider-name={name}
+  data-provider-email={email}
+  data-provider-slug={slug}
+>
+  {selectable && email && (
+    <button
+      type="button"
+      class="absolute top-3 right-3 z-10 min-h-[44px] min-w-[44px] inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-medium border border-gray-300 text-gray-500 bg-white hover:border-primary-400 hover:text-primary-600 transition-all select-quote-btn"
+      data-selected="false"
+      data-provider-name={name}
+      data-provider-email={email}
+      data-provider-slug={slug}
+      title="Add to quote request"
+    >
+      <svg class="w-4 h-4 hidden check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+      <span class="btn-label">+ Add to Quote</span>
+    </button>
+  )}
+  <a href={`/listing/${slug}/`} class="no-underline group block">
+    <div class="flex items-start gap-3 flex-wrap">
+      <InitialsAvatar name={name} size="sm" />
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2">
+          <h3 class="font-semibold text-gray-900 group-hover:text-primary-600 truncate">{name}</h3>
+          {featured && <FeaturedBadge size="sm" />}
+        </div>
+        <p class="text-sm text-gray-500 mt-0.5">{city}, {state}</p>
+        <div class="flex items-center gap-2 mt-1 sm:hidden">
+          <ReviewStars rating={rating} count={review_count} size="sm" />
+          {sentiment && <SentimentBadge label={sentiment.label} score={sentiment.score} size="sm" />}
+        </div>
       </div>
-      <p class="text-sm text-gray-500 mt-0.5">{city}, {state}</p>
+      <div class="hidden sm:flex flex-col items-end gap-1">
+        <ReviewStars rating={rating} count={review_count} size="sm" />
+        {sentiment && <SentimentBadge label={sentiment.label} score={sentiment.score} size="sm" />}
+      </div>
     </div>
-    <div class="flex flex-col items-end gap-1">
-      <ReviewStars rating={rating} count={review_count} size="sm" />
-      {sentiment && <SentimentBadge label={sentiment.label} score={sentiment.score} size="sm" />}
-    </div>
-  </div>
-  {shortDesc && <p class="text-sm text-gray-600 mt-2">{shortDesc}</p>}
-  {sentiment && sentiment.keywords.length > 0 && (
-    <div class="flex flex-wrap gap-1 mt-2">
-      {sentiment.keywords.slice(0, 3).map((kw) => (
-        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs text-gray-500 bg-gray-50">{kw}</span>
+    {shortDesc && <p class="text-sm text-gray-600 mt-2">{shortDesc}</p>}
+    {sentiment && sentiment.keywords.length > 0 && (
+      <div class="flex flex-wrap gap-1 mt-2">
+        {sentiment.keywords.slice(0, 3).map((kw) => (
+          <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs text-gray-500 bg-gray-50">{kw}</span>
+        ))}
+      </div>
+    )}
+    <div class="flex flex-wrap gap-1.5 mt-3">
+      {certifications.map((cert) => (
+        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">{cert}</span>
+      ))}
+      {services.slice(0, 3).map((svc) => (
+        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-600">{svc}</span>
       ))}
     </div>
+    {phone && <p class="text-sm text-gray-500 mt-2">{phone}</p>}
+  </a>
+  {featured && demo_reel_url && (
+    <a
+      href={demo_reel_url}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="mt-3 inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-900 text-white text-xs font-medium no-underline hover:bg-gray-800 transition-colors"
+    >
+      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      Play Demo Reel
+    </a>
   )}
-  <div class="flex flex-wrap gap-1.5 mt-3">
-    {certifications.map((cert) => (
-      <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">{cert}</span>
-    ))}
-    {services.slice(0, 3).map((svc) => (
-      <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-600">{svc}</span>
-    ))}
-  </div>
-  {phone && <p class="text-sm text-gray-500 mt-2">{phone}</p>}
-</a>
+</div>

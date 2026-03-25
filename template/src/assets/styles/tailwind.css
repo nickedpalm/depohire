@@ -3,6 +3,9 @@
 @tailwind utilities;
 
 @layer utilities {
+  .hero-gradient {
+    background: linear-gradient(135deg, #0f1b2d 0%, #1a3352 40%, #1e3a5f 70%, #2a4a6b 100%);
+  }
   .bg-page {
     background-color: var(--aw-color-bg-page);
   }
@@ -93,6 +96,10 @@
 
 /* Directory custom classes */
 @layer components {
+  .card {
+    @apply bg-white rounded-card border border-gray-200 shadow-card;
+  }
+
   .container-narrow {
     @apply max-w-6xl mx-auto px-4 sm:px-6 lg:px-8;
   }
@@ -120,5 +127,63 @@
   /* Responsive tables */
   .table-wrap {
     @apply overflow-x-auto -mx-4 px-4 my-6;
+  }
+
+  /* ===== Design System: Buttons ===== */
+  .btn-action {
+    @apply inline-flex items-center justify-center gap-2 font-semibold
+           rounded-btn px-5 py-2.5 text-sm transition-all min-h-[44px]
+           whitespace-nowrap cursor-pointer no-underline;
+  }
+  .btn-action-primary {
+    @apply btn-action bg-primary-600 text-white hover:bg-primary-700;
+  }
+  .btn-action-secondary {
+    @apply btn-action bg-white text-gray-700 border-[1.5px] border-gray-300
+           hover:bg-gray-50;
+  }
+  .btn-action-dark {
+    @apply btn-action bg-navy-950 text-white hover:bg-navy-900;
+  }
+  .btn-action-amber {
+    @apply btn-action bg-amber-500 text-slate-900 font-bold hover:bg-amber-400;
+  }
+
+  /* ===== Design System: Cards ===== */
+  .card-base {
+    @apply bg-white rounded-card border border-gray-200 shadow-card;
+  }
+  .card-hover {
+    @apply card-base transition-all hover:border-primary-300
+           hover:shadow-card-hover hover:-translate-y-0.5;
+  }
+  .card-featured {
+    @apply card-base border-2 border-primary-600 shadow-card-elevated;
+  }
+  .card-section {
+    @apply bg-white rounded-card p-6 shadow-card;
+  }
+
+  /* ===== Design System: Section Labels ===== */
+  .section-label {
+    @apply text-[11px] font-bold text-gray-400 uppercase tracking-[1.5px]
+           mb-3.5 flex items-center gap-2;
+  }
+  .section-label-line {
+    @apply flex-1 h-px bg-gray-200;
+  }
+
+  /* ===== Design System: Filter Pills ===== */
+  .filter-pill {
+    @apply px-4 py-2.5 rounded-btn text-sm font-semibold bg-white text-gray-500
+           border-[1.5px] border-gray-200 cursor-pointer transition-all min-h-[44px];
+  }
+  .filter-pill:hover {
+    @apply border-primary-600 text-primary-600;
+  }
+
+  /* ===== Design System: Hero ===== */
+  .hero-gradient {
+    background: linear-gradient(135deg, #1a1a2e 0%, #1e3a5f 40%, #2563eb 100%);
   }
 }

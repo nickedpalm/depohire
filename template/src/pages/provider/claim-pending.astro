@@ -1,0 +1,84 @@
+---
+import PageLayout from '~/layouts/PageLayout.astro';
+import config from '~/config';
+import { getAllListings } from '~/lib/listings';
+
+const metadata = {
+  title: `Claim Under Review — ${config.brandName}`,
+  description: 'Your listing claim is being reviewed. We will contact you within 1-2 business days.',
+  robots: { index: false, follow: false },
+};
+
+// Pre-build slug→name and slug→email maps for display
+const listings = getAllListings();
+const listingMap: Record<string, { name: string; email: string }> = {};
+for (const l of listings) {
+  listingMap[l.slug] = { name: l.name, email: (l as any).email || '' };
+}
+---
+<PageLayout metadata={metadata}>
+  <Fragment slot="announcement"><span></span></Fragment>
+  <div class="min-h-[70vh] flex items-center justify-center px-4 py-16">
+    <div class="w-full max-w-md">
+      <div class="text-center mb-8">
+        <div class="w-14 h-14 bg-amber-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <svg class="w-7 h-7 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <h1 class="text-2xl font-bold text-gray-900">Claim Under Review</h1>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 text-center">
+        <p id="review-message" class="text-sm text-gray-600 leading-relaxed">
+          We're verifying your ownership of this listing. You'll receive a confirmation within 1-2 business days.
+        </p>
+
+        <div class="mt-6 p-4 bg-blue-50 border border-blue-100 rounded-xl">
+          <div class="flex items-center justify-center gap-2 text-blue-700">
+            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <p class="text-sm">In the meantime, you can browse our directory.</p>
+          </div>
+        </div>
+
+        <div class="mt-6 flex flex-col gap-3">
+          <a href="/"
+            class="w-full inline-flex items-center justify-center bg-primary-600 hover:bg-primary-500 text-white font-semibold py-3 rounded-xl transition-colors text-sm">
+            Browse Directory
+          </a>
+          <a href="/provider/login"
+            class="w-full inline-flex items-center justify-center bg-white hover:bg-gray-50 text-gray-700 font-semibold py-3 rounded-xl border border-gray-300 transition-colors text-sm">
+            Back to Login
+          </a>
+        </div>
+      </div>
+
+      <div class="mt-6 text-center">
+        <p class="text-xs text-gray-400">Questions? Contact us at <a href={`mailto:${config.contactEmail}`} class="text-primary-600 hover:underline">{config.contactEmail}</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline define:vars={{ listingMap }}>
+    (function() {
+      var params = new URLSearchParams(window.location.search);
+      var listingSlug = params.get('listing');
+      var emailParam = params.get('email');
+
+      if (listingSlug && listingMap[listingSlug]) {
+        var info = listingMap[listingSlug];
+        var name = info.name;
+        var email = emailParam || info.email || '';
+
+        var parts = [];
+        parts.push("We're verifying your ownership of <strong>" + name + "</strong>.");
+
+        if (email) {
+          parts.push("You'll receive an email at <strong>" + email + "</strong> within 1\u20132 business days.");
+        } else {
+          parts.push("You'll receive a confirmation within 1\u20132 business days.");
+        }
+
+        document.getElementById('review-message').innerHTML = parts.join(' ');
+      }
+    })();
+  </script>
+</PageLayout>

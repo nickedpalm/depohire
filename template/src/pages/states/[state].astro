@@ -1,10 +1,11 @@
 ---
 import PageLayout from '~/layouts/PageLayout.astro';
+import UsStateMap from '~/components/directory/UsStateMap.astro';
 import Breadcrumbs from '~/components/directory/Breadcrumbs.astro';
-import CityGrid from '~/components/directory/CityGrid.astro';
 import config from '~/config';
 import citiesData from '~/data/cities.json';
-import { getListingCountByCity } from '~/lib/listings';
+import { getListingCountByCity, getAllListings, getListingsForCity } from '~/lib/listings';
+import type { Listing } from '~/lib/listings';
 
 export function getStaticPaths() {
   const stateMap = new Map<string, { stateSlug: string; stateName: string; state: string }>();
@@ -17,47 +18,521 @@ export function getStaticPaths() {
       });
     }
   }
-
-  const paths = [
-    {
-      params: { state: 'all' },
-      props: { stateName: 'All States', stateAbbr: '', isAll: true },
-    },
+  return [
+    { params: { state: 'all' }, props: { stateName: 'All States', stateAbbr: '', isAll: true } },
     ...Array.from(stateMap.values()).map(s => ({
       params: { state: s.stateSlug },
       props: { stateName: s.stateName, stateAbbr: s.state, isAll: false },
     })),
   ];
-
-  return paths;
 }
 
 const { stateName, stateAbbr, isAll } = Astro.props;
 const cityCounts = getListingCountByCity();
+const allListings = getAllListings();
 
-const filteredCities = isAll
-  ? citiesData
-  : citiesData.filter(c => c.state === stateAbbr);
-
+const filteredCities = isAll ? citiesData : citiesData.filter(c => c.state === stateAbbr);
 const citiesWithCounts = filteredCities
-  .map(c => ({ slug: c.slug, city: c.city, state: c.state, listingCount: cityCounts[c.slug] || 0 }))
+  .map(c => ({ ...c, listingCount: cityCounts[c.slug] || 0 }))
   .sort((a, b) => b.listingCount - a.listingCount || a.city.localeCompare(b.city));
 
-const title = isAll ? `Browse ${config.name} by State` : `${config.name} in ${stateName}`;
-const description = isAll
-  ? `Browse ${config.primaryKeyword}s across all 50 US states.`
-  : `Find ${config.primaryKeyword}s in ${stateName}. Browse ${filteredCities.length} cities.`;
+const totalProviders = isAll ? allListings.length : citiesWithCounts.reduce((sum, c) => sum + c.listingCount, 0);
+const totalCities = citiesWithCounts.length;
+const citiesWithProviders = citiesWithCounts.filter(c => c.listingCount > 0).length;
 
-const metadata = { title, description };
+// For "all" view: state groups
+const stateGroups = isAll ? (() => {
+  const sm = new Map<string, { name: string; slug: string; abbr: string; cityCount: number; providerCount: number }>();
+  for (const city of citiesData) {
+    const existing = sm.get(city.state) || { name: city.stateName, slug: city.stateSlug, abbr: city.state, cityCount: 0, providerCount: 0 };
+    existing.cityCount++;
+    existing.providerCount += cityCounts[city.slug] || 0;
+    sm.set(city.state, existing);
+  }
+  return Array.from(sm.values()).sort((a, b) => a.name.localeCompare(b.name));
+})() : [];
+
+// For "all" view: max provider count for bar width calc
+const maxProviders = isAll ? Math.max(...stateGroups.map(s => s.providerCount), 1) : 1;
+// "Hot" threshold: top 20% of states by provider count
+const hotThreshold = isAll ? stateGroups.map(s => s.providerCount).sort((a, b) => b - a)[Math.floor(stateGroups.length * 0.2)] || 30 : 30;
+
+// For state view: get all listings in state, compute stats
+const stateListings: Listing[] = isAll ? [] : allListings.filter(l => l.state === stateAbbr);
+const ratedListings = stateListings.filter(l => l.rating > 0);
+const avgRating = ratedListings.length > 0 ? (ratedListings.reduce((s, l) => s + l.rating, 0) / ratedListings.length).toFixed(1) : null;
+const totalReviews = stateListings.reduce((s, l) => s + (l.review_count || 0), 0);
+const certifiedCount = stateListings.filter(l => l.certifications?.some(c => c.toUpperCase().includes('CLVS'))).length;
+const certPct = stateListings.length > 0 ? Math.round(certifiedCount / stateListings.length * 100) : 0;
+
+// Top rated providers in state (top 5 by rating then review count)
+const topProviders = [...stateListings]
+  .filter(l => l.rating > 0)
+  .sort((a, b) => b.rating - a.rating || b.review_count - a.review_count)
+  .slice(0, 5);
+
+// For state view: get top 2 providers per city for preview cards
+function getCityPreviews(citySlug: string): Listing[] {
+  return getListingsForCity(citySlug)
+    .sort((a, b) => {
+      if (a.featured && !b.featured) return -1;
+      if (!a.featured && b.featured) return 1;
+      return (b.rating || 0) - (a.rating || 0) || (b.review_count || 0) - (a.review_count || 0);
+    })
+    .slice(0, 2);
+}
+
+function getInitials(name: string): string {
+  return name.split(/\s+/).map(w => w[0]).join('').substring(0, 2).toUpperCase();
+}
+
+function starString(rating: number): string {
+  const full = Math.floor(rating);
+  const half = rating - full >= 0.5;
+  return '★'.repeat(full) + (half ? '★' : '') + '☆'.repeat(5 - full - (half ? 1 : 0));
+}
+
+// Nearby states (for state view) — states with cities geographically near this state's cities
+const nearbyStates = !isAll ? (() => {
+  const stateCities = citiesData.filter(c => c.state === stateAbbr);
+  const avgLat = stateCities.reduce((s, c) => s + c.lat, 0) / (stateCities.length || 1);
+  const avgLng = stateCities.reduce((s, c) => s + c.lng, 0) / (stateCities.length || 1);
+
+  const otherStates = new Map<string, { name: string; slug: string; abbr: string; providerCount: number; cityCount: number; dist: number }>();
+  for (const city of citiesData) {
+    if (city.state === stateAbbr) continue;
+    if (!otherStates.has(city.state)) {
+      const d = Math.sqrt((city.lat - avgLat) ** 2 + (city.lng - avgLng) ** 2);
+      otherStates.set(city.state, { name: city.stateName, slug: city.stateSlug, abbr: city.state, providerCount: 0, cityCount: 0, dist: d });
+    }
+    const s = otherStates.get(city.state)!;
+    s.cityCount++;
+    s.providerCount += cityCounts[city.slug] || 0;
+  }
+  return Array.from(otherStates.values()).sort((a, b) => a.dist - b.dist).slice(0, 4);
+})() : [];
+
+const currentYear = new Date().getFullYear();
+const title = isAll ? `Browse ${allListings.length}+ Deposition Videographers by State (${currentYear})` : `${totalProviders} Deposition Videographers in ${stateName} (${currentYear})`;
+const description = isAll
+  ? `Browse ${allListings.length.toLocaleString()}+ curated deposition videographers across ${stateGroups.length} states. Compare CLVS-certified providers, read reviews, and request free quotes.`
+  : `Find ${totalProviders} curated deposition videographers across ${citiesWithProviders} cities in ${stateName}.${certifiedCount > 0 ? ` ${certifiedCount} CLVS-certified.` : ''}${avgRating ? ` Average rating: ${avgRating} stars.` : ''} Compare credentials and request free quotes.`;
+const stateParam = Astro.params.state;
+const ogImage = !isAll ? `/og/state/${stateParam}.png` : undefined;
+const metadata = {
+  title,
+  description,
+  ...(ogImage ? { openGraph: { images: [{ url: ogImage, width: 1200, height: 630 }] } } : {}),
+};
+
+const faqSchema = !isAll ? {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: `How much does a deposition videographer cost in ${stateName}?`,
+      acceptedAnswer: { '@type': 'Answer', text: `Deposition videographer rates in ${stateName} typically range from ${config.jobValue || '$600-$1,800'} per session, depending on duration, location within the state, and turnaround time. Same-day delivery and multi-camera setups add to the cost. Rates may vary between metro areas like ${citiesWithCounts[0]?.city || 'major cities'} and smaller markets. Request quotes from multiple providers on ${config.brandName} to compare pricing.` },
+    },
+    {
+      '@type': 'Question',
+      name: `What certifications should I look for when hiring a deposition videographer in ${stateName}?`,
+      acceptedAnswer: { '@type': 'Answer', text: `The most important credential is CLVS (Certified Legal Video Specialist) from the National Court Reporters Association (NCRA). CLVS-certified videographers have passed rigorous testing on legal video standards, equipment operation, and courtroom procedures.${certifiedCount > 0 ? ` Currently, ${certifiedCount} of ${totalProviders} providers in ${stateName} hold CLVS certification (${certPct}%).` : ''} ${config.brandName} displays certification status on every listing.` },
+    },
+    {
+      '@type': 'Question',
+      name: `How many deposition videographers are in ${stateName}?`,
+      acceptedAnswer: { '@type': 'Answer', text: `${config.brandName} currently lists ${totalProviders} deposition videography providers across ${citiesWithProviders} cities in ${stateName}.${avgRating ? ` The average provider rating is ${avgRating} stars based on ${totalReviews} total reviews.` : ''} Browse by city to find providers near your courthouse, or use the multi-quote feature to contact up to 5 providers at once.` },
+    },
+    {
+      '@type': 'Question',
+      name: `How do I request quotes from deposition videographers in ${stateName}?`,
+      acceptedAnswer: { '@type': 'Answer', text: `On ${config.brandName}, click into any city in ${stateName}, select up to 5 providers using the "Add to Quote" button, then submit your deposition details including date, location, and case type. Your request goes directly to each provider — no middlemen, no spam. Most providers respond within 24 hours. The service is completely free for attorneys.` },
+    },
+  ],
+} : null;
+
+const stateSchema = !isAll ? {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: `Deposition Videographers in ${stateName}`,
+  description: description,
+  numberOfItems: totalProviders,
+  itemListElement: citiesWithCounts.filter(c => c.listingCount > 0).map((c, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    item: {
+      '@type': 'Place',
+      name: `${c.city}, ${c.state}`,
+      url: `${config.siteUrl}/locations/${c.stateSlug}/${c.slug}/`,
+    },
+  })),
+} : null;
 ---
 <PageLayout metadata={metadata}>
   <Fragment slot="announcement"><span></span></Fragment>
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <Breadcrumbs crumbs={isAll ? [{ label: 'All States' }] : [
-      { label: 'All States', href: '/states/all/' },
-      { label: stateName },
-    ]} />
 
-    <CityGrid cities={citiesWithCounts} title={title} />
+  {/* ═══ HERO ═══ */}
+  <div class="hero-gradient text-white py-12 px-10 md:py-12 md:px-10 relative overflow-hidden">
+    <div class="st-hero-orb"></div>
+    <div class="max-w-[1200px] mx-auto relative z-10">
+      {isAll ? (
+        <Breadcrumbs crumbs={[
+          { label: 'All States' },
+        ]} />
+      ) : (
+        <Breadcrumbs crumbs={[
+          { label: 'All States', href: '/states/all/' },
+          { label: stateName },
+        ]} />
+      )}
+      <h1 class="text-4xl md:text-[36px] font-extrabold mb-2.5">{title}</h1>
+      <p class="text-base text-white/70 max-w-[600px] leading-relaxed">
+        {isAll
+          ? `${allListings.length.toLocaleString()} curated providers across ${citiesWithProviders} cities in ${stateGroups.length} states. Find certified deposition videographers near your next proceeding.`
+          : `Browse ${totalProviders} curated deposition videography providers across ${totalCities} ${totalCities === 1 ? 'city' : 'cities'} in ${stateName}. Compare credentials, read reviews, and request quotes.`
+        }
+      </p>
+      <div class="flex gap-10 mt-7 flex-wrap">
+        <div class="flex flex-col"><span class="text-[32px] font-extrabold text-white">{totalProviders.toLocaleString()}</span><span class="text-[13px] text-white/50">providers</span></div>
+        <div class="flex flex-col"><span class="text-[32px] font-extrabold text-white">{isAll ? stateGroups.length : totalCities}</span><span class="text-[13px] text-white/50">{isAll ? 'states' : 'cities'}</span></div>
+        {!isAll && avgRating && <div class="flex flex-col"><span class="text-[32px] font-extrabold text-white">{avgRating}</span><span class="text-[13px] text-white/50">avg rating</span></div>}
+        {!isAll && totalReviews > 0 && <div class="flex flex-col"><span class="text-[32px] font-extrabold text-white">{totalReviews}+</span><span class="text-[13px] text-white/50">reviews</span></div>}
+      </div>
+    </div>
   </div>
+
+  {isAll ? (
+    /* ═══════════════════════════════════════════
+       ALL STATES VIEW
+       ═══════════════════════════════════════════ */
+    <>
+      {/* Search filter */}
+      <div class="max-w-[1200px] mx-auto px-10 md:px-10 pt-6 pb-8 flex items-center gap-4 flex-wrap">
+        <input type="text" class="st-search-input" placeholder="Search states or cities..." id="stSearchInput" />
+        <div class="st-view-toggle">
+          <button class="st-view-btn active" data-view="grid">Grid</button>
+          <button class="st-view-btn" data-view="map">Map</button>
+        </div>
+      </div>
+
+      <div id="stGridViews">
+        {/* States section */}
+        <div class="max-w-[1200px] mx-auto px-4 sm:px-10">
+          <div class="section-label"><span>States</span></div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-12" id="stStatesGrid">
+            {stateGroups.map(s => {
+              const barWidth = Math.round((s.providerCount / maxProviders) * 100);
+              const isHot = s.providerCount >= hotThreshold;
+              return (
+                <a class={`card-hover p-4 relative ${isHot ? 'st-hot' : ''}`} href={`/states/${s.slug}/`} data-search={`${s.name} ${s.abbr}`.toLowerCase()}>
+                  {isHot && <span class="st-hot-badge">HIGH DEMAND</span>}
+                  <div class="flex items-center justify-between mb-1.5">
+                    <span class="text-[15px] font-bold text-navy-950">{s.name}</span>
+                    <span class="text-xs font-semibold text-gray-400">{s.abbr}</span>
+                  </div>
+                  <div class="text-xs text-gray-500 flex gap-2">
+                    <span>{s.cityCount} {s.cityCount === 1 ? 'city' : 'cities'}</span>
+                    <span>{s.providerCount} providers</span>
+                  </div>
+                  <div class="st-state-bar"><div class={`st-state-bar-fill ${isHot ? 'st-bar-hot' : ''}`} style={`width:${barWidth}%`}></div></div>
+                </a>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Mid-page CTA */}
+        <div class="max-w-[1200px] mx-auto px-10 md:px-10">
+          <div class="bg-gradient-to-br from-blue-50 to-indigo-100 border border-blue-200 rounded-2xl p-7 mb-12 flex items-center justify-between flex-wrap gap-4">
+            <div>
+              <h3 class="text-lg font-bold text-blue-800 mb-1">Are you a deposition videographer?</h3>
+              <p class="text-sm text-blue-500">Get listed in your city. Attorneys are actively searching for providers like you.</p>
+            </div>
+            <a href="/advertise/" class="btn-action-primary">List Your Business &rarr;</a>
+          </div>
+        </div>
+
+        {/* Cities section */}
+        <div class="max-w-[1200px] mx-auto px-4 sm:px-10">
+          <div class="section-label"><span>All Cities</span></div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2.5 mb-12" id="stCitiesGrid">
+            {citiesWithCounts.filter(c => c.listingCount > 0).map(c => (
+              <a class="card-hover p-3.5" href={`/locations/${c.stateSlug}/${c.slug}/`} data-search={`${c.city} ${c.state}`.toLowerCase()}>
+                <div class="text-sm font-bold text-navy-950 mb-0.5">{c.city}</div>
+                <div class="text-xs text-gray-400 font-medium mb-1.5">{c.state}</div>
+                <div class="text-xs text-gray-500"><strong class="text-primary-600 font-bold">{c.listingCount}</strong> providers</div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Map View */}
+      <div class="max-w-[1200px] mx-auto px-10 md:px-10">
+        <div class="st-map-view" id="stMapView">
+          <div class="bg-white rounded-2xl border border-gray-200 p-6">
+            <UsStateMap />
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom CTA */}
+      <div class="max-w-[1200px] mx-auto px-10 md:px-10">
+        <div class="hero-gradient rounded-[20px] p-12 text-center mb-12 relative overflow-hidden">
+          <div class="st-hero-orb"></div>
+          <h2 class="text-2xl font-extrabold text-white mb-2 relative">Are you a deposition videographer in the US?</h2>
+          <p class="text-[15px] text-indigo-300 mb-6 relative">Get sponsored placement at the top of your city's results. Attorneys are actively searching.</p>
+          <a href="/advertise/" class="btn-action-primary relative">List Your Business &rarr;</a>
+          <div class="text-xs text-white/40 mt-3 relative">Free to claim &middot; Sponsored from $79/mo &middot; No contracts</div>
+        </div>
+      </div>
+
+      {/* Search + View toggle script */}
+      <script is:inline>
+        (function() {
+          var search = document.getElementById('stSearchInput');
+          if (!search) return;
+          search.addEventListener('input', function() {
+            var q = this.value.toLowerCase();
+            document.querySelectorAll('[data-search]').forEach(function(el) {
+              el.style.display = el.dataset.search.includes(q) ? '' : 'none';
+            });
+          });
+
+          document.querySelectorAll('.st-view-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+              document.querySelectorAll('.st-view-btn').forEach(function(b) { b.classList.remove('active'); });
+              btn.classList.add('active');
+              var grid = document.getElementById('stGridViews');
+              var map = document.getElementById('stMapView');
+              if (btn.dataset.view === 'map') {
+                grid.style.display = 'none';
+                map.classList.add('active');
+              } else {
+                grid.style.display = '';
+                map.classList.remove('active');
+              }
+            });
+          });
+        })();
+      </script>
+    </>
+  ) : (
+    /* ═══════════════════════════════════════════
+       INDIVIDUAL STATE VIEW
+       ═══════════════════════════════════════════ */
+    <div class="max-w-[1200px] mx-auto py-9 px-10 md:px-10 pb-16">
+
+      {/* Cities section */}
+      <div class="section-label">
+        <span>CITIES IN {stateName.toUpperCase()}</span>
+        <span class="section-label-line"></span>
+      </div>
+
+      <div class="grid grid-cols-3 md:grid-cols-3 gap-4 mb-10 st-city-cards-grid">
+        {citiesWithCounts.map(c => {
+          const previews = getCityPreviews(c.slug);
+          const maxCity = Math.max(...citiesWithCounts.map(x => x.listingCount), 1);
+          const demandPct = Math.round((c.listingCount / maxCity) * 100);
+          const demandLevel = demandPct >= 70 ? 'high' : demandPct >= 40 ? 'medium' : 'low';
+          const featuredCount = getListingsForCity(c.slug).filter(l => l.featured).length;
+          return (
+            <a class="card-hover overflow-hidden no-underline text-inherit" href={`/locations/${c.stateSlug}/${c.slug}/`}>
+              <div class="px-[22px] pt-[22px] flex items-start justify-between">
+                <div class="text-xl font-extrabold text-navy-950">{c.city}</div>
+                <span class="bg-blue-50 text-primary-600 text-[13px] font-bold px-3 py-1 rounded-lg whitespace-nowrap">{c.listingCount} providers</span>
+              </div>
+              <div class="px-[22px] py-2 pb-5">
+                {previews.length > 0 && (
+                  <div class="flex flex-col gap-2">
+                    {previews.map(p => (
+                      <div class="flex items-center gap-2.5 px-3 py-2 bg-slate-50 rounded-[10px] text-[13px]">
+                        <div class="w-[30px] h-[30px] rounded-lg flex items-center justify-center text-[11px] font-bold text-white shrink-0" style={`background:${p.featured ? '#2563eb' : p.claimed ? '#059669' : '#94a3b8'}`}>{getInitials(p.name)}</div>
+                        <span class={`font-semibold flex-1 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap ${!p.claimed ? 'text-gray-400' : ''}`}>
+                          {p.name}
+                          {p.featured && <span class="text-[9px] font-bold text-primary-600 bg-blue-50 px-1.5 py-px rounded ml-1">SPONSORED</span>}
+                        </span>
+                        {p.review_count > 0 ? (
+                          <>
+                            <span class="text-amber-500 text-xs shrink-0">{starString(p.rating)}</span>
+                            <span class="text-[11px] text-gray-400 shrink-0">({p.review_count})</span>
+                          </>
+                        ) : (
+                          <span class="text-[11px] text-gray-300 italic shrink-0">Unclaimed</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <div class="mt-3">
+                  <div class="text-[11px] text-gray-400 font-medium mb-1">Attorney search demand</div>
+                  <div class="h-1 bg-gray-200 rounded-sm overflow-hidden"><div class={`h-full rounded-sm st-demand-${demandLevel}`} style={`width:${demandPct}%`}></div></div>
+                </div>
+              </div>
+              <div class="px-[22px] py-3.5 border-t border-gray-100 flex items-center justify-between">
+                {featuredCount > 0 ? (
+                  <span class="text-xs text-amber-500 font-semibold">&#x26A1; {featuredCount} Sponsored provider{featuredCount !== 1 ? 's' : ''}</span>
+                ) : (
+                  <span class="text-xs text-primary-600 font-semibold">0 Sponsored — spots open</span>
+                )}
+                <span class="text-[13px] font-semibold text-primary-600">View all &rarr;</span>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+
+      {/* Overview cards */}
+      <div class="grid grid-cols-2 md:grid-cols-2 gap-4 mb-10 st-overview-grid">
+        <div class="card-base p-6">
+          <h2 class="text-base font-bold mb-4">{stateName} at a Glance</h2>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="bg-slate-50 rounded-[10px] p-3.5 border border-slate-200"><div class="text-[22px] font-extrabold text-navy-950">{totalProviders}</div><div class="text-xs text-gray-500 mt-0.5">Total providers</div></div>
+            <div class="bg-slate-50 rounded-[10px] p-3.5 border border-slate-200"><div class="text-[22px] font-extrabold text-navy-950">{totalCities}</div><div class="text-xs text-gray-500 mt-0.5">Cities covered</div></div>
+            {avgRating && <div class="bg-slate-50 rounded-[10px] p-3.5 border border-slate-200"><div class="text-[22px] font-extrabold text-navy-950">{avgRating}</div><div class="text-xs text-gray-500 mt-0.5">Average rating</div></div>}
+            <div class="bg-slate-50 rounded-[10px] p-3.5 border border-slate-200"><div class="text-[22px] font-extrabold text-navy-950">{config.jobValue || '$600-$1,800'}</div><div class="text-xs text-gray-500 mt-0.5">Typical price range</div></div>
+            {certifiedCount > 0 && <div class="bg-slate-50 rounded-[10px] p-3.5 border border-slate-200"><div class="text-[22px] font-extrabold text-navy-950">{certifiedCount}</div><div class="text-xs text-gray-500 mt-0.5">CLVS certified</div></div>}
+            {certPct > 0 && <div class="bg-slate-50 rounded-[10px] p-3.5 border border-slate-200"><div class="text-[22px] font-extrabold text-navy-950">{certPct}%</div><div class="text-xs text-gray-500 mt-0.5">Certification rate</div></div>}
+          </div>
+        </div>
+
+        {topProviders.length > 0 && (
+          <div class="card-base p-6">
+            <h2 class="text-base font-bold mb-4">Top Rated in {stateName}</h2>
+            {topProviders.map((p, i) => (
+              <div class="flex items-center gap-3 py-2.5 border-b border-gray-100 last:border-b-0">
+                <div class={`w-6 h-6 rounded-md flex items-center justify-center text-xs font-bold shrink-0 ${i === 0 ? 'bg-amber-100 text-amber-800' : i === 1 ? 'bg-gray-100 text-gray-600' : i === 2 ? 'bg-orange-100 text-orange-800' : 'bg-gray-100 text-gray-500'}`}>{i + 1}</div>
+                <div class="w-9 h-9 rounded-[10px] flex items-center justify-center text-[13px] font-bold text-white shrink-0" style={`background:${['#2563eb','#7c3aed','#059669','#dc2626','#0891b2'][i % 5]}`}>{getInitials(p.name)}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="text-sm font-semibold overflow-hidden text-ellipsis whitespace-nowrap">{p.name}</div>
+                  <div class="text-xs text-gray-400">{p.city}</div>
+                </div>
+                <div class="text-right shrink-0">
+                  <div class="text-amber-500 text-[13px]">{starString(p.rating)}</div>
+                  <div class="text-[11px] text-gray-400">{p.review_count} reviews</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* FAQ */}
+      <div class="section-label">
+        <span>FREQUENTLY ASKED QUESTIONS</span>
+        <span class="section-label-line"></span>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-2 gap-3 mb-10 st-faq-grid">
+        <div class="card-base p-5">
+          <div class="text-sm font-semibold text-navy-950 mb-2">How much does a deposition videographer cost in {stateName}?</div>
+          <div class="text-[13px] text-gray-500 leading-relaxed">Deposition videographer rates in {stateName} typically range from {config.jobValue || '$600-$1,800'} per session depending on duration, location, and turnaround time. Same-day delivery and multi-camera setups add to the cost. Rates vary between metro areas and smaller markets — request quotes from multiple providers on {config.brandName} to compare.</div>
+        </div>
+        <div class="card-base p-5">
+          <div class="text-sm font-semibold text-navy-950 mb-2">What certifications should I look for?</div>
+          <div class="text-[13px] text-gray-500 leading-relaxed">CLVS (Certified Legal Video Specialist) from the National Court Reporters Association is the gold standard for legal videography.{certifiedCount > 0 ? ` Currently ${certifiedCount} of ${totalProviders} providers in ${stateName} hold this certification (${certPct}%).` : ''} {config.brandName} displays certification status on every listing so you can verify credentials before requesting a quote.</div>
+        </div>
+        <div class="card-base p-5">
+          <div class="text-sm font-semibold text-navy-950 mb-2">How many providers are in {stateName}?</div>
+          <div class="text-[13px] text-gray-500 leading-relaxed">{config.brandName} currently lists {totalProviders} deposition videography providers across {totalCities} {totalCities === 1 ? 'city' : 'cities'} in {stateName}.{avgRating ? ` The average provider rating is ${avgRating} stars across ${totalReviews} reviews.` : ''} Browse by city to find providers near your courthouse.</div>
+        </div>
+        <div class="card-base p-5">
+          <div class="text-sm font-semibold text-navy-950 mb-2">How do I request quotes from multiple providers?</div>
+          <div class="text-[13px] text-gray-500 leading-relaxed">Click into any city in {stateName}, select up to 5 providers using the "Add to Quote" button, then submit your deposition details. Your request goes directly to each selected provider — no middlemen, no spam. Most providers respond within 24 hours.</div>
+        </div>
+      </div>
+
+      {/* Provider CTA */}
+      <div class="hero-gradient rounded-[20px] py-11 px-10 text-center text-white mb-10 relative overflow-hidden">
+        <div class="st-hero-orb"></div>
+        <h2 class="text-2xl font-extrabold mb-2 relative">Are you a deposition videographer in {stateName}?</h2>
+        <p class="text-[15px] text-indigo-300 mb-6 relative">Get sponsored placement at the top of your city's results. Attorneys are actively searching.</p>
+        <a href="/advertise/" class="btn-action-primary relative">List Your Business &rarr;</a>
+        <div class="text-xs text-white/40 mt-3 relative">Free to claim &middot; Sponsored from $79/mo &middot; No contracts</div>
+      </div>
+
+      {/* Nearby States */}
+      {nearbyStates.length > 0 && (
+        <div class="mb-10">
+          <h2 class="text-lg font-bold mb-4">Nearby States</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 st-nearby-grid">
+            {nearbyStates.map(s => (
+              <a class="card-hover p-3.5 no-underline text-inherit" href={`/states/${s.slug}/`}>
+                <div class="text-sm font-bold text-navy-950">{s.name}</div>
+                <div class="text-xs text-gray-500 mt-0.5">{s.providerCount} providers &middot; {s.cityCount} {s.cityCount === 1 ? 'city' : 'cities'}</div>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )}
+  {faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}
+  {stateSchema && <script type="application/ld+json" set:html={JSON.stringify(stateSchema)} />}
 </PageLayout>
+
+<style is:global>
+  /* Breadcrumb color overrides for white-on-dark hero */
+  .hero-gradient nav[aria-label="Breadcrumb"] { color: rgba(255,255,255,0.5); }
+  .hero-gradient nav[aria-label="Breadcrumb"] a { color: rgba(255,255,255,0.6); }
+  .hero-gradient nav[aria-label="Breadcrumb"] a:hover { color: #fff; }
+  .hero-gradient nav[aria-label="Breadcrumb"] span.text-gray-700 { color: rgba(255,255,255,0.8); }
+  .hero-gradient nav[aria-label="Breadcrumb"] span.text-gray-300 { color: rgba(255,255,255,0.3); }
+
+  /* Decorative orb for hero/CTA sections */
+  .st-hero-orb {
+    position: absolute; top: -80px; right: -30px;
+    width: 400px; height: 400px; border-radius: 50%;
+    background: rgba(59,130,246,0.1); pointer-events: none;
+  }
+
+  /* Search input with icon */
+  .st-search-input {
+    flex: 1; max-width: 400px; padding: 12px 16px 12px 42px;
+    border: 1.5px solid #d1d5db; border-radius: 10px; font-size: 14px; font-family: inherit;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") 14px center no-repeat;
+    transition: border-color 0.2s;
+  }
+  .st-search-input:focus { outline: none; border-color: #2563eb; }
+
+  /* View toggle (JS-referenced: .st-view-btn) */
+  .st-view-toggle { display: flex; border: 1.5px solid #e5e7eb; border-radius: 8px; overflow: hidden; }
+  .st-view-btn {
+    padding: 10px 16px; font-size: 13px; font-weight: 600;
+    background: #fff; border: none; cursor: pointer; color: #6b7280; transition: all 0.2s; font-family: inherit;
+  }
+  .st-view-btn.active { background: #1a1a2e; color: #fff; }
+  .st-view-btn:not(:last-child) { border-right: 1.5px solid #e5e7eb; }
+
+  /* State card bar chart */
+  .st-state-bar { margin-top: 10px; height: 4px; background: #e5e7eb; border-radius: 2px; overflow: hidden; }
+  .st-state-bar-fill { height: 100%; background: #2563eb; border-radius: 2px; transition: width 0.4s; }
+  .st-bar-hot { background: #f59e0b; }
+  .st-hot-badge {
+    position: absolute; top: -6px; right: 12px;
+    background: #f59e0b; color: #fff; font-size: 10px; font-weight: 700;
+    padding: 2px 8px; border-radius: 4px; letter-spacing: 0.5px;
+  }
+
+  /* Map view toggle */
+  .st-map-view { display: none; margin-bottom: 48px; }
+  .st-map-view.active { display: block; }
+
+  /* Demand bar colors */
+  .st-demand-high { background: #f59e0b; }
+  .st-demand-medium { background: #2563eb; }
+  .st-demand-low { background: #94a3b8; }
+
+  /* ═══ TABLET ═══ */
+  @media (max-width: 768px) {
+    .st-city-cards-grid { grid-template-columns: 1fr !important; }
+    .st-overview-grid { grid-template-columns: 1fr !important; }
+    .st-faq-grid { grid-template-columns: 1fr !important; }
+    .st-nearby-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  }
+
+  /* ═══ SMALL PHONE ═══ */
+  @media (max-width: 640px) {
+    .st-nearby-grid { grid-template-columns: 1fr !important; }
+  }
+</style>

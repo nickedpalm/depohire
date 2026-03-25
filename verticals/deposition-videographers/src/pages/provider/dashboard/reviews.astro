@@ -57,28 +57,14 @@ import DashboardLayout from '~/layouts/DashboardLayout.astro';
         setTimeout(function() { btn.textContent = 'Copy Link'; }, 2000);
       });
 
-      // Load scraped review data from the static listing page
+      // Load review data from API instead of scraping HTML
       try {
-        var resp = await fetch('/listing/' + slug + '/');
+        var resp = await fetch('/api/listing/' + slug);
         if (resp.ok) {
-          var html = await resp.text();
-          var parser = new DOMParser();
-          var doc = parser.parseFromString(html, 'text/html');
-
-          // Try to extract rating and review count from the listing page
-          var ratingEl = doc.querySelector('[data-rating]');
-          var rating = ratingEl ? parseFloat(ratingEl.getAttribute('data-rating')) : 0;
-          var reviewCountEl = doc.querySelector('[data-review-count]');
-          var reviewCount = reviewCountEl ? parseInt(reviewCountEl.getAttribute('data-review-count')) : 0;
-
-          // Fallback: try meta or text content
-          if (!rating) {
-            var text = doc.body.textContent || '';
-            var ratingMatch = text.match(/(\d+\.\d+)\s*(?:\/\s*5|stars?|rating)/i);
-            if (ratingMatch) rating = parseFloat(ratingMatch[1]);
-            var countMatch = text.match(/(\d+)\s*reviews?/i);
-            if (countMatch) reviewCount = parseInt(countMatch[1]);
-          }
+          var result = await resp.json();
+          var d = result.data || {};
+          var rating = parseFloat(d.rating) || 0;
+          var reviewCount = parseInt(d.review_count) || 0;
 
           if (rating > 0) {
             document.getElementById('review-rating').textContent = rating.toFixed(1);
@@ -99,13 +85,17 @@ import DashboardLayout from '~/layouts/DashboardLayout.astro';
                 '<p style="font-size:13px;color:#9ca3af">These are aggregated from Google and Yelp. Individual review management and client review collection are coming soon.</p>' +
               '</div>';
           } else {
-            throw new Error('no rating found');
+            showEmptyState();
           }
         } else {
-          throw new Error('page not found');
+          showEmptyState();
         }
       } catch(e) {
-        document.getElementById('review-rating').textContent = '—';
+        showEmptyState();
+      }
+
+      function showEmptyState() {
+        document.getElementById('review-rating').textContent = '\u2014';
         document.getElementById('review-stars').innerHTML = '<span style="color:#d1d5db">&#x2606;&#x2606;&#x2606;&#x2606;&#x2606;</span>';
         document.getElementById('review-count').textContent = 'No reviews collected yet';
         document.getElementById('reviews-list').innerHTML =

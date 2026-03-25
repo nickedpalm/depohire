@@ -17,13 +17,13 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
-const { title, description, pubDate, author = config.editorialAuthor.name, tags = [], hub, image: heroImage, imageCredit } = post.data;
+const { Content, headings } = await render(post);
+const { title, description, pubDate, updatedDate, author = config.editorialAuthor.name, tags = [], hub, image: heroImage, imageCredit } = post.data;
 
 // Resolve hub title to actual post slug for breadcrumb link
 let hubHref: string | undefined;
+const allPosts = await getCollection('blog');
 if (hub) {
-  const allPosts = await getCollection('blog');
   const hubPost = allPosts.find(p => p.data.title === hub);
   hubHref = hubPost ? `/blog/${hubPost.id}/` : undefined;
 }
@@ -33,13 +33,35 @@ const body = post.body || '';
 const wordCount = body.split(/\s+/).length;
 const readingTime = Math.max(1, Math.round(wordCount / 200));
 
+// TOC from headings (h2 and h3 only)
+const tocItems = headings.filter(h => h.depth === 2 || h.depth === 3);
+
+// Related posts for sidebar
+const currentTags = tags || [];
+const sidebarRelated = allPosts
+  .filter(p => p.id !== post.id && !p.data.draft)
+  .map(p => {
+    let score = 0;
+    const pTags = p.data.tags || [];
+    if (p.data.hub === hub || (hub && p.data.title === hub)) score += 5;
+    const overlap = pTags.filter(t => currentTags.includes(t)).length;
+    score += overlap;
+    if (p.data.tags?.includes('pillar')) score += 2;
+    return { post: p, score };
+  })
+  .sort((a, b) => b.score - a.score)
+  .slice(0, 5)
+  .map(r => r.post);
+
 const schema = {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
   headline: title,
   description,
   datePublished: pubDate?.toISOString(),
-  dateModified: new Date().toISOString(),
+  dateModified: (updatedDate || pubDate)?.toISOString(),
+  wordCount,
+  timeRequired: `PT${readingTime}M`,
   author: {
     '@type': 'Person',
     name: config.editorialAuthor.name,
@@ -49,165 +71,607 @@ const schema = {
   },
   publisher: {
     '@type': 'Organization',
-    name: config.name,
+    name: config.brandName,
     url: config.siteUrl,
   },
   mainEntityOfPage: {
     '@type': 'WebPage',
-    '@id': `${config.siteUrl}/blog/`,
+    '@id': `${config.siteUrl}/blog/${post.id}/`,
   },
 };
 
-const metadata = { title, description };
+const ogImage = `/og/blog/${post.id}.png`;
+const metadata = {
+  title,
+  description,
+  openGraph: {
+    type: 'article',
+    images: [{ url: ogImage, width: 1200, height: 630 }],
+    article: {
+      publishedTime: pubDate?.toISOString(),
+      modifiedTime: (updatedDate || pubDate)?.toISOString(),
+      authors: [config.editorialAuthor.name],
+      tags: tags,
+    },
+  },
+};
 
 // Top cities for internal linking CTA
 const cityCounts = getListingCountByCity();
-const topCities = citiesData
+const allCitiesWithCount = citiesData
   .map(c => ({ ...c, count: cityCounts[c.slug] || 0 }))
   .filter(c => c.count > 0)
-  .sort((a, b) => b.count - a.count)
-  .slice(0, 6);
+  .sort((a, b) => b.count - a.count);
+const topCities = allCitiesWithCount.slice(0, 6);
+
+const postUrl = `${config.siteUrl}/blog/${post.id}/`;
+const isPillar = tags.includes('pillar');
 ---
 <PageLayout metadata={metadata}>
   <Fragment slot="announcement"><span></span></Fragment>
-  <section class="py-8 sm:py-16 lg:py-20 mx-auto">
-    <article>
-      <header class="intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6">
-          <Breadcrumbs crumbs={[
-            { label: 'Blog', href: '/blog/' },
-            ...(hub && hubHref ? [{ label: hub, href: hubHref }] : []),
-            { label: title },
-          ]} />
+
+  <!-- Reading Progress Bar -->
+  <div class="reading-progress" id="reading-progress">
+    <div class="reading-progress-bar" id="progress-bar"></div>
+  </div>
+
+  <!-- Article Hero -->
+  <div class="hero-gradient text-white relative overflow-hidden">
+    <div class="absolute -top-20 -right-20 w-96 h-96 rounded-full bg-blue-500/10 blur-3xl"></div>
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-12 relative z-10">
+      <Breadcrumbs crumbs={[
+        { label: 'Blog', href: '/blog/' },
+        ...(hub && hubHref ? [{ label: hub, href: hubHref }] : []),
+        { label: title },
+      ]} dark />
+
+      {isPillar && (
+        <div class="inline-flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-3 py-1 text-xs font-semibold text-white/80 uppercase tracking-wider mt-4 mb-4">
+          Complete Guide
         </div>
+      )}
 
-        <div class="flex justify-between flex-col sm:flex-row max-w-3xl mx-auto mt-0 mb-2 px-4 sm:px-6 sm:items-center">
-          <p class="text-sm text-muted">
-            <svg class="w-4 h-4 inline-block -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            <time datetime={pubDate?.toISOString()}>{formattedDate}</time>
-            {' '}&middot;{' '}
-            <svg class="w-4 h-4 inline-block -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-            <a href="/about/" class="hover:underline inline-block">{author}</a>
-            {' '}&middot; <span>{readingTime} min read</span>
-          </p>
-        </div>
+      <h1 class="text-3xl sm:text-4xl lg:text-[44px] font-extrabold leading-tight tracking-tight max-w-3xl mt-2">
+        {title}
+      </h1>
 
-        <h1 class="px-4 sm:px-6 max-w-3xl mx-auto text-4xl md:text-5xl font-bold leading-tighter tracking-tighter font-heading">
-          {title}
-        </h1>
+      {description && (
+        <p class="mt-4 text-lg text-blue-100/80 max-w-2xl leading-relaxed">{description}</p>
+      )}
 
-        <p class="max-w-3xl mx-auto mt-4 mb-8 px-4 sm:px-6 text-xl md:text-2xl text-muted">
-          {description}
-        </p>
-
-        {tags.length > 0 && (
-          <div class="max-w-3xl mx-auto px-4 sm:px-6 mb-6">
-            <div class="flex flex-wrap gap-1.5">
-              {tags.map((tag) => (
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">{tag}</span>
-              ))}
-            </div>
-          </div>
+      <div class="mt-6 flex items-center gap-5 flex-wrap text-sm text-blue-200/70">
+        <span class="flex items-center gap-1.5">
+          By <strong class="text-white/90 font-semibold">{author}</strong>
+        </span>
+        <span class="w-1 h-1 rounded-full bg-blue-400/50"></span>
+        <time datetime={pubDate?.toISOString()}>{formattedDate}</time>
+        <span class="w-1 h-1 rounded-full bg-blue-400/50"></span>
+        <span>{readingTime} min read</span>
+        {updatedDate && (
+          <>
+            <span class="w-1 h-1 rounded-full bg-blue-400/50"></span>
+            <span>Updated {new Date().getFullYear()}</span>
+          </>
         )}
-
-        <div class="max-w-3xl mx-auto px-4 sm:px-6">
-          {heroImage ? (
-            <div class="relative rounded-xl overflow-hidden">
-              <img
-                src={heroImage}
-                alt={title}
-                class="w-full h-48 sm:h-64 md:h-80 object-cover"
-                loading="eager"
-                decoding="async"
-              />
-              {imageCredit && (
-                <p class="absolute bottom-2 right-3 text-[10px] text-white/80 bg-black/40 px-2 py-0.5 rounded" set:html={imageCredit.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="underline hover:text-white" target="_blank" rel="noopener noreferrer">$1</a>')} />
-              )}
-            </div>
-          ) : (
-            <div class="border-t border-gray-200"></div>
-          )}
-        </div>
-      </header>
-
-      <div
-        class="mx-auto px-4 sm:px-6 max-w-3xl prose prose-lg lg:prose-xl prose-headings:font-heading prose-headings:font-bold prose-headings:leading-tighter prose-headings:tracking-tighter prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-img:rounded-md prose-img:shadow-lg prose-headings:scroll-mt-[80px] prose-li:my-0 mt-8"
-        id="article-content"
-      >
-        <Content />
       </div>
+    </div>
+  </div>
 
-      <div class="mx-auto px-4 sm:px-6 max-w-3xl">
-        {topCities.length > 0 && (
-          <div class="bg-blue-50 rounded-xl p-6 mt-8 mb-6">
-            <h3 class="text-lg font-bold text-default mb-3">Find {config.name} Near You</h3>
-            <div class="flex flex-wrap gap-2">
-              {topCities.map(c => (
-                <a href={`/${c.slug}/`} class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-white border border-blue-200 text-primary no-underline hover:bg-blue-100 transition-colors">
-                  {c.city} <span class="text-muted ml-1 text-xs">({c.count})</span>
+  <!-- Featured Image -->
+  {heroImage && (
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-10 mb-8">
+      <div class="rounded-2xl overflow-hidden shadow-xl border border-gray-200">
+        <img
+          src={heroImage}
+          alt={title}
+          class="w-full aspect-[21/9] object-cover"
+          loading="eager"
+          decoding="async"
+        />
+      </div>
+      {imageCredit && (
+        <p class="text-right mt-2 text-xs text-gray-400" set:html={imageCredit.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="underline hover:text-gray-600" target="_blank" rel="noopener noreferrer">$1</a>')} />
+      )}
+    </div>
+  )}
+
+  <!-- 3-Column Layout -->
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+    <div class="article-layout">
+
+      <!-- Left: Table of Contents -->
+      {tocItems.length > 2 && (
+        <aside class="toc-sidebar">
+          <div class="toc-sticky">
+            <div class="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-3">On This Page</div>
+            <nav aria-label="Table of contents">
+              <ul class="space-y-0.5">
+                {tocItems.map(h => (
+                  <li>
+                    <a
+                      href={`#${h.slug}`}
+                      class:list={[
+                        'toc-link block text-[13px] font-medium text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-md py-1 transition-colors border-l-2 border-transparent',
+                        h.depth === 2 ? 'pl-2.5' : 'pl-5 text-[12px]',
+                      ]}
+                    >
+                      {h.text}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
+        </aside>
+      )}
+
+      <!-- Center: Article Content -->
+      <article class="article-main">
+        <div
+          class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 sm:p-10 lg:p-12"
+          id="article-content"
+        >
+          <div class="prose prose-lg lg:prose-xl prose-headings:font-heading prose-headings:font-bold prose-headings:leading-tighter prose-headings:tracking-tighter prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-img:rounded-md prose-img:shadow-lg prose-headings:scroll-mt-[80px] prose-li:my-0 max-w-none">
+            <Content />
+          </div>
+
+          <!-- Inline CTA -->
+          <div class="not-prose inline-cta mt-10 mb-6">
+            <h3>Find a {config.primaryKeyword.charAt(0).toUpperCase() + config.primaryKeyword.slice(1)} Near You</h3>
+            <p>Search curated providers across 48 states. Request quotes directly — it's free.</p>
+            <a href="/search/" class="inline-cta-btn">Search Providers &rarr;</a>
+          </div>
+
+          <!-- City Search Widget -->
+          {topCities.length > 0 && (
+            <div class="not-prose bg-gray-50 rounded-xl p-6 mt-2 mb-6 border border-gray-100">
+              <div class="relative mb-3">
+                <label for="city-search" class="sr-only">Search by city name or zip code</label>
+                <input
+                  type="text"
+                  id="city-search"
+                  placeholder="City name or zip code..."
+                  class="w-full px-4 py-2.5 rounded-lg border border-gray-200 bg-white text-sm focus:ring-blue-500 focus:border-blue-500"
+                  autocomplete="off"
+                />
+                <div id="city-dropdown" class="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg mt-1 shadow-lg max-h-48 overflow-y-auto hidden z-20"></div>
+                <div id="blog-zip-loading" class="hidden mt-1 text-xs text-gray-500">Finding providers near you...</div>
+              </div>
+              <p class="text-xs text-gray-500 mb-2">Popular cities:</p>
+              <div class="flex flex-wrap gap-2">
+                {topCities.map(c => (
+                  <a href={`/locations/${c.stateSlug}/${c.slug}/`} class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-white border border-gray-200 text-blue-600 no-underline hover:bg-blue-50 transition-colors">
+                    {c.city} <span class="text-gray-400 ml-1 text-xs">({c.count})</span>
+                  </a>
+                ))}
+                <a href="/states/all/" class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-blue-600 text-white no-underline hover:bg-blue-700 transition-colors">
+                  All Cities &rarr;
                 </a>
-              ))}
-              <a href="/states/all/" class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-primary text-white no-underline hover:opacity-90 transition-opacity">
-                All Cities &rarr;
-              </a>
+              </div>
+              <script type="application/json" id="city-data" set:html={JSON.stringify(allCitiesWithCount.map(c => ({ slug: c.slug, stateSlug: c.stateSlug, city: c.city, state: c.state, lat: c.lat, lng: c.lng, count: c.count })))} />
+            </div>
+          )}
+
+          <!-- Author Card -->
+          <div class="not-prose border-t border-gray-200 pt-8 mt-8">
+            <div class="flex items-start gap-4">
+              <div class="w-14 h-14 rounded-full bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white font-extrabold text-lg flex-shrink-0">
+                {config.editorialAuthor.name.split(' ').map(n => n[0]).join('')}
+              </div>
+              <div>
+                <div class="font-bold text-gray-900">{config.editorialAuthor.name}</div>
+                <div class="text-sm text-gray-500">{config.editorialAuthor.title}</div>
+                <p class="text-sm text-gray-600 mt-2 leading-relaxed">{config.editorialAuthor.bio}</p>
+                <div class="flex items-center gap-3 mt-3">
+                  {config.editorialAuthor.linkedin && (
+                    <a href={config.editorialAuthor.linkedin} class="text-sm text-blue-600 hover:underline font-medium" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                  )}
+                  <a href="/author/nick-palmer/" class="text-sm text-blue-600 hover:underline font-medium">All articles</a>
+                  <a href="/about/" class="text-sm text-blue-600 hover:underline font-medium">About us</a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Share -->
+            <div class="flex items-center gap-3 mt-6">
+              <span class="text-sm font-semibold text-gray-500">Share:</span>
+              <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(postUrl)}`} target="_blank" rel="noopener noreferrer" class="share-btn" title="Share on LinkedIn">in</a>
+              <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(postUrl)}&text=${encodeURIComponent(title)}`} target="_blank" rel="noopener noreferrer" class="share-btn" title="Share on X">&#120143;</a>
+              <a href={`mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(postUrl)}`} class="share-btn" title="Share via email">&#9993;</a>
+              <button class="share-btn" title="Copy link" id="copy-link-btn" data-url={postUrl}>&#128279;</button>
             </div>
           </div>
-        )}
-        <AuthorBox />
-        <RelatedContent currentSlug={Astro.url.pathname} />
-      </div>
+        </div>
 
-      <p class="text-xs text-muted mt-6 max-w-3xl mx-auto px-4 sm:px-6">
-        Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-      </p>
-    </article>
-  </section>
+        <!-- Related Articles (below article on mobile, below sidebar on desktop) -->
+        <div class="mt-8 lg:hidden">
+          <RelatedContent currentSlug={Astro.url.pathname} />
+        </div>
 
-  <script>
-    function enhanceArticle() {
-      const article = document.getElementById('article-content');
-      if (!article) return;
+        <p class="text-xs text-gray-400 mt-6">
+          Last updated: {(updatedDate || new Date()).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+        </p>
+      </article>
 
-      const calloutMap: Record<string, string> = {
-        'the short version': 'callout-info',
-        'key takeaway': 'callout-info',
-        'bottom line': 'callout-info',
-        'note': 'callout-info',
-        'reality check': 'callout-warning',
-        'warning': 'callout-warning',
-        'important': 'callout-warning',
-        'watch out': 'callout-warning',
-        'pro tip': 'callout-success',
-        'tip': 'callout-success',
-        'quick answer': 'callout-success',
-        'danger': 'callout-danger',
-        'red flag': 'callout-danger',
-        'caution': 'callout-danger',
-      };
+      <!-- Right Sidebar -->
+      <aside class="right-sidebar">
+        <div class="sidebar-sticky">
+          <!-- Quick Search -->
+          <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
+            <div class="text-sm font-bold text-gray-900 uppercase tracking-wide mb-3">Find Providers</div>
+            <form action="/search" method="GET">
+              <input type="text" name="q" placeholder="City or ZIP code..." aria-label="Search providers" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:outline-none focus:border-blue-500" />
+              <button type="submit" class="w-full mt-2 px-3 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors">Search &rarr;</button>
+            </form>
+          </div>
 
-      article.querySelectorAll('blockquote').forEach((bq) => {
-        const strong = bq.querySelector('strong');
-        if (!strong) return;
-        const text = strong.textContent?.replace(/[:\u2014]/g, '').trim().toLowerCase() || '';
-        for (const [prefix, cls] of Object.entries(calloutMap)) {
-          if (text.startsWith(prefix)) {
-            bq.classList.add('callout', cls);
-            break;
-          }
+          <!-- Guide CTA -->
+          <div class="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 rounded-xl p-5">
+            <div class="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">Free Download</div>
+            <h4 class="font-bold text-gray-900 text-sm mb-2">2026 Rate Guide</h4>
+            <p class="text-xs text-gray-600 mb-3">Real pricing data from 700+ providers across all 50 states.</p>
+            <a href="/guides/deposition-videographer-rate-guide-2026/" class="block text-center text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg py-2 px-4 transition-colors">Get Free Guide</a>
+          </div>
+
+          <!-- Related Articles (sidebar) -->
+          <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
+            <div class="text-sm font-bold text-gray-900 uppercase tracking-wide mb-3">Related Articles</div>
+            <div class="space-y-3">
+              {sidebarRelated.map(p => {
+                const pTags = p.data.tags || [];
+                const tagLabel = pTags.includes('pillar') ? 'Guide' :
+                  pTags.some(t => ['pricing', 'salary', 'cost'].includes(t)) ? 'Cost' :
+                  pTags.some(t => ['certification', 'clvs'].includes(t)) ? 'Cert' :
+                  pTags.some(t => ['city-guide'].includes(t)) ? 'City' :
+                  pTags.some(t => ['hiring', 'warnings'].includes(t)) ? 'Hiring' :
+                  pTags.some(t => ['trends', 'industry', 'statistics'].includes(t)) ? 'Industry' : 'Guide';
+                const tagColor = { Guide: 'text-blue-600', Cost: 'text-emerald-600', Cert: 'text-purple-600', City: 'text-amber-600', Hiring: 'text-rose-600', Industry: 'text-cyan-600' }[tagLabel] || 'text-blue-600';
+                return (
+                  <a href={`/blog/${p.id}/`} class="block p-3 bg-gray-50 rounded-lg no-underline hover:bg-blue-50 hover:border-blue-200 transition-colors border border-transparent">
+                    <div class={`text-[11px] font-semibold uppercase tracking-wide ${tagColor} mb-1`}>{tagLabel}</div>
+                    <div class="text-sm font-semibold text-gray-800 leading-snug">{p.data.title}</div>
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+
+          <!-- Sidebar CTA -->
+          <div class="bg-gradient-to-br from-[#0f2744] to-[#1e3a5f] rounded-xl p-5 text-center">
+            <h4 class="text-base font-bold text-white mb-2">Are You a Videographer?</h4>
+            <p class="text-sm text-blue-200/70 mb-4 leading-relaxed">Claim your free listing and get found by litigation attorneys.</p>
+            <a href="/provider/login/" class="inline-block px-5 py-2.5 bg-blue-600 text-white rounded-lg font-semibold text-sm no-underline hover:bg-blue-700 transition-colors">Claim Your Listing</a>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <!-- Bottom Related Articles (desktop only, full width) -->
+  <div class="hidden lg:block max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 mb-16">
+    <RelatedContent currentSlug={Astro.url.pathname} />
+  </div>
+
+  <script is:inline>
+    function initCitySearch() {
+      const input = document.getElementById('city-search');
+      const dropdown = document.getElementById('city-dropdown');
+      const dataEl = document.getElementById('city-data');
+      const loading = document.getElementById('blog-zip-loading');
+      if (!input || !dropdown || !dataEl || input.dataset.init) return;
+      input.dataset.init = 'true';
+
+      const cities = JSON.parse(dataEl.textContent);
+
+      function haversine(lat1, lng1, lat2, lng2) {
+        const R = 3959;
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLng = (lng2 - lng1) * Math.PI / 180;
+        const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      }
+
+      async function searchZip(zip) {
+        loading?.classList.remove('hidden');
+        dropdown.classList.add('hidden');
+        try {
+          const resp = await fetch('https://api.zippopotam.us/us/' + zip);
+          if (!resp.ok) throw new Error();
+          const data = await resp.json();
+          const lat = parseFloat(data.places[0].latitude);
+          const lng = parseFloat(data.places[0].longitude);
+          const nearest = cities
+            .map(function(c) { return Object.assign({}, c, { distance: haversine(lat, lng, c.lat || 0, c.lng || 0) }); })
+            .sort(function(a, b) { return a.distance - b.distance; })
+            .slice(0, 6);
+          dropdown.innerHTML = '<div class="px-3 py-1.5 text-xs text-gray-400 bg-gray-50 border-b">Nearest to ' + zip + '</div>' +
+            nearest.map(function(c) {
+              return '<a href="/locations/' + c.stateSlug + '/' + c.slug + '/" class="flex justify-between px-4 py-2 text-sm hover:bg-blue-50 no-underline text-gray-700"><span>' + c.city + ', ' + c.state + '</span><span class="text-gray-400 text-xs">' + Math.round(c.distance) + ' mi (' + c.count + ')</span></a>';
+            }).join('');
+          dropdown.classList.remove('hidden');
+        } catch(e) {
+          dropdown.innerHTML = '<div class="px-4 py-2 text-sm text-gray-500">Zip not found. Try a city name.</div>';
+          dropdown.classList.remove('hidden');
+        } finally {
+          loading?.classList.add('hidden');
         }
+      }
+
+      input.addEventListener('input', function() {
+        var q = input.value.trim();
+        if (/^\d{5}$/.test(q)) { searchZip(q); return; }
+        if (q.length < 2) { dropdown.classList.add('hidden'); return; }
+
+        var matches = cities.filter(function(c) {
+          return c.city.toLowerCase().includes(q.toLowerCase()) || c.state.toLowerCase().includes(q.toLowerCase());
+        }).slice(0, 8);
+
+        if (matches.length === 0) { dropdown.classList.add('hidden'); return; }
+
+        dropdown.innerHTML = matches.map(function(c) {
+          return '<a href="/locations/' + c.stateSlug + '/' + c.slug + '/" class="block px-4 py-2 text-sm hover:bg-blue-50 no-underline text-gray-700">' + c.city + ', ' + c.state + ' <span class="text-gray-400">(' + c.count + ')</span></a>';
+        }).join('');
+        dropdown.classList.remove('hidden');
       });
 
-      article.querySelectorAll('table').forEach((table) => {
-        if (table.parentElement?.classList.contains('table-wrap')) return;
-        const wrapper = document.createElement('div');
-        wrapper.className = 'table-wrap';
-        table.parentNode?.insertBefore(wrapper, table);
-        wrapper.appendChild(table);
+      input.addEventListener('blur', function() {
+        setTimeout(function() { dropdown.classList.add('hidden'); }, 200);
       });
     }
-    enhanceArticle();
-    document.addEventListener('astro:page-load', enhanceArticle);
+    document.addEventListener('astro:page-load', initCitySearch);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initCitySearch);
+    } else {
+      initCitySearch();
+    }
+  </script>
+
+  <script>
+    function initArticlePage() {
+      // Reading progress bar
+      const progressBar = document.getElementById('progress-bar');
+      const articleContent = document.getElementById('article-content');
+      if (progressBar && articleContent) {
+        window.addEventListener('scroll', () => {
+          const rect = articleContent.getBoundingClientRect();
+          const articleTop = window.scrollY + rect.top;
+          const articleHeight = rect.height;
+          const scrolled = window.scrollY - articleTop;
+          const progress = Math.max(0, Math.min(100, (scrolled / (articleHeight - window.innerHeight)) * 100));
+          progressBar.style.width = progress + '%';
+        });
+      }
+
+      // TOC active state tracking
+      const tocLinks = document.querySelectorAll<HTMLAnchorElement>('.toc-link');
+      const sections: { id: string; el: HTMLElement; link: HTMLAnchorElement }[] = [];
+
+      tocLinks.forEach(link => {
+        const id = link.getAttribute('href')?.substring(1);
+        if (!id) return;
+        const section = document.getElementById(id);
+        if (section) sections.push({ id, el: section, link });
+      });
+
+      function updateTOC() {
+        let current = '';
+        sections.forEach(({ id, el }) => {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= 120) current = id;
+        });
+        tocLinks.forEach(link => {
+          const id = link.getAttribute('href')?.substring(1);
+          const isActive = id === current;
+          link.classList.toggle('text-blue-600', isActive);
+          link.classList.toggle('bg-blue-50', isActive);
+          link.classList.toggle('border-l-blue-600', isActive);
+          link.classList.toggle('font-semibold', isActive);
+          link.classList.toggle('text-gray-500', !isActive);
+          link.classList.toggle('border-transparent', !isActive);
+        });
+      }
+      if (sections.length > 0) {
+        window.addEventListener('scroll', updateTOC);
+        updateTOC();
+      }
+
+      // Enhance callouts and tables
+      const article = document.getElementById('article-content');
+      if (article) {
+        const calloutMap: Record<string, string> = {
+          'the short version': 'callout-info',
+          'key takeaway': 'callout-info',
+          'bottom line': 'callout-info',
+          'note': 'callout-info',
+          'reality check': 'callout-warning',
+          'warning': 'callout-warning',
+          'important': 'callout-warning',
+          'watch out': 'callout-warning',
+          'pro tip': 'callout-success',
+          'tip': 'callout-success',
+          'quick answer': 'callout-success',
+          'our recommendation': 'callout-success',
+          'practical tip': 'callout-success',
+          'danger': 'callout-danger',
+          'red flag': 'callout-danger',
+          'caution': 'callout-danger',
+        };
+
+        article.querySelectorAll('blockquote').forEach((bq) => {
+          const strong = bq.querySelector('strong');
+          if (!strong) return;
+          const text = strong.textContent?.replace(/[:\u2014]/g, '').trim().toLowerCase() || '';
+          for (const [prefix, cls] of Object.entries(calloutMap)) {
+            if (text.startsWith(prefix)) {
+              bq.classList.add('callout', cls);
+              break;
+            }
+          }
+        });
+
+        article.querySelectorAll('table').forEach((table) => {
+          if (table.parentElement?.classList.contains('table-wrap')) return;
+          const wrapper = document.createElement('div');
+          wrapper.className = 'table-wrap';
+          table.parentNode?.insertBefore(wrapper, table);
+          wrapper.appendChild(table);
+        });
+      }
+
+      // Copy link button
+      const copyBtn = document.getElementById('copy-link-btn');
+      copyBtn?.addEventListener('click', async () => {
+        const url = copyBtn.getAttribute('data-url') || window.location.href;
+        try {
+          await navigator.clipboard.writeText(url);
+          copyBtn.textContent = '✓';
+          setTimeout(() => { copyBtn.innerHTML = '&#128279;'; }, 2000);
+        } catch {
+          // Fallback
+          const input = document.createElement('input');
+          input.value = url;
+          document.body.appendChild(input);
+          input.select();
+          document.execCommand('copy');
+          document.body.removeChild(input);
+          copyBtn.textContent = '✓';
+          setTimeout(() => { copyBtn.innerHTML = '&#128279;'; }, 2000);
+        }
+      });
+    }
+
+    document.addEventListener('astro:page-load', initArticlePage);
   </script>
 
   <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 </PageLayout>
+
+<style>
+  /* Reading Progress */
+  .reading-progress {
+    position: fixed;
+    top: var(--header-height, 64px);
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: #e5e7eb;
+    z-index: 39;
+  }
+  .reading-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: #2563eb;
+    transition: width 0.1s linear;
+  }
+
+  /* 3-Column Article Layout */
+  .article-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  @media (min-width: 1100px) {
+    .article-layout {
+      grid-template-columns: 220px 1fr 280px;
+      gap: 32px;
+    }
+  }
+  @media (min-width: 1100px) and (max-width: 1279px) {
+    .article-layout {
+      grid-template-columns: 200px 1fr 260px;
+      gap: 24px;
+    }
+  }
+
+  /* TOC Sidebar */
+  .toc-sidebar {
+    display: none;
+  }
+  @media (min-width: 1100px) {
+    .toc-sidebar {
+      display: block;
+    }
+  }
+  .toc-sticky {
+    position: sticky;
+    top: 88px;
+  }
+
+  /* Right Sidebar */
+  .right-sidebar {
+    display: none;
+  }
+  @media (min-width: 1100px) {
+    .right-sidebar {
+      display: block;
+    }
+  }
+  .sidebar-sticky {
+    position: sticky;
+    top: 88px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* Inline CTA */
+  .inline-cta {
+    padding: 32px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #0f2744, #1e3a5f);
+    text-align: center;
+  }
+  .inline-cta h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 8px;
+  }
+  .inline-cta p {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 16px;
+  }
+  .inline-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 11px 24px;
+    background: #2563eb;
+    color: white;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+  .inline-cta-btn:hover {
+    background: #1d4ed8;
+    text-decoration: none;
+  }
+
+  /* Share Buttons */
+  .share-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: #6b7280;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    font-family: inherit;
+  }
+  .share-btn:hover {
+    border-color: #2563eb;
+    color: #2563eb;
+    background: #eff6ff;
+    text-decoration: none;
+  }
+</style>

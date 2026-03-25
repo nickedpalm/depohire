@@ -1,0 +1,296 @@
+---
+import DashboardLayout from '~/layouts/DashboardLayout.astro';
+import config from '~/config';
+---
+<DashboardLayout title={`Dashboard — ${config.brandName}`} activePage="overview">
+
+  <!-- Topbar -->
+  <div class="dash-topbar">
+    <div>
+      <h1>Dashboard</h1>
+      <div class="dash-topbar-sub" id="welcome-text">Welcome back. Here's how your listing is performing.</div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <a id="view-listing-btn" href="#" target="_blank" class="dash-btn dash-btn-outline">View Live Listing</a>
+      <a href="/provider/dashboard/billing/" class="dash-btn dash-btn-upgrade">&#x26a1; Upgrade to Sponsored</a>
+    </div>
+  </div>
+
+  <!-- Upgrade Banner -->
+  <div class="dash-upgrade-banner" id="upgrade-banner">
+    <div>
+      <h3>You're missing out on leads</h3>
+      <p>Upgrade to <span class="highlight">Sponsored</span> to get pinned to #1 and start receiving quote requests directly. <span class="highlight">Limited spots</span> per city.</p>
+    </div>
+    <a href="/provider/dashboard/billing/" class="dash-btn dash-btn-upgrade" style="font-size:14px;padding:12px 24px;position:relative;z-index:1">Get Sponsored — $79/mo</a>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="dash-stats">
+    <div class="dash-stat">
+      <div class="dash-stat-label">Profile Views</div>
+      <div class="dash-stat-value" id="stat-views">—</div>
+      <div class="dash-stat-change neutral">Last 30 days</div>
+      <div class="dash-stat-spark" id="spark-views"></div>
+    </div>
+    <div class="dash-stat">
+      <div class="dash-stat-label">Search Appearances</div>
+      <div class="dash-stat-value" id="stat-searches">—</div>
+      <div class="dash-stat-change neutral">Last 30 days</div>
+      <div class="dash-stat-spark" id="spark-searches"></div>
+    </div>
+    <div class="dash-stat">
+      <div class="dash-stat-label">Quote Requests</div>
+      <div class="dash-stat-value" id="stat-quotes">—</div>
+      <div class="dash-stat-change neutral">Last 30 days</div>
+      <div class="dash-stat-spark" id="spark-quotes"></div>
+    </div>
+    <div class="dash-stat">
+      <div class="dash-stat-label">City Rank</div>
+      <div class="dash-stat-value" id="stat-rank">—</div>
+      <div class="dash-stat-change neutral" id="stat-rank-sub"></div>
+    </div>
+  </div>
+
+  <!-- Two Column: Quotes + Completeness -->
+  <div class="dash-two-col">
+    <!-- Recent Quote Requests -->
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <h2>Recent Quote Requests</h2>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span id="quotes-count" style="background:#eff6ff;color:#2563eb;font-size:12px;font-weight:700;padding:3px 10px;border-radius:10px"></span>
+          <a href="/provider/dashboard/quotes/" style="font-size:13px;color:#2563eb;font-weight:600;text-decoration:none">View all</a>
+        </div>
+      </div>
+      <div id="recent-quotes">
+        <div style="padding:40px;text-align:center;color:#9ca3af">
+          <p style="font-size:14px">Loading quote requests...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column -->
+    <div>
+      <!-- Profile Completeness -->
+      <div class="dash-card" style="margin-bottom:20px">
+        <div class="dash-card-header">
+          <h2>Profile Completeness</h2>
+        </div>
+        <div style="padding:22px;text-align:center">
+          <div class="dash-ring">
+            <svg width="100" height="100" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="42" fill="none" stroke="#e5e7eb" stroke-width="8"/>
+              <circle id="completeness-circle" cx="50" cy="50" r="42" fill="none" stroke="#2563eb" stroke-width="8"
+                stroke-dasharray="264" stroke-dashoffset="264" stroke-linecap="round"/>
+            </svg>
+            <div class="pct" id="completeness-pct">0%</div>
+          </div>
+          <div style="font-size:13px;color:#6b7280">Complete your profile to rank higher</div>
+        </div>
+        <div id="completeness-list" style="padding:0 22px 18px"></div>
+      </div>
+
+      <!-- Listing Preview -->
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <h2>Your Listing</h2>
+          <a href="/provider/dashboard/profile/" style="font-size:13px;color:#2563eb;font-weight:600;text-decoration:none">Edit</a>
+        </div>
+        <div id="listing-preview" style="padding:20px 22px">
+          <p style="font-size:13px;color:#9ca3af;text-align:center">Loading...</p>
+        </div>
+        <div style="padding:0 22px 20px;display:flex;gap:10px">
+          <a href="/provider/dashboard/profile/" class="dash-btn dash-btn-outline" style="flex:1;font-size:12px;justify-content:center">Edit Profile</a>
+          <a id="preview-view-btn" href="#" target="_blank" class="dash-btn dash-btn-primary" style="flex:1;font-size:12px;justify-content:center">View Live</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline>
+    window.addEventListener('dash-ready', async function() {
+      var state = window.dashState;
+      var slug = state.currentSlug;
+
+      // Update welcome text
+      var name = state.provider.name || state.provider.email.split('@')[0];
+      document.getElementById('welcome-text').textContent = 'Welcome back, ' + name + ". Here's how your listing is performing.";
+
+      if (slug) {
+        document.getElementById('view-listing-btn').href = '/listing/' + slug + '/';
+        document.getElementById('preview-view-btn').href = '/listing/' + slug + '/';
+      }
+
+      // Load leads for quote count
+      try {
+        var resp = await fetch('/api/provider/leads?slug=' + slug, { credentials: 'include' });
+        var data = await resp.json();
+        var leads = data.leads || [];
+        document.getElementById('stat-quotes').textContent = leads.length;
+        document.getElementById('quotes-count').textContent = leads.length + ' total';
+
+        // Render recent quotes
+        var container = document.getElementById('recent-quotes');
+        if (leads.length === 0) {
+          container.innerHTML = '<div style="padding:40px;text-align:center;color:#9ca3af"><p style="font-size:36px;margin-bottom:12px">&#x1f4e9;</p><p style="font-size:14px">No quote requests yet.</p><p style="font-size:13px;margin-top:4px">When attorneys request a quote, it will appear here.</p></div>';
+        } else {
+          container.innerHTML = leads.slice(0, 5).map(function(lead) {
+            var initials = (lead.attorney_name || 'A').split(' ').map(function(w){return w[0]}).join('').substring(0,2).toUpperCase();
+            var time = new Date(lead.created_at).toLocaleDateString('en-US', {month:'short',day:'numeric'});
+            return '<div class="dash-quote">' +
+              '<div class="dash-quote-avatar">' + initials + '</div>' +
+              '<div style="flex:1;min-width:0">' +
+                '<div style="display:flex;justify-content:space-between;margin-bottom:2px">' +
+                  '<span style="font-size:14px;font-weight:600">' + escapeHtml(lead.attorney_name || 'Anonymous') + '</span>' +
+                  '<span style="font-size:12px;color:#9ca3af">' + time + '</span>' +
+                '</div>' +
+                (lead.city ? '<div style="font-size:12px;color:#6b7280;margin-bottom:4px">' + escapeHtml(lead.city) + '</div>' : '') +
+                (lead.case_details ? '<div style="font-size:13px;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escapeHtml(lead.case_details) + '</div>' : '') +
+              '</div>' +
+            '</div>';
+          }).join('');
+        }
+      } catch (err) {
+        document.getElementById('recent-quotes').innerHTML = '<div style="padding:40px;text-align:center;color:#9ca3af"><p style="font-size:14px">Failed to load quotes.</p></div>';
+      }
+
+      // Load listing data for completeness + preview
+      try {
+        var resp = await fetch('/api/provider/listing?slug=' + slug, { credentials: 'include' });
+        if (resp.ok) {
+          var result = await resp.json();
+          var d = result.data || {};
+          state.listingData = d;
+
+          // Completeness calculation
+          var checks = [
+            { label: 'Business name & location', done: !!d.name },
+            { label: 'Phone number', done: !!d.phone },
+            { label: 'Business description', done: !!d.description && d.description.length > 20 },
+            { label: 'Services listed', done: Array.isArray(d.services) && d.services.length > 0 },
+            { label: 'Certifications', done: Array.isArray(d.certifications) && d.certifications.length > 0 },
+            { label: 'Photos & portfolio', done: false }, // checked below
+            { label: 'Website', done: !!d.website },
+          ];
+
+          // Check photos
+          try {
+            var pr = await fetch('/api/listing/' + slug);
+            var pd = await pr.json();
+            checks[5].done = pd.photos && pd.photos.length > 0;
+          } catch(e) {}
+
+          var doneCount = checks.filter(function(c){return c.done}).length;
+          var pct = Math.round((doneCount / checks.length) * 100);
+
+          document.getElementById('completeness-pct').textContent = pct + '%';
+          var offset = 264 - (264 * pct / 100);
+          document.getElementById('completeness-circle').setAttribute('stroke-dashoffset', offset);
+
+          var listHtml = checks.map(function(c) {
+            if (c.done) {
+              return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;font-size:13px;border-bottom:1px solid #f3f4f6;color:#059669"><span>&#x2705;</span><span style="text-decoration:line-through;color:#9ca3af">' + c.label + '</span></div>';
+            }
+            return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;font-size:13px;border-bottom:1px solid #f3f4f6"><span>&#x2b1c;</span><span>' + c.label + '</span><a href="/provider/dashboard/profile/" style="margin-left:auto;font-size:12px;font-weight:600;color:#2563eb;text-decoration:none">Add &rarr;</a></div>';
+          }).join('');
+          document.getElementById('completeness-list').innerHTML = listHtml;
+
+          // Listing preview
+          var initials = (d.name || state.provider.email || '??').substring(0, 2).toUpperCase();
+          var previewHtml = '<div style="padding:12px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0">' +
+            '<div style="display:flex;align-items:center;gap:14px;margin-bottom:12px">' +
+              '<div style="width:48px;height:48px;background:#2563eb;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff">' + initials + '</div>' +
+              '<div>' +
+                '<div style="font-size:16px;font-weight:700">' + escapeHtml(d.name || 'Your Business') +
+                  ' <span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 8px;border-radius:4px;background:#ecfdf5;color:#059669;margin-left:4px">&#x2713; Verified</span>' +
+                '</div>' +
+                '<div style="font-size:13px;color:#6b7280">' + escapeHtml(d.coverage_area || '') + '</div>' +
+              '</div>' +
+            '</div>' +
+            (d.description ? '<div style="font-size:13px;color:#6b7280;line-height:1.5;margin-bottom:12px">' + escapeHtml(d.description).substring(0, 120) + '...</div>' : '') +
+            '<div style="display:flex;flex-wrap:wrap;gap:6px">' +
+              (d.services || []).slice(0, 4).map(function(s) {
+                return '<span style="background:#eff6ff;color:#2563eb;font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px">' + escapeHtml(s) + '</span>';
+              }).join('') +
+            '</div>' +
+          '</div>';
+          document.getElementById('listing-preview').innerHTML = previewHtml;
+        }
+      } catch (err) {
+        console.error('Failed to load listing data:', err);
+      }
+
+      // Compute real quote stats from leads data
+      var now = new Date();
+      var thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 3600 * 1000);
+      var sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 3600 * 1000);
+      var leadsThisMonth = (leads || []).filter(function(l) { return new Date(l.created_at) >= thirtyDaysAgo; });
+      var leadsLastMonth = (leads || []).filter(function(l) { var d = new Date(l.created_at); return d >= sixtyDaysAgo && d < thirtyDaysAgo; });
+
+      var quoteSub = document.querySelector('#stat-quotes + .dash-stat-change');
+      if (leadsThisMonth.length > leadsLastMonth.length) {
+        quoteSub.textContent = '+' + (leadsThisMonth.length - leadsLastMonth.length) + ' vs last 30d';
+        quoteSub.className = 'dash-stat-change up';
+      } else if (leadsThisMonth.length < leadsLastMonth.length) {
+        quoteSub.textContent = (leadsThisMonth.length - leadsLastMonth.length) + ' vs last 30d';
+        quoteSub.className = 'dash-stat-change';
+        quoteSub.style.color = '#dc2626';
+      } else {
+        quoteSub.textContent = 'Last 30 days';
+      }
+
+      // Fetch real analytics
+      try {
+        var analyticsResp = await fetch('/api/provider/analytics?slug=' + encodeURIComponent(window.dashState.currentSlug), { credentials: 'include' });
+        if (analyticsResp.ok) {
+          var analytics = await analyticsResp.json();
+          document.getElementById('stat-views').textContent = analytics.views_30d.toLocaleString();
+          document.querySelector('#stat-views + .dash-stat-change').textContent = analytics.views_7d + ' this week';
+
+          document.getElementById('stat-searches').textContent = analytics.unique_visitors_30d.toLocaleString();
+          document.querySelector('#stat-searches + .dash-stat-change').textContent = 'Unique visitors (30d)';
+
+          // Rank: views relative to other providers in city
+          document.getElementById('stat-rank').textContent = analytics.views_30d > 0 ? 'Active' : '—';
+          document.getElementById('stat-rank-sub').textContent = analytics.top_referrers.length > 0 ? 'Top: ' + new URL(analytics.top_referrers[0].referrer).hostname : 'No referrer data yet';
+        } else {
+          throw new Error('Analytics fetch failed');
+        }
+      } catch (e) {
+        document.getElementById('stat-views').textContent = '—';
+        document.querySelector('#stat-views + .dash-stat-change').textContent = 'No data yet';
+        document.getElementById('stat-searches').textContent = '—';
+        document.querySelector('#stat-searches + .dash-stat-change').textContent = 'No data yet';
+        document.getElementById('stat-rank').textContent = '—';
+        document.getElementById('stat-rank-sub').textContent = 'No data yet';
+      }
+
+      // Sparklines — only for quotes (real data), hide for others
+      var sparkQuotes = document.getElementById('spark-quotes');
+      if (leads && leads.length > 0) {
+        var weeks = [];
+        for (var w = 11; w >= 0; w--) {
+          var weekStart = new Date(now.getTime() - (w + 1) * 7 * 24 * 3600 * 1000);
+          var weekEnd = new Date(now.getTime() - w * 7 * 24 * 3600 * 1000);
+          var count = leads.filter(function(l) { var d = new Date(l.created_at); return d >= weekStart && d < weekEnd; }).length;
+          weeks.push(count);
+        }
+        var maxWeek = Math.max.apply(null, weeks) || 1;
+        sparkQuotes.innerHTML = weeks.map(function(c, i) {
+          var h = Math.max(10, (c / maxWeek) * 100);
+          return '<div class="spark-bar' + (i === 11 ? ' current' : '') + '" style="height:' + h + '%"></div>';
+        }).join('');
+      }
+      document.getElementById('spark-views').innerHTML = '<div style="font-size:11px;color:#d1d5db;padding:8px 0">No data yet</div>';
+      document.getElementById('spark-searches').innerHTML = '<div style="font-size:11px;color:#d1d5db;padding:8px 0">No data yet</div>';
+
+      function escapeHtml(str) {
+        var div = document.createElement('div');
+        div.textContent = str || '';
+        return div.innerHTML;
+      }
+    });
+  </script>
+
+</DashboardLayout>

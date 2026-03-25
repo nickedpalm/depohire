@@ -1,13 +1,14 @@
 import { getPermalink, getBlogPermalink } from './utils/permalinks';
+import config from '~/config';
 
 export const headerData = {
   links: [
     {
-      text: 'Search',
+      text: 'Find Providers',
       href: getPermalink('/search'),
     },
     {
-      text: 'Browse States',
+      text: 'Browse by State',
       href: getPermalink('/states/all'),
     },
     {
@@ -15,15 +16,17 @@ export const headerData = {
       href: getBlogPermalink(),
     },
     {
-      text: 'Statistics',
-      href: getPermalink('/statistics'),
+      text: 'Free Guides',
+      href: getPermalink('/guides'),
     },
     {
       text: 'About',
       href: getPermalink('/about'),
     },
   ],
-  actions: [],
+  actions: [
+    { text: 'List Your Business', href: getPermalink('/advertise') },
+  ],
 };
 
 export const footerData = {
@@ -40,7 +43,15 @@ export const footerData = {
       title: 'Resources',
       links: [
         { text: 'Blog', href: getBlogPermalink() },
+        { text: 'Free Guides', href: getPermalink('/guides') },
         { text: 'Editorial Guidelines', href: getPermalink('/editorial-guidelines') },
+      ],
+    },
+    {
+      title: 'For Providers',
+      links: [
+        { text: 'Advertise', href: getPermalink('/advertise') },
+        { text: 'Pricing', href: getPermalink('/pricing') },
       ],
     },
     {
@@ -48,6 +59,7 @@ export const footerData = {
       links: [
         { text: 'About', href: getPermalink('/about') },
         { text: 'Privacy Policy', href: getPermalink('/privacy') },
+        { text: 'Terms of Service', href: getPermalink('/terms') },
       ],
     },
   ],
@@ -56,5 +68,5 @@ export const footerData = {
     { text: 'Editorial Guidelines', href: getPermalink('/editorial-guidelines') },
   ],
   socialLinks: [],
-  footNote: '',
+  footNote: `© ${new Date().getFullYear()} ${config.brandName}. All rights reserved.`,
 };
