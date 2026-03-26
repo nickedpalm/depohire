@@ -158,7 +158,7 @@ def export_listings(vertical: str):
             "lng": row["lng"] or 0,
             "phone": row["phone"] or "",
             "website": row["website"] or "",
-            "email": row["email"] or enrichments.get("email", raw.get("email", "")),
+            "email": (row["email"] if "email" in row.keys() else None) or enrichments.get("email", raw.get("email", "")),
             "contact_form_url": row["contact_form_url"] if "contact_form_url" in row.keys() else "",
             "contact_method": row["contact_method"] if "contact_method" in row.keys() else "",
             "rating": safe_float(enrichments.get("rating", raw.get("rating"))),
