@@ -19,6 +19,7 @@ from scripts.doctor import (
     check_domain_dns,
     check_github_repo,
     check_cf_pages_project,
+    check_d1_database,
 )
 
 
@@ -473,3 +474,64 @@ def test_cf_pages_project_last_deploy_failed(tmp_path):
     r = check_cf_pages_project(deps, "x")
     assert r.status is Status.WARN
     assert "failure" in r.message.lower()
+
+
+def test_d1_database_exists(tmp_path):
+    (tmp_path / "configs").mkdir()
+    (tmp_path / "configs" / "x.yaml").write_text("slug: x\ndomain: x.com\n")
+    vdir = tmp_path / "verticals" / "x"
+    vdir.mkdir(parents=True)
+    (vdir / "wrangler.toml").write_text(
+        'name = "x"\n'
+        'compatibility_date = "2024-09-23"\n'
+        '[[d1_databases]]\n'
+        'binding = "LEADS_DB"\n'
+        'database_name = "x-db"\n'
+        'database_id = "abc-123"\n'
+    )
+
+    def handler(req):
+        if req.url.path == "/client/v4/accounts":
+            return httpx.Response(200, json={"success": True, "result": [{"id": "acc-1"}]})
+        if req.url.path == "/client/v4/accounts/acc-1/d1/database/abc-123":
+            return httpx.Response(200, json={"success": True, "result": {"uuid": "abc-123", "name": "x-db"}})
+        return httpx.Response(404)
+
+    deps = make_deps(
+        project_root=tmp_path,
+        env={"CLOUDFLARE_API_TOKEN": "cf-abc"},
+        http=mock_http(handler),
+    )
+    assert check_d1_database(deps, "x").status is Status.OK
+
+
+def test_d1_database_no_wrangler(tmp_path):
+    (tmp_path / "configs").mkdir()
+    (tmp_path / "configs" / "x.yaml").write_text("slug: x\ndomain: x.com\n")
+    (tmp_path / "verticals" / "x").mkdir(parents=True)
+    deps = make_deps(project_root=tmp_path, env={"CLOUDFLARE_API_TOKEN": "cf-abc"})
+    r = check_d1_database(deps, "x")
+    assert r.status is Status.SKIP
+
+
+def test_d1_database_missing(tmp_path):
+    (tmp_path / "configs").mkdir()
+    (tmp_path / "configs" / "x.yaml").write_text("slug: x\ndomain: x.com\n")
+    vdir = tmp_path / "verticals" / "x"
+    vdir.mkdir(parents=True)
+    (vdir / "wrangler.toml").write_text(
+        '[[d1_databases]]\nbinding = "LEADS_DB"\ndatabase_name = "x-db"\ndatabase_id = "bad-id"\n'
+    )
+
+    def handler(req):
+        if req.url.path == "/client/v4/accounts":
+            return httpx.Response(200, json={"success": True, "result": [{"id": "acc-1"}]})
+        return httpx.Response(404, json={"success": False})
+
+    deps = make_deps(
+        project_root=tmp_path,
+        env={"CLOUDFLARE_API_TOKEN": "cf-abc"},
+        http=mock_http(handler),
+    )
+    r = check_d1_database(deps, "x")
+    assert r.status is Status.FAIL

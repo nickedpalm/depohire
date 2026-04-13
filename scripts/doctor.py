@@ -12,6 +12,7 @@ import re
 import socket
 import subprocess
 import sys
+import tomllib
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
@@ -371,3 +372,44 @@ def check_cf_pages_project(deps: DoctorDeps, slug: str) -> CheckResult:
             remediation="Check build logs at dash.cloudflare.com → Pages → {slug} → Deployments.",
         )
     return CheckResult(Status.WARN, f"{slug}:cf-pages", f"last deploy: {status}", None)
+
+
+def check_d1_database(deps: DoctorDeps, slug: str) -> CheckResult:
+    wrangler_path = deps.project_root / "verticals" / slug / "wrangler.toml"
+    if not wrangler_path.exists():
+        return CheckResult(Status.SKIP, f"{slug}:d1", "no wrangler.toml", None)
+    try:
+        cfg = tomllib.loads(wrangler_path.read_text())
+    except tomllib.TOMLDecodeError as e:
+        return CheckResult(Status.FAIL, f"{slug}:d1", f"wrangler.toml parse error: {e}", None)
+    dbs = cfg.get("d1_databases") or []
+    if not dbs:
+        return CheckResult(Status.SKIP, f"{slug}:d1", "no [[d1_databases]] binding", None)
+    token = deps.env.get("CLOUDFLARE_API_TOKEN", "")
+    if not token:
+        return CheckResult(Status.SKIP, f"{slug}:d1", "CLOUDFLARE_API_TOKEN not set", None)
+    account_id = _cf_account_id(deps)
+    if not account_id:
+        return CheckResult(Status.FAIL, f"{slug}:d1", "could not resolve CF account", None)
+
+    missing = []
+    for db in dbs:
+        db_id = db.get("database_id", "")
+        if not db_id:
+            missing.append(f"{db.get('binding', '?')}:no-id")
+            continue
+        r = deps.http.get(
+            f"https://api.cloudflare.com/client/v4/accounts/{account_id}/d1/database/{db_id}",
+            headers={"Authorization": f"Bearer {token}"},
+            timeout=10,
+        )
+        if r.status_code != 200:
+            missing.append(f"{db.get('database_name', db_id)} ({r.status_code})")
+    if missing:
+        return CheckResult(
+            status=Status.FAIL,
+            name=f"{slug}:d1",
+            message=f"D1 DBs unreachable: {', '.join(missing)}",
+            remediation="Create with `wrangler d1 create <name>` and paste the ID into wrangler.toml.",
+        )
+    return CheckResult(Status.OK, f"{slug}:d1", f"{len(dbs)} D1 DB(s) reachable", None)
