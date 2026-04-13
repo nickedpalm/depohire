@@ -8,6 +8,7 @@ All checks are pure and dependency-injected for testability.
 
 from __future__ import annotations
 
+import re
 import subprocess
 from dataclasses import dataclass
 from enum import Enum
@@ -193,4 +194,37 @@ def check_google_places_key(deps: DoctorDeps) -> CheckResult:
         message=f"{r.status_code}: {r.text[:160]}",
         remediation="Check GCP Console → APIs & Services → Credentials. Ensure Places API (New) is enabled "
                     "and billing is active. Free tier covers ~$200/mo of calls.",
+    )
+
+
+TOOLING_MINIMA = [
+    ("node", ["node", "--version"], re.compile(r"v(\d+)\.(\d+)\.(\d+)"), (20, 0, 0)),
+    ("python3", ["python3", "--version"], re.compile(r"Python (\d+)\.(\d+)\.(\d+)"), (3, 11, 0)),
+    ("npm", ["npm", "--version"], re.compile(r"(\d+)\.(\d+)\.(\d+)"), (10, 0, 0)),
+    ("wrangler", ["wrangler", "--version"], re.compile(r"(?:wrangler\s+)(\d+)\.(\d+)\.(\d+)"), (3, 0, 0)),
+]
+
+
+def check_local_tooling(deps: DoctorDeps) -> CheckResult:
+    problems = []
+    for name, cmd, pattern, minimum in TOOLING_MINIMA:
+        result = deps.run_cmd(cmd)
+        if result.returncode != 0:
+            problems.append(f"{name} not found (run `{cmd[0]} --version` to confirm)")
+            continue
+        m = pattern.search(result.stdout)
+        if not m:
+            problems.append(f"{name} version unparsable: {result.stdout.strip()[:40]}")
+            continue
+        got = tuple(int(x) for x in m.groups())
+        if got < minimum:
+            problems.append(f"{name} {'.'.join(map(str, got))} < required {'.'.join(map(str, minimum))}")
+    if not problems:
+        return CheckResult(Status.OK, "local-tooling", "node, python3, npm, wrangler all present at required versions", None)
+    return CheckResult(
+        status=Status.FAIL,
+        name="local-tooling",
+        message="; ".join(problems),
+        remediation="Install missing tools: node≥20 (nvm install 20), wrangler (npm i -g wrangler), "
+                    "python≥3.11 (system package manager).",
     )

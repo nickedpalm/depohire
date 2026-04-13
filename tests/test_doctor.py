@@ -1,4 +1,5 @@
 from pathlib import Path
+import subprocess
 import httpx
 from scripts.doctor import (
     CheckResult,
@@ -10,6 +11,7 @@ from scripts.doctor import (
     check_anthropic_key,
     check_perplexity_key,
     check_google_places_key,
+    check_local_tooling,
 )
 
 
@@ -248,3 +250,46 @@ def test_google_places_key_network_error():
     r = check_google_places_key(deps)
     assert r.status is Status.FAIL
     assert "network error" in r.message.lower()
+
+
+def fake_run(responses: dict[str, tuple[int, str]]):
+    def run(cmd: list[str]) -> subprocess.CompletedProcess:
+        key = " ".join(cmd)
+        rc, out = responses.get(key, (127, ""))
+        return subprocess.CompletedProcess(cmd, rc, stdout=out, stderr="")
+    return run
+
+
+def test_local_tooling_all_ok():
+    deps = make_deps(run_cmd=fake_run({
+        "node --version": (0, "v20.11.1\n"),
+        "python3 --version": (0, "Python 3.11.7\n"),
+        "npm --version": (0, "10.2.4\n"),
+        "wrangler --version": (0, " ⛅️ wrangler 3.78.0\n"),
+    }))
+    r = check_local_tooling(deps)
+    assert r.status is Status.OK
+
+
+def test_local_tooling_node_too_old():
+    deps = make_deps(run_cmd=fake_run({
+        "node --version": (0, "v18.0.0\n"),
+        "python3 --version": (0, "Python 3.11.7\n"),
+        "npm --version": (0, "10.2.4\n"),
+        "wrangler --version": (0, "wrangler 3.78.0\n"),
+    }))
+    r = check_local_tooling(deps)
+    assert r.status is Status.FAIL
+    assert "node" in r.message.lower()
+
+
+def test_local_tooling_wrangler_missing():
+    deps = make_deps(run_cmd=fake_run({
+        "node --version": (0, "v20.11.1\n"),
+        "python3 --version": (0, "Python 3.11.7\n"),
+        "npm --version": (0, "10.2.4\n"),
+        "wrangler --version": (127, ""),
+    }))
+    r = check_local_tooling(deps)
+    assert r.status is Status.FAIL
+    assert "wrangler" in r.message.lower()
