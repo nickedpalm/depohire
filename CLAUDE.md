@@ -25,6 +25,7 @@ python3 factory.py scrape --vertical <slug>
 python3 factory.py generate --vertical <slug> [--cities] [--articles]
 python3 factory.py build --vertical <slug>
 python3 factory.py deploy --vertical <slug>
+python3 factory.py doctor [--vertical <slug>] [--optional]  # health check, read-only
 ```
 
 ## Key Files
@@ -41,6 +42,14 @@ python3 factory.py deploy --vertical <slug>
 - `PERPLEXITY_API_KEY` — for scrape_perplexity.py
 - `ANTHROPIC_API_KEY` — for generate_cities.py, generate_articles.py, sentiment in enrich.py
 - `GOOGLE_MAPS_API_KEY` — for scrape.py (Google Maps Places API)
+
+## Doctor
+
+`factory.py doctor` runs ~15 read-only health checks: env var presence, live API validation (CF, GitHub, Anthropic, Perplexity), local tooling versions, and per-vertical DNS / GitHub repo / CF Pages / D1 / pipeline.db state. Exit 0 if healthy, 1 if any blocking FAIL.
+
+Cost per default run: ~$0.0005 (one 1-token Anthropic + one 1-token Perplexity). Google Places live probe is gated behind `--optional` to minimize Google API calls.
+
+Use `--optional` to also run Google Places, Listmonk, and Stripe checks.
 
 ## Article Pipeline
 ```bash
