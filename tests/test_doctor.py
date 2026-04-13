@@ -122,3 +122,28 @@ def test_github_token_invalid():
         return httpx.Response(401)
     deps = make_deps(env={"GITHUB_TOKEN": "gh-bad"}, http=mock_http(handler))
     assert check_github_token(deps).status is Status.FAIL
+
+
+def test_github_token_missing():
+    deps = make_deps(env={})
+    r = check_github_token(deps)
+    assert r.status is Status.FAIL
+    assert "not set" in r.message.lower()
+
+
+def test_cloudflare_token_network_error():
+    def handler(req):
+        raise httpx.ConnectError("boom")
+    deps = make_deps(env={"CLOUDFLARE_API_TOKEN": "cf-abc"}, http=mock_http(handler))
+    r = check_cloudflare_token(deps)
+    assert r.status is Status.FAIL
+    assert "network error" in r.message.lower()
+
+
+def test_github_token_network_error():
+    def handler(req):
+        raise httpx.ConnectError("boom")
+    deps = make_deps(env={"GITHUB_TOKEN": "gh-abc"}, http=mock_http(handler))
+    r = check_github_token(deps)
+    assert r.status is Status.FAIL
+    assert "network error" in r.message.lower()
