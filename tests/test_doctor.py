@@ -22,6 +22,8 @@ from scripts.doctor import (
     check_cf_pages_project,
     check_d1_database,
     check_pipeline_db,
+    check_listmonk,
+    check_stripe,
 )
 
 
@@ -578,3 +580,50 @@ def test_pipeline_db_too_few_cities(tmp_path):
     deps = make_deps(project_root=tmp_path)
     r = check_pipeline_db(deps, "x")
     assert r.status is Status.WARN
+
+
+def test_listmonk_healthy():
+    def handler(req):
+        assert req.url.path == "/api/health"
+        return httpx.Response(200, json={"data": True})
+    deps = make_deps(
+        env={"LISTMONK_URL": "https://mail.firestick.io", "LISTMONK_USERNAME": "u", "LISTMONK_PASSWORD": "p"},
+        http=mock_http(handler),
+    )
+    assert check_listmonk(deps).status is Status.OK
+
+
+def test_listmonk_not_configured():
+    deps = make_deps(env={})
+    assert check_listmonk(deps).status is Status.SKIP
+
+
+def test_listmonk_unreachable():
+    def handler(req):
+        return httpx.Response(503)
+    deps = make_deps(
+        env={"LISTMONK_URL": "https://mail.firestick.io", "LISTMONK_USERNAME": "u", "LISTMONK_PASSWORD": "p"},
+        http=mock_http(handler),
+    )
+    assert check_listmonk(deps).status is Status.FAIL
+
+
+def test_stripe_valid():
+    def handler(req):
+        assert req.url.path == "/v1/balance"
+        assert req.headers["authorization"] == "Bearer sk_test_abc"
+        return httpx.Response(200, json={"object": "balance"})
+    deps = make_deps(env={"STRIPE_SECRET_KEY": "sk_test_abc"}, http=mock_http(handler))
+    assert check_stripe(deps).status is Status.OK
+
+
+def test_stripe_not_configured():
+    deps = make_deps(env={})
+    assert check_stripe(deps).status is Status.SKIP
+
+
+def test_stripe_invalid():
+    def handler(req):
+        return httpx.Response(401)
+    deps = make_deps(env={"STRIPE_SECRET_KEY": "sk_bad"}, http=mock_http(handler))
+    assert check_stripe(deps).status is Status.FAIL

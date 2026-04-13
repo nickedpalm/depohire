@@ -441,3 +441,46 @@ def check_pipeline_db(deps: DoctorDeps, slug: str) -> CheckResult:
         return CheckResult(Status.WARN, f"{slug}:pipeline-db", f"only {count} cities with listings",
                            "Expected 20-35 cities for a healthy vertical.")
     return CheckResult(Status.OK, f"{slug}:pipeline-db", f"{count} cities with listings", None)
+
+
+def check_listmonk(deps: DoctorDeps) -> CheckResult:
+    url = deps.env.get("LISTMONK_URL", "")
+    user = deps.env.get("LISTMONK_USERNAME", "")
+    pw = deps.env.get("LISTMONK_PASSWORD", "")
+    if not (url and user and pw):
+        return CheckResult(Status.SKIP, "listmonk", "LISTMONK_* not configured (optional)", None)
+    try:
+        r = deps.http.get(f"{url.rstrip('/')}/api/health", auth=(user, pw), timeout=10)
+    except httpx.HTTPError as e:
+        return CheckResult(Status.FAIL, "listmonk", f"network error: {e}", None)
+    if r.status_code == 200:
+        return CheckResult(Status.OK, "listmonk", "reachable", None)
+    return CheckResult(
+        status=Status.FAIL,
+        name="listmonk",
+        message=f"{r.status_code}: {r.text[:80]}",
+        remediation="Verify LISTMONK_URL, LISTMONK_USERNAME, LISTMONK_PASSWORD. "
+                    "v6 API users need password_login=true in DB and plaintext password.",
+    )
+
+
+def check_stripe(deps: DoctorDeps) -> CheckResult:
+    key = deps.env.get("STRIPE_SECRET_KEY", "")
+    if not key:
+        return CheckResult(Status.SKIP, "stripe", "STRIPE_SECRET_KEY not set (optional)", None)
+    try:
+        r = deps.http.get(
+            "https://api.stripe.com/v1/balance",
+            headers={"Authorization": f"Bearer {key}"},
+            timeout=10,
+        )
+    except httpx.HTTPError as e:
+        return CheckResult(Status.FAIL, "stripe", f"network error: {e}", None)
+    if r.status_code == 200:
+        return CheckResult(Status.OK, "stripe", "key valid", None)
+    return CheckResult(
+        status=Status.FAIL,
+        name="stripe",
+        message=f"{r.status_code}: {r.text[:80]}",
+        remediation="Regenerate at dashboard.stripe.com → Developers → API keys.",
+    )
