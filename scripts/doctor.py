@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import re
 import socket
+import sqlite3
 import subprocess
 import sys
 import tomllib
@@ -413,3 +414,30 @@ def check_d1_database(deps: DoctorDeps, slug: str) -> CheckResult:
             remediation="Create with `wrangler d1 create <name>` and paste the ID into wrangler.toml.",
         )
     return CheckResult(Status.OK, f"{slug}:d1", f"{len(dbs)} D1 DB(s) reachable", None)
+
+
+def check_pipeline_db(deps: DoctorDeps, slug: str) -> CheckResult:
+    db_path = deps.project_root / "verticals" / slug / "pipeline.db"
+    if not db_path.exists():
+        return CheckResult(Status.SKIP, f"{slug}:pipeline-db", "pipeline.db not present (pre-scrape)", None)
+    try:
+        conn = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+        integrity = conn.execute("PRAGMA integrity_check").fetchone()[0]
+        if integrity != "ok":
+            conn.close()
+            return CheckResult(Status.FAIL, f"{slug}:pipeline-db", f"integrity_check: {integrity}",
+                               "Re-run the scrape pipeline to regenerate.")
+        try:
+            count = conn.execute("SELECT COUNT(DISTINCT city) FROM listings").fetchone()[0]
+        except sqlite3.OperationalError:
+            count = 0
+        conn.close()
+    except sqlite3.DatabaseError as e:
+        return CheckResult(Status.FAIL, f"{slug}:pipeline-db", f"sqlite error: {e}", None)
+    if count == 0:
+        return CheckResult(Status.WARN, f"{slug}:pipeline-db", "no listings in any city",
+                           "Run `python3 factory.py scrape --vertical " + slug + "`.")
+    if count < 3:
+        return CheckResult(Status.WARN, f"{slug}:pipeline-db", f"only {count} cities with listings",
+                           "Expected 20-35 cities for a healthy vertical.")
+    return CheckResult(Status.OK, f"{slug}:pipeline-db", f"{count} cities with listings", None)

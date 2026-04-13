@@ -1,4 +1,5 @@
 from pathlib import Path
+import sqlite3
 import subprocess
 import httpx
 import pytest
@@ -20,6 +21,7 @@ from scripts.doctor import (
     check_github_repo,
     check_cf_pages_project,
     check_d1_database,
+    check_pipeline_db,
 )
 
 
@@ -535,3 +537,44 @@ def test_d1_database_missing(tmp_path):
     )
     r = check_d1_database(deps, "x")
     assert r.status is Status.FAIL
+
+
+def make_pipeline_db(path, city_count: int):
+    conn = sqlite3.connect(path)
+    conn.execute("CREATE TABLE listings (id INTEGER PRIMARY KEY, city TEXT NOT NULL)")
+    for i in range(city_count):
+        conn.execute("INSERT INTO listings (city) VALUES (?)", (f"city-{i}",))
+    conn.commit()
+    conn.close()
+
+
+def test_pipeline_db_healthy(tmp_path):
+    (tmp_path / "configs").mkdir()
+    (tmp_path / "configs" / "x.yaml").write_text("slug: x\n")
+    vdir = tmp_path / "verticals" / "x"
+    vdir.mkdir(parents=True)
+    make_pipeline_db(vdir / "pipeline.db", city_count=15)
+    deps = make_deps(project_root=tmp_path)
+    r = check_pipeline_db(deps, "x")
+    assert r.status is Status.OK
+    assert "15" in r.message
+
+
+def test_pipeline_db_missing(tmp_path):
+    (tmp_path / "configs").mkdir()
+    (tmp_path / "configs" / "x.yaml").write_text("slug: x\n")
+    (tmp_path / "verticals" / "x").mkdir(parents=True)
+    deps = make_deps(project_root=tmp_path)
+    r = check_pipeline_db(deps, "x")
+    assert r.status is Status.SKIP
+
+
+def test_pipeline_db_too_few_cities(tmp_path):
+    (tmp_path / "configs").mkdir()
+    (tmp_path / "configs" / "x.yaml").write_text("slug: x\n")
+    vdir = tmp_path / "verticals" / "x"
+    vdir.mkdir(parents=True)
+    make_pipeline_db(vdir / "pipeline.db", city_count=1)
+    deps = make_deps(project_root=tmp_path)
+    r = check_pipeline_db(deps, "x")
+    assert r.status is Status.WARN
