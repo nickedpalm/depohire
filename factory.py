@@ -225,6 +225,41 @@ def cmd_build(args):
 
 # ── DEPLOY ──────────────────────────────────────────────────────────────────
 
+def _source_fingerprint(vertical_dir: Path, config_path: Path) -> str:
+    """Hash the inputs that could change what gets built/deployed.
+
+    Covers the vertical's src/public/data dirs, its config, and package manifests.
+    Uses file path + size + mtime (ns) — fast and sufficient for change detection.
+    """
+    import hashlib
+    h = hashlib.sha256()
+    targets = [
+        vertical_dir / "src",
+        vertical_dir / "public",
+        vertical_dir / "data",
+        vertical_dir / "package.json",
+        vertical_dir / "package-lock.json",
+        vertical_dir / "astro.config.ts",
+        vertical_dir / "astro.config.mjs",
+        config_path,
+    ]
+    entries = []
+    for target in targets:
+        if not target.exists():
+            continue
+        if target.is_file():
+            st = target.stat()
+            entries.append(f"{target}|{st.st_size}|{st.st_mtime_ns}")
+        else:
+            for p in sorted(target.rglob("*")):
+                if p.is_file() and "node_modules" not in p.parts and ".astro" not in p.parts:
+                    st = p.stat()
+                    entries.append(f"{p}|{st.st_size}|{st.st_mtime_ns}")
+    for e in sorted(entries):
+        h.update(e.encode())
+    return h.hexdigest()
+
+
 def cmd_deploy(args):
     vertical_dir = VERTICALS_DIR / args.vertical
     dist_dir = vertical_dir / "dist"
@@ -233,14 +268,28 @@ def cmd_deploy(args):
         print(f"Error: Build output not found. Run 'factory.py build --vertical {args.vertical}' first.")
         sys.exit(1)
 
+    config_path = CONFIGS_DIR / f"{args.vertical}.yaml"
+
+    # Change detection: skip deploy if source fingerprint matches the last successful deploy.
+    # Avoids wasteful daily wrangler deploys when nothing has changed. Pass --force to override.
+    # Stored outside the vertical dir (which is a git-tracked deploy target) to keep it out of git.
+    hashes_dir = PROJECT_ROOT / ".deploy-hashes"
+    hashes_dir.mkdir(exist_ok=True)
+    hash_file = hashes_dir / f"{args.vertical}.hash"
+    current_hash = _source_fingerprint(vertical_dir, config_path)
+    if not args.force and hash_file.exists():
+        last_hash = hash_file.read_text().strip()
+        if last_hash == current_hash:
+            print(f"Skipping deploy: source unchanged since last successful deploy (hash: {current_hash[:12]}).")
+            print("Run with --force to deploy anyway.")
+            return
+
     # Derive CF Pages project name from the vertical's domain (e.g. depohire.com -> depohire).
     # The custom domain CNAMEs to a specific project whose name is the domain stem, not the
     # vertical slug. Defaulting to the slug silently publishes to an unused project.
     project_name = args.vertical
-    config_path = CONFIGS_DIR / f"{args.vertical}.yaml"
     if config_path.exists():
         try:
-            import yaml
             with open(config_path) as f:
                 cfg = yaml.safe_load(f) or {}
             domain = cfg.get("domain", "")
@@ -249,7 +298,9 @@ def cmd_deploy(args):
         except Exception as e:
             print(f"Warning: could not read domain from {config_path}: {e}. Using vertical slug.")
 
-    subprocess.run([str(SCRIPTS_DIR / "deploy.sh"), args.vertical, project_name])
+    result = subprocess.run([str(SCRIPTS_DIR / "deploy.sh"), args.vertical, project_name])
+    if result.returncode == 0:
+        hash_file.write_text(current_hash)
 
 
 # ── LIST ────────────────────────────────────────────────────────────────────
@@ -324,6 +375,7 @@ def main():
     # deploy
     p_deploy = subparsers.add_parser("deploy", help="Deploy a vertical to Cloudflare Pages")
     p_deploy.add_argument("--vertical", required=True, help="Vertical slug")
+    p_deploy.add_argument("--force", action="store_true", help="Deploy even if source hasn't changed since last successful deploy")
     p_deploy.set_defaults(func=cmd_deploy)
 
     # list
