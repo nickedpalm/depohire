@@ -61,8 +61,29 @@ def yaml_to_vertical_json(config: dict) -> dict:
             "bio": editorial.get("bio", f"Expert contributor at {name}."),
             "linkedin": editorial.get("linkedin"),
         },
+        # Legacy single-link schema (depohire still uses this)
         "stripeSponsoredLink": config.get("stripe_sponsored_link", ""),
         "stripeCityProLink": config.get("stripe_city_pro_link", ""),
+        # Current 4-link monthly/annual schema (populated by scripts/stripe_sync.py)
+        "stripeFeaturedMonthlyLink": config.get("stripe_featured_monthly_link", ""),
+        "stripeFeaturedAnnualLink": config.get("stripe_featured_annual_link", ""),
+        "stripeCityProMonthlyLink": config.get("stripe_city_pro_monthly_link", ""),
+        "stripeCityProAnnualLink": config.get("stripe_city_pro_annual_link", ""),
+        "stripeFeaturedProductId": config.get("stripe_featured_product_id", ""),
+        "stripeCityProProductId": config.get("stripe_city_pro_product_id", ""),
+        "stripeFeaturedMonthlyPriceId": config.get("stripe_featured_monthly_price_id", ""),
+        "stripeFeaturedAnnualPriceId": config.get("stripe_featured_annual_price_id", ""),
+        "stripeCityProMonthlyPriceId": config.get("stripe_city_pro_monthly_price_id", ""),
+        "stripeCityProAnnualPriceId": config.get("stripe_city_pro_annual_price_id", ""),
+        # Pricing block for display (USD amounts, rendered in template buttons/copy)
+        "pricing": {
+            "featuredMonthlyUsd": (config.get("pricing") or {}).get("featured_monthly_usd"),
+            "featuredAnnualUsd": (config.get("pricing") or {}).get("featured_annual_usd"),
+            "cityProMonthlyUsd": (config.get("pricing") or {}).get("city_pro_monthly_usd"),
+            "cityProAnnualUsd": (config.get("pricing") or {}).get("city_pro_annual_usd"),
+        },
+        "turnstileSitekey": config.get("turnstile_sitekey", ""),
+        # Historical alias for typo'd earlier field name; keep until template stops using it.
         "turnsiteSitekey": config.get("turnstile_sitekey", ""),
         "googleAnalyticsId": config.get("google_analytics_id", ""),
         "foundedYear": config.get("founded_year", 2026),
