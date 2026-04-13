@@ -324,6 +324,14 @@ def cmd_list(args):
             print(f"  {d.name}{status_str}")
 
 
+# ── DOCTOR ──────────────────────────────────────────────────────────────────
+
+def cmd_doctor(args):
+    from scripts.doctor import run as doctor_run
+    verticals = [args.vertical] if args.vertical else None
+    sys.exit(doctor_run(verticals=verticals, include_optional=args.optional))
+
+
 # ── HELPERS ─────────────────────────────────────────────────────────────────
 
 def find_config(vertical: str) -> str:
@@ -381,6 +389,12 @@ def main():
     # list
     p_list = subparsers.add_parser("list", help="List all verticals")
     p_list.set_defaults(func=cmd_list)
+
+    # doctor
+    p_doctor = subparsers.add_parser("doctor", help="Run health checks against env, APIs, and verticals.")
+    p_doctor.add_argument("--vertical", help="Specific vertical slug")
+    p_doctor.add_argument("--optional", action="store_true", help="Include optional checks (Google Places, Listmonk, Stripe)")
+    p_doctor.set_defaults(func=cmd_doctor)
 
     args = parser.parse_args()
     args.func(args)
