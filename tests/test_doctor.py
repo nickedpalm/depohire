@@ -7,6 +7,9 @@ from scripts.doctor import (
     check_shared_env_presence,
     check_cloudflare_token,
     check_github_token,
+    check_anthropic_key,
+    check_perplexity_key,
+    check_google_places_key,
 )
 
 
@@ -145,5 +148,103 @@ def test_github_token_network_error():
         raise httpx.ConnectError("boom")
     deps = make_deps(env={"GITHUB_TOKEN": "gh-abc"}, http=mock_http(handler))
     r = check_github_token(deps)
+    assert r.status is Status.FAIL
+    assert "network error" in r.message.lower()
+
+
+def test_anthropic_key_valid():
+    def handler(req):
+        assert req.url.path == "/v1/messages"
+        assert req.headers["x-api-key"] == "sk-ant-abc"
+        return httpx.Response(200, json={"id": "msg_1", "content": [{"type": "text", "text": "ok"}]})
+    deps = make_deps(env={"ANTHROPIC_API_KEY": "sk-ant-abc"}, http=mock_http(handler))
+    assert check_anthropic_key(deps).status is Status.OK
+
+
+def test_anthropic_key_invalid():
+    def handler(req):
+        return httpx.Response(401, json={"error": {"message": "invalid api-key"}})
+    deps = make_deps(env={"ANTHROPIC_API_KEY": "sk-bad"}, http=mock_http(handler))
+    assert check_anthropic_key(deps).status is Status.FAIL
+
+
+def test_anthropic_key_missing():
+    deps = make_deps(env={})
+    r = check_anthropic_key(deps)
+    assert r.status is Status.FAIL
+    assert "not set" in r.message.lower()
+
+
+def test_anthropic_key_network_error():
+    def handler(req):
+        raise httpx.ConnectError("boom")
+    deps = make_deps(env={"ANTHROPIC_API_KEY": "sk-ant-abc"}, http=mock_http(handler))
+    r = check_anthropic_key(deps)
+    assert r.status is Status.FAIL
+    assert "network error" in r.message.lower()
+
+
+def test_perplexity_key_valid():
+    def handler(req):
+        assert req.url.host == "api.perplexity.ai"
+        assert req.headers["authorization"] == "Bearer p-abc"
+        return httpx.Response(200, json={"choices": [{"message": {"content": "hi"}}]})
+    deps = make_deps(env={"PERPLEXITY_API_KEY": "p-abc"}, http=mock_http(handler))
+    assert check_perplexity_key(deps).status is Status.OK
+
+
+def test_perplexity_key_invalid():
+    def handler(req):
+        return httpx.Response(401)
+    deps = make_deps(env={"PERPLEXITY_API_KEY": "p-bad"}, http=mock_http(handler))
+    assert check_perplexity_key(deps).status is Status.FAIL
+
+
+def test_perplexity_key_missing():
+    deps = make_deps(env={})
+    r = check_perplexity_key(deps)
+    assert r.status is Status.FAIL
+    assert "not set" in r.message.lower()
+
+
+def test_perplexity_key_network_error():
+    def handler(req):
+        raise httpx.ConnectError("boom")
+    deps = make_deps(env={"PERPLEXITY_API_KEY": "p-abc"}, http=mock_http(handler))
+    r = check_perplexity_key(deps)
+    assert r.status is Status.FAIL
+    assert "network error" in r.message.lower()
+
+
+def test_google_places_key_valid():
+    def handler(req):
+        assert "places.googleapis.com" in req.url.host
+        assert req.headers["x-goog-api-key"] == "g-abc"
+        return httpx.Response(200, json={"places": [{"displayName": {"text": "A Cafe"}}]})
+    deps = make_deps(env={"GOOGLE_MAPS_API_KEY": "g-abc"}, http=mock_http(handler))
+    assert check_google_places_key(deps).status is Status.OK
+
+
+def test_google_places_key_invalid():
+    def handler(req):
+        return httpx.Response(403, json={"error": {"message": "API key not valid"}})
+    deps = make_deps(env={"GOOGLE_MAPS_API_KEY": "g-bad"}, http=mock_http(handler))
+    r = check_google_places_key(deps)
+    assert r.status is Status.FAIL
+    assert "not valid" in r.message.lower() or "403" in r.message
+
+
+def test_google_places_key_missing():
+    deps = make_deps(env={})
+    r = check_google_places_key(deps)
+    assert r.status is Status.FAIL
+    assert "not set" in r.message.lower()
+
+
+def test_google_places_key_network_error():
+    def handler(req):
+        raise httpx.ConnectError("boom")
+    deps = make_deps(env={"GOOGLE_MAPS_API_KEY": "g-abc"}, http=mock_http(handler))
+    r = check_google_places_key(deps)
     assert r.status is Status.FAIL
     assert "network error" in r.message.lower()

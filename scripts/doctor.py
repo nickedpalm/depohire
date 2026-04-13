@@ -108,3 +108,89 @@ def check_github_token(deps: DoctorDeps) -> CheckResult:
         message=f"verify failed: {r.status_code}",
         remediation="Generate a new PAT at github.com/settings/tokens. Required scopes: repo.",
     )
+
+
+def check_anthropic_key(deps: DoctorDeps) -> CheckResult:
+    key = deps.env.get("ANTHROPIC_API_KEY", "")
+    if not key:
+        return CheckResult(Status.FAIL, "anthropic-key", "not set", "Export ANTHROPIC_API_KEY.")
+    try:
+        r = deps.http.post(
+            "https://api.anthropic.com/v1/messages",
+            headers={
+                "x-api-key": key,
+                "anthropic-version": "2023-06-01",
+                "content-type": "application/json",
+            },
+            json={
+                "model": "claude-haiku-4-5-20251001",
+                "max_tokens": 1,
+                "messages": [{"role": "user", "content": "hi"}],
+            },
+            timeout=15,
+        )
+    except httpx.HTTPError as e:
+        return CheckResult(Status.FAIL, "anthropic-key", f"network error: {e}", None)
+    if r.status_code == 200:
+        return CheckResult(Status.OK, "anthropic-key", "responded", None)
+    return CheckResult(
+        status=Status.FAIL,
+        name="anthropic-key",
+        message=f"{r.status_code}: {r.text[:120]}",
+        remediation="Regenerate at console.anthropic.com → API Keys. Set a monthly spend cap while there.",
+    )
+
+
+def check_perplexity_key(deps: DoctorDeps) -> CheckResult:
+    key = deps.env.get("PERPLEXITY_API_KEY", "")
+    if not key:
+        return CheckResult(Status.FAIL, "perplexity-key", "not set", "Export PERPLEXITY_API_KEY.")
+    try:
+        r = deps.http.post(
+            "https://api.perplexity.ai/chat/completions",
+            headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+            json={
+                "model": "sonar",
+                "max_tokens": 1,
+                "messages": [{"role": "user", "content": "hi"}],
+            },
+            timeout=15,
+        )
+    except httpx.HTTPError as e:
+        return CheckResult(Status.FAIL, "perplexity-key", f"network error: {e}", None)
+    if r.status_code == 200:
+        return CheckResult(Status.OK, "perplexity-key", "responded", None)
+    return CheckResult(
+        status=Status.FAIL,
+        name="perplexity-key",
+        message=f"{r.status_code}: {r.text[:120]}",
+        remediation="Regenerate at perplexity.ai/settings/api. Top up credits if depleted.",
+    )
+
+
+def check_google_places_key(deps: DoctorDeps) -> CheckResult:
+    key = deps.env.get("GOOGLE_MAPS_API_KEY", "")
+    if not key:
+        return CheckResult(Status.FAIL, "google-places-key", "not set", "Export GOOGLE_MAPS_API_KEY.")
+    try:
+        r = deps.http.post(
+            "https://places.googleapis.com/v1/places:searchText",
+            headers={
+                "X-Goog-Api-Key": key,
+                "X-Goog-FieldMask": "places.displayName",
+                "Content-Type": "application/json",
+            },
+            json={"textQuery": "coffee shop san francisco", "pageSize": 1},
+            timeout=10,
+        )
+    except httpx.HTTPError as e:
+        return CheckResult(Status.FAIL, "google-places-key", f"network error: {e}", None)
+    if r.status_code == 200:
+        return CheckResult(Status.OK, "google-places-key", "responded", None)
+    return CheckResult(
+        status=Status.FAIL,
+        name="google-places-key",
+        message=f"{r.status_code}: {r.text[:160]}",
+        remediation="Check GCP Console → APIs & Services → Credentials. Ensure Places API (New) is enabled "
+                    "and billing is active. Free tier covers ~$200/mo of calls.",
+    )
