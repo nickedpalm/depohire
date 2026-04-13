@@ -308,6 +308,18 @@ def test_local_tooling_wrangler_missing():
     assert "wrangler" in r.message.lower()
 
 
+def test_local_tooling_wrangler_bare_version():
+    """wrangler 4.x emits bare '4.79.0' with no 'wrangler' prefix."""
+    deps = make_deps(run_cmd=fake_run({
+        "node --version": (0, "v20.11.1\n"),
+        "python3 --version": (0, "Python 3.11.7\n"),
+        "npm --version": (0, "10.2.4\n"),
+        "wrangler --version": (0, "4.79.0\n"),
+    }))
+    r = check_local_tooling(deps)
+    assert r.status is Status.OK
+
+
 def test_discover_verticals_finds_all(tmp_path):
     (tmp_path / "configs").mkdir()
     (tmp_path / "configs" / "a.yaml").write_text("slug: a\n")

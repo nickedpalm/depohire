@@ -207,7 +207,7 @@ TOOLING_MINIMA = [
     ("node", ["node", "--version"], re.compile(r"v(\d+)\.(\d+)\.(\d+)"), (20, 0, 0)),
     ("python3", ["python3", "--version"], re.compile(r"Python (\d+)\.(\d+)\.(\d+)"), (3, 11, 0)),
     ("npm", ["npm", "--version"], re.compile(r"(\d+)\.(\d+)\.(\d+)"), (10, 0, 0)),
-    ("wrangler", ["wrangler", "--version"], re.compile(r"(?:wrangler\s+)(\d+)\.(\d+)\.(\d+)"), (3, 0, 0)),
+    ("wrangler", ["wrangler", "--version"], re.compile(r"(?:wrangler\s+)?(\d+)\.(\d+)\.(\d+)"), (3, 0, 0)),
 ]
 
 
