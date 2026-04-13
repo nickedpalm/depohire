@@ -1,0 +1,323 @@
+---
+import PageLayout from '~/layouts/PageLayout.astro';
+import FAQAccordion from '~/components/directory/FAQAccordion.astro';
+import LightHero from '~/components/directory/LightHero.astro';
+import config from '~/config';
+import citiesData from '~/data/cities.json';
+
+const totalCities = citiesData.length;
+
+// Pricing (USD) — sourced from configs/<slug>.yaml `pricing` block via factory.py
+const featuredMo = config.pricing?.featuredMonthlyUsd ?? 79;
+const featuredYr = config.pricing?.featuredAnnualUsd ?? featuredMo * 10;
+const featuredSavings = featuredMo * 12 - featuredYr;
+const cityProMo = config.pricing?.cityProMonthlyUsd ?? 149;
+const cityProYr = config.pricing?.cityProAnnualUsd ?? cityProMo * 10;
+const cityProSavings = cityProMo * 12 - cityProYr;
+const fmt = (n: number) => n.toLocaleString('en-US');
+
+const metadata = {
+  title: 'Pricing',
+  description: `Get a sponsored listing in the #1 ${config.primaryKeyword} directory. Plans start at $${featuredMo}/month. No setup fees, no contracts.`,
+};
+---
+<PageLayout metadata={metadata}>
+  <Fragment slot="announcement"><span></span></Fragment>
+
+  <LightHero
+    title="Attorneys in your city are searching for a court reporter <em>right now.</em>"
+    subtitle={`Without a Sponsored listing, they find your competitor first. With one, the call comes to you. ${config.brandName} is the only directory built specifically for court reporters. No clutter. No competing categories. Just attorneys who need exactly what you offer.`}
+    notice="Limited availability: We cap Sponsored listings at 2–3 per city to protect the value of each placement. If your city is full, you'll be added to the waitlist."
+    stats={[
+      { value: `${totalCities}+`, label: 'cities covered' },
+      { value: '1,000+', label: 'monthly attorney searches' },
+      { value: '2–3', label: 'sponsored slots per city max' },
+      { value: '$0', label: 'setup fees, ever' },
+    ]}
+    align="center"
+  />
+
+  <!-- Pricing Tiers -->
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Annual/Monthly Toggle -->
+    <div class="flex items-center justify-center gap-3 mb-8" id="billing-toggle">
+      <span class="text-sm font-medium text-default" id="label-monthly">Monthly</span>
+      <button
+        type="button"
+        role="switch"
+        aria-checked="false"
+        id="toggle-btn"
+        class="relative inline-flex h-6 w-11 items-center rounded-full bg-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+        onclick="toggleBilling()"
+      >
+        <span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform translate-x-1" id="toggle-dot"></span>
+      </button>
+      <span class="text-sm font-medium text-muted" id="label-annual">Annual <span class="text-green-600 font-bold">(save 32%)</span></span>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      <!-- Basic -->
+      <div class="card p-6 flex flex-col">
+        <h3 class="text-xl font-bold text-default">Claimed Listing</h3>
+        <div class="mt-4 mb-6">
+          <span class="text-4xl font-extrabold text-default">Free</span>
+        </div>
+        <ul class="space-y-3 text-sm text-muted flex-1">
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Listed in your city directory
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Business name, address & phone
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Link to your website
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-gray-300 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            <span class="text-gray-400">Alphabetical sort order</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-gray-300 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            <span class="text-gray-400">No top placement</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-gray-300 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            <span class="text-gray-400">No lead routing</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-gray-300 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            <span class="text-gray-400">No editorial mention or backlink</span>
+          </li>
+        </ul>
+        <a href="/advertise/" class="btn-outline w-full text-center mt-6 no-underline">Claim Free Listing</a>
+      </div>
+
+      <!-- Featured -->
+      <div class="card p-6 flex flex-col border-2 border-primary relative">
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full">Most Popular</div>
+        <h3 class="text-xl font-bold text-default">Featured Listing</h3>
+        <p class="text-sm text-muted mt-1">Attorneys in your city see <strong>you first</strong>. Leads route directly to your inbox.</p>
+        <div class="mt-4 mb-6">
+          <div class="price-monthly"><span class="text-4xl font-extrabold text-default">${fmt(featuredMo)}</span><span class="text-muted">/month</span></div>
+          <div class="price-annual hidden"><span class="text-4xl font-extrabold text-default">${fmt(featuredYr)}</span><span class="text-muted">/year</span><span class="text-sm text-green-600 ml-1">(save ${fmt(featuredSavings)})</span></div>
+        </div>
+        <ul class="space-y-3 text-sm flex-1">
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Pinned to #1 in your city results
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            "Sponsored" badge — stands out immediately
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Quote requests emailed directly to you
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Extended bio + full service list
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Direct link to your booking page
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            RPR certification badge (if applicable)
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Monthly impressions report
+          </li>
+        </ul>
+        <a href={config.stripeFeaturedMonthlyLink} target="_blank" rel="noopener" class="btn-primary w-full text-center mt-6 no-underline link-monthly">Get Featured &mdash; ${fmt(featuredMo)}/mo &rarr;</a>
+        <a href={config.stripeFeaturedAnnualLink} target="_blank" rel="noopener" class="btn-primary w-full text-center mt-6 no-underline link-annual hidden">Get Featured &mdash; ${fmt(featuredYr)}/yr &rarr;</a>
+        <p class="text-xs text-muted text-center mt-2">Instant checkout &middot; Cancel anytime &middot; Goes live in 2–3 days</p>
+      </div>
+
+      <!-- City Pro -->
+      <div class="card p-6 flex flex-col relative">
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-green-700 text-white text-xs font-bold px-3 py-1 rounded-full">Best Value</div>
+        <h3 class="text-xl font-bold text-default">City Pro</h3>
+        <p class="text-sm text-muted mt-1">Own your market. Top listing + editorial SEO + newsletter placement.</p>
+        <div class="mt-4 mb-6">
+          <div class="price-monthly"><span class="text-4xl font-extrabold text-default">${fmt(cityProMo)}</span><span class="text-muted">/month</span></div>
+          <div class="price-annual hidden"><span class="text-4xl font-extrabold text-default">${fmt(cityProYr)}</span><span class="text-muted">/year</span><span class="text-sm text-green-600 ml-1">(save ${fmt(cityProSavings)})</span></div>
+        </div>
+        <ul class="space-y-3 text-sm flex-1">
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Everything in Featured
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Named in our "Best in [City]" guide
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Dofollow backlink to your website
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Sponsor slot in monthly attorney email
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Priority onboarding & support
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Quarterly performance review call
+          </li>
+        </ul>
+        <a href={config.stripeCityProMonthlyLink} target="_blank" rel="noopener" class="btn-primary w-full text-center mt-6 no-underline link-monthly">Get City Pro &mdash; ${fmt(cityProMo)}/mo &rarr;</a>
+        <a href={config.stripeCityProAnnualLink} target="_blank" rel="noopener" class="btn-primary w-full text-center mt-6 no-underline link-annual hidden">Get City Pro &mdash; ${fmt(cityProYr)}/yr &rarr;</a>
+        <p class="text-xs text-muted text-center mt-2">Instant checkout &middot; One provider per city</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROI Section -->
+  <section class="bg-gray-50 py-12">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl font-bold text-default">One job pays for a full year.</h2>
+      <p class="mt-4 text-lg text-muted max-w-2xl mx-auto">
+        The average court reporting session pays {config.jobValue}. A Featured listing costs ${fmt(featuredMo)}/month — or ${fmt(featuredYr)}/year (save ${fmt(featuredSavings)}). One booked job from {config.brandName} and you're profitable for the rest of the year.
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-8 max-w-2xl mx-auto">
+        <div>
+          <p class="text-3xl font-bold text-primary">{config.jobValue}</p>
+          <p class="text-sm text-muted">Avg. revenue per engagement</p>
+        </div>
+        <div>
+          <p class="text-3xl font-bold text-primary">1 job</p>
+          <p class="text-sm text-muted">Covers your listing for 6–25 months</p>
+        </div>
+        <div>
+          <p class="text-3xl font-bold text-primary">$0</p>
+          <p class="text-sm text-muted">Setup fee. No contracts. Cancel anytime.</p>
+        </div>
+      </div>
+      <a href={config.stripeFeaturedMonthlyLink} target="_blank" rel="noopener" class="btn-primary inline-block mt-8 no-underline">Claim Your Sponsored Spot &rarr;</a>
+      <p class="text-xs text-muted mt-2">Instant Stripe checkout &middot; Cancel anytime</p>
+    </div>
+  </section>
+
+  <!-- Listing Comparison -->
+  <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <h2 class="text-3xl font-bold text-default text-center mb-2">See exactly what attorneys see</h2>
+    <p class="text-muted text-center mb-8">Toggle between a standard and sponsored listing. Click either card to see the full page.</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Standard -->
+      <div class="card p-6 opacity-75">
+        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Standard Listing</p>
+        <h3 class="font-bold text-default">Elliott Reporting</h3>
+        <p class="text-sm text-muted">Colorado Springs, CO</p>
+        <p class="text-sm text-muted mt-3">Full-service reporting firm offering court reporting, realtime transcription, and video conferencing in Colorado Springs.</p>
+        <div class="flex flex-wrap gap-1.5 mt-3">
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-gray-100 text-gray-600">Realtime Reporting</span>
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-gray-100 text-gray-600">Court Reporting</span>
+        </div>
+        <p class="text-xs text-gray-400 mt-4">Sorted alphabetically &middot; #7 of 12</p>
+        <div class="mt-4 border-t pt-4">
+          <p class="text-xs text-red-400">No badge &middot; No quote routing &middot; No top placement &middot; Invisible to most attorneys</p>
+        </div>
+      </div>
+
+      <!-- Featured -->
+      <div class="card p-6 border-2 border-primary">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-primary text-white">Sponsored</span>
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">RPR Certified</span>
+        </div>
+        <h3 class="font-bold text-default">Acme Court Reporting Services</h3>
+        <p class="text-sm text-muted">Colorado Springs, CO &middot; Open now</p>
+        <p class="text-sm text-yellow-600 mt-1">4.9 (28 reviews)</p>
+        <p class="text-sm mt-3">RPR-certified court reporter with 15+ years serving attorneys across Colorado. Realtime transcription specialists. Same-day availability.</p>
+        <div class="flex flex-wrap gap-1.5 mt-3">
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-primary-50 text-primary-700">Realtime Transcription</span>
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-primary-50 text-primary-700">Same-Day Available</span>
+        </div>
+        <p class="text-sm font-medium mt-3">(719) 555-0182</p>
+        <div class="mt-4 border-t pt-4">
+          <p class="text-xs text-green-600">Pinned #1 &middot; Quote requests land in your inbox &middot; RPR badge builds trust</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <h2 class="text-2xl font-bold text-default mb-6 text-center">Common Questions</h2>
+    <FAQAccordion faqs={[
+      {
+        question: 'Is there a setup fee or contract?',
+        answer: 'No setup fee, no annual contract. Month-to-month, cancel anytime with 30 days notice.',
+      },
+      {
+        question: 'How do leads reach me?',
+        answer: 'Quote requests are emailed directly to you — name, email, case type, and date. You follow up on your own timeline. No middleman.',
+      },
+      {
+        question: 'How fast does my listing go live?',
+        answer: 'Sponsored listings go live within 2–3 business days of approval. We review each applicant to protect listing quality.',
+      },
+      {
+        question: 'Can I be sponsored in multiple cities?',
+        answer: `Yes — purchase an additional Featured listing (${'$'}${fmt(featuredMo)}/mo) for each city. Firms covering regional areas commonly list in 2–3 cities.`,
+      },
+      {
+        question: 'Do I need to be RPR certified?',
+        answer: 'Preferred but not required. RPR gets you a verified badge on your listing, which increases attorney trust.',
+      },
+      {
+        question: "What if my city isn't listed yet?",
+        answer: "Request it when you apply. We'll build the city page and list you as the first sponsored provider — the strongest position available.",
+      },
+    ]} />
+  </section>
+
+  <!-- Final CTA -->
+  <section class="bg-primary text-white py-12 text-center">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6">
+      <h2 class="text-3xl font-bold">Ready to start getting attorney leads?</h2>
+      <p class="mt-4 text-lg opacity-90">Fill out the advertise form — it takes 2 minutes. We'll confirm availability in your city and follow up within one business day.</p>
+      <a href={config.stripeFeaturedMonthlyLink} target="_blank" rel="noopener" class="inline-block mt-6 bg-white text-primary font-semibold px-8 py-3 rounded-lg no-underline hover:bg-gray-100 transition-colors">Get Featured &mdash; ${fmt(featuredMo)}/mo &rarr;</a>
+      <p class="text-sm mt-3 opacity-80">Instant Stripe checkout &middot; Goes live in 2–3 business days &middot; Cancel anytime</p>
+    </div>
+  </section>
+
+<script>
+  function toggleBilling() {
+    const btn = document.getElementById('toggle-btn');
+    const dot = document.getElementById('toggle-dot');
+    const isAnnual = btn.getAttribute('aria-checked') === 'true';
+    
+    // Toggle state
+    btn.setAttribute('aria-checked', !isAnnual);
+    dot.classList.toggle('translate-x-1', isAnnual);
+    dot.classList.toggle('translate-x-6', !isAnnual);
+    btn.classList.toggle('bg-primary', !isAnnual);
+    btn.classList.toggle('bg-gray-300', isAnnual);
+    
+    // Toggle label emphasis
+    document.getElementById('label-monthly').classList.toggle('text-muted', !isAnnual);
+    document.getElementById('label-monthly').classList.toggle('text-default', isAnnual);
+    document.getElementById('label-annual').classList.toggle('text-muted', isAnnual);
+    document.getElementById('label-annual').classList.toggle('text-default', !isAnnual);
+    
+    // Toggle price displays
+    document.querySelectorAll('.price-monthly').forEach(el => el.classList.toggle('hidden', !isAnnual));
+    document.querySelectorAll('.price-annual').forEach(el => el.classList.toggle('hidden', isAnnual));
+    
+    // Toggle payment links
+    document.querySelectorAll('.link-monthly').forEach(el => el.classList.toggle('hidden', !isAnnual));
+    document.querySelectorAll('.link-annual').forEach(el => el.classList.toggle('hidden', isAnnual));
+  }
+</script>
+</PageLayout>

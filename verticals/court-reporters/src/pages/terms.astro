@@ -1,0 +1,299 @@
+---
+import PageLayout from '~/layouts/PageLayout.astro';
+import Breadcrumbs from '~/components/directory/Breadcrumbs.astro';
+import config from '~/config';
+
+const title = 'Terms of Service';
+const description = `Terms of Service for ${config.brandName}. Review the terms governing use of the ${config.domain} directory, quote requests, provider listings, and related services.`;
+const metadata = { title, description };
+const currentYear = new Date().getFullYear();
+const effectiveDate = 'March 23, 2026';
+---
+<PageLayout metadata={metadata}>
+  <Fragment slot="announcement"><span></span></Fragment>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <Breadcrumbs crumbs={[{ label: 'Terms of Service' }]} />
+
+    <h1 class="text-3xl font-bold text-default mb-6">Terms of Service</h1>
+
+    <div class="prose prose-lg max-w-none">
+      <p class="text-sm text-muted">Effective Date: {effectiveDate} &mdash; Last Updated: {effectiveDate}</p>
+
+      <p>
+        These Terms of Service ("Terms") govern your access to and use of the website located at
+        <a href={`https://${config.domain}`}>{config.domain}</a> (the "Site"), operated by {config.brandName}
+        ("we," "us," or "our"). By accessing or using the Site, you agree to be bound by these Terms. If you
+        do not agree to these Terms, you must not use the Site.
+      </p>
+      <p>
+        These Terms apply to all visitors, attorneys, legal professionals, {config.primaryKeyword}s, and any
+        other users of the Site (collectively, "you" or "users"). We may update these Terms from time to time;
+        the "Last Updated" date above reflects the most recent revision. Continued use of the Site after any
+        changes constitutes acceptance of the revised Terms.
+      </p>
+
+      <h2>1. Description of Service</h2>
+      <p>
+        {config.brandName} is an online directory that helps attorneys and litigation teams locate and evaluate
+        {config.primaryKeyword}s across the United States. The Site aggregates publicly available business
+        information, allows service providers to claim and manage their listings, and enables visitors to submit
+        quote requests directly to listed providers.
+      </p>
+      <p>
+        We do not employ, endorse, or guarantee any {config.primaryKeyword} listed on the Site. We are not a
+        party to any agreement between you and a service provider, and we do not participate in the actual
+        delivery of court reporting or any related litigation support services.
+      </p>
+
+      <h2>2. Acceptable Use</h2>
+      <p>You agree to use the Site only for lawful purposes and in accordance with these Terms. Specifically, you agree not to:</p>
+      <ul>
+        <li>Use the Site to transmit any material that is unlawful, threatening, abusive, defamatory, invasive of privacy, or otherwise objectionable</li>
+        <li>Submit false, misleading, or fraudulent information through quote request forms, listing claims, or any other Site feature</li>
+        <li>Impersonate any person or entity, or falsely represent your affiliation with any person or entity</li>
+        <li>Use automated scripts, bots, scrapers, or other automated means to access the Site or extract data from it without our prior written consent</li>
+        <li>Attempt to gain unauthorized access to any portion of the Site, its servers, or any systems or networks connected to the Site</li>
+        <li>Interfere with or disrupt the operation of the Site or the servers or networks used to make the Site available</li>
+        <li>Use information obtained from the Site to harass, solicit, or send unsolicited communications to any listed provider</li>
+        <li>Reproduce, duplicate, copy, sell, resell, or otherwise exploit any portion of the Site for commercial purposes without our express written permission</li>
+      </ul>
+      <p>
+        We reserve the right to suspend or terminate your access to the Site, without notice, if we reasonably
+        believe you have violated these Terms.
+      </p>
+
+      <h2>3. Quote Requests</h2>
+      <p>
+        The Site allows visitors to submit quote requests to one or more listed {config.primaryKeyword}s.
+        When you submit a quote request, you provide information including your name, contact details, case
+        description, and scheduling preferences. This information is forwarded directly to the provider(s)
+        you select.
+      </p>
+      <p>By submitting a quote request, you acknowledge and agree that:</p>
+      <ul>
+        <li>You are providing your information voluntarily and understand it will be shared with the selected provider(s)</li>
+        <li>We do not guarantee that any provider will respond to your request, or that any response will meet your needs</li>
+        <li>Once your information is transmitted to a provider, that provider's handling of your information is governed by their own privacy practices, not ours</li>
+        <li>Submission of a quote request does not create a contract, engagement, or obligation between you and any provider or between you and {config.brandName}</li>
+        <li>You will not submit quote requests for frivolous, fraudulent, or non-genuine purposes</li>
+      </ul>
+      <p>
+        For details on how we handle quote request data, please review our <a href="/privacy/">Privacy Policy</a>.
+      </p>
+
+      <h2>4. Provider Listings</h2>
+
+      <h3>a. Publicly Sourced Listings</h3>
+      <p>
+        {config.brandName} compiles business listing information from publicly available sources including Google Maps,
+        professional registries, licensing boards, trade associations, review platforms, and publicly accessible
+        business websites. We organize and present this information to help attorneys find qualified
+        {config.primaryKeyword}s.
+      </p>
+      <p>
+        If you are a business owner or authorized representative and wish to correct or remove a listing sourced
+        from public data, please contact us at <a href={`mailto:${config.contactEmail}`}>{config.contactEmail}</a>.
+        We will process corrections within 5 business days and removal requests within 5 business days.
+      </p>
+
+      <h3>b. Claimed and Managed Listings</h3>
+      <p>
+        Service providers may claim their listings to manage business information, add photographs, update service
+        descriptions, and respond to quote requests. By claiming a listing, you represent and warrant that:
+      </p>
+      <ul>
+        <li>You are the owner of the business or an authorized representative with authority to manage the listing</li>
+        <li>All information you provide is accurate, current, and complete</li>
+        <li>You will promptly update your listing if any information becomes inaccurate or outdated</li>
+        <li>You hold all necessary licenses, certifications, and permits required to provide the services described in your listing</li>
+      </ul>
+
+      <h3>c. Paid Listing Tiers</h3>
+      <p>
+        {config.brandName} offers paid listing tiers that provide enhanced visibility and additional features for
+        service providers. Paid listing tiers may include benefits such as priority placement, enhanced profile
+        features, and additional analytics. Paid status does not affect editorial content, review ratings, or
+        the substance of any listing information.
+      </p>
+      <p>
+        Payment terms, tier features, and pricing are described on our <a href="/pricing/">Pricing</a> page.
+        All fees are non-refundable unless otherwise stated in writing. We reserve the right to modify pricing
+        and tier features upon 30 days' written notice to affected providers.
+      </p>
+
+      <h3>d. Listing Removal and Suspension</h3>
+      <p>
+        We reserve the right to remove, suspend, or modify any listing at our sole discretion, including but not
+        limited to listings that contain inaccurate information, violate these Terms, or are the subject of
+        credible complaints from users or other providers. We will make reasonable efforts to notify the affected
+        provider before taking action, except where immediate action is necessary to protect users or the integrity
+        of the directory.
+      </p>
+
+      <h2>5. Content Ownership and Intellectual Property</h2>
+
+      <h3>a. Our Content</h3>
+      <p>
+        The Site and its original content (including but not limited to text, graphics, logos, page layouts, city
+        guides, blog articles, and editorial content) are the property of {config.brandName} and are protected by
+        United States copyright, trademark, and other intellectual property laws. You may not reproduce, distribute,
+        modify, create derivative works of, publicly display, or otherwise exploit our content without our prior
+        written consent.
+      </p>
+
+      <h3>b. Third-Party Content</h3>
+      <p>
+        The Site incorporates data from third-party sources including map data from OpenStreetMap (used under the
+        <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">Open Data Commons Open Database License</a>),
+        review data from public platforms, and business information from public records. Such content remains
+        subject to the terms and licenses of its respective sources.
+      </p>
+
+      <h2>6. User Submissions</h2>
+      <p>
+        By submitting any content to the Site &mdash; including but not limited to quote request details, listing
+        information, photographs, business descriptions, and any other materials ("User Submissions") &mdash; you
+        grant {config.brandName} a non-exclusive, royalty-free, worldwide, perpetual license to use, reproduce, modify,
+        adapt, publish, and display such User Submissions in connection with operating and improving the Site.
+      </p>
+      <p>You represent and warrant that:</p>
+      <ul>
+        <li>You own or have the necessary rights to submit the content</li>
+        <li>Your submissions do not infringe the intellectual property rights, privacy rights, or any other rights of any third party</li>
+        <li>Your submissions do not contain any material that is unlawful, defamatory, or otherwise objectionable</li>
+      </ul>
+      <p>
+        We reserve the right to remove any User Submission that, in our sole judgment, violates these Terms or is
+        otherwise objectionable. We are not obligated to monitor, review, or edit User Submissions, but we may do so
+        at our discretion.
+      </p>
+
+      <h2>7. Disclaimers</h2>
+      <p>
+        <strong>The Site is provided on an "as is" and "as available" basis, without warranties of any kind, either
+        express or implied.</strong> To the fullest extent permitted by applicable law, {config.brandName} disclaims all
+        warranties, including but not limited to implied warranties of merchantability, fitness for a particular
+        purpose, and non-infringement.
+      </p>
+      <p>Without limiting the foregoing, we do not warrant that:</p>
+      <ul>
+        <li>The Site will be available without interruption or error</li>
+        <li>Any information on the Site (including listing data, reviews, ratings, certifications, or business details) is accurate, complete, current, or reliable</li>
+        <li>Any {config.primaryKeyword} listed on the Site is licensed, insured, qualified, or competent to perform the services described</li>
+        <li>The results of any quote request or provider engagement will be satisfactory</li>
+        <li>The Site is free of viruses, malware, or other harmful components</li>
+      </ul>
+      <p>
+        You acknowledge that you use the Site and rely on its content at your own risk. You are solely responsible
+        for conducting your own due diligence before engaging any service provider, including verifying credentials,
+        insurance, references, and suitability for your particular matter.
+      </p>
+
+      <h2>8. Limitation of Liability</h2>
+      <p>
+        <strong>To the maximum extent permitted by applicable law, {config.brandName}, its owners, officers, employees,
+        agents, and affiliates shall not be liable for any indirect, incidental, special, consequential, or punitive
+        damages arising out of or related to your use of or inability to use the Site.</strong> This includes, without
+        limitation, damages for lost profits, lost data, loss of goodwill, business interruption, or any other
+        intangible losses, even if we have been advised of the possibility of such damages.
+      </p>
+      <p>
+        Without limiting the foregoing, our total aggregate liability to you for all claims arising out of or related
+        to the Site or these Terms shall not exceed the greater of (a) the amount you have paid to {config.brandName} in
+        the twelve (12) months preceding the event giving rise to the claim, or (b) one hundred dollars ($100.00).
+      </p>
+      <p>
+        This limitation of liability applies to all claims, whether based on warranty, contract, tort (including
+        negligence), strict liability, or any other legal theory, and whether or not we have been informed of the
+        possibility of such damage.
+      </p>
+      <p>
+        {config.brandName} is not liable for any act or omission of any {config.primaryKeyword} listed on the Site,
+        including but not limited to the quality of their work product, their failure to appear at a scheduled
+        proceeding, equipment malfunctions, breaches of confidentiality, or any other aspect of their performance.
+      </p>
+
+      <h2>9. Indemnification</h2>
+      <p>
+        You agree to indemnify, defend, and hold harmless {config.brandName}, its owners, officers, employees, agents,
+        and affiliates from and against any and all claims, liabilities, damages, losses, costs, and expenses
+        (including reasonable attorneys' fees) arising out of or related to:
+      </p>
+      <ul>
+        <li>Your use of the Site</li>
+        <li>Your violation of these Terms</li>
+        <li>Your violation of any rights of any third party</li>
+        <li>Any User Submission you provide</li>
+        <li>Any dispute between you and a service provider contacted through the Site</li>
+      </ul>
+
+      <h2>10. Dispute Resolution</h2>
+
+      <h3>a. Informal Resolution</h3>
+      <p>
+        Before initiating any formal dispute resolution proceeding, you agree to first contact us at
+        <a href={`mailto:${config.contactEmail}`}>{config.contactEmail}</a> and attempt to resolve the dispute
+        informally. We will make good-faith efforts to resolve any concern or dispute within 30 days of receipt.
+      </p>
+
+      <h3>b. Governing Law</h3>
+      <p>
+        These Terms and any disputes arising out of or related to these Terms or the Site shall be governed by
+        and construed in accordance with the laws of the State of Texas, without regard to its conflict of law
+        provisions.
+      </p>
+
+      <h3>c. Jurisdiction and Venue</h3>
+      <p>
+        Any legal action or proceeding arising out of or related to these Terms or the Site shall be brought
+        exclusively in the state or federal courts located in Travis County, Texas. You consent to the personal
+        jurisdiction and venue of such courts and waive any objection based on inconvenient forum.
+      </p>
+
+      <h3>d. Limitation on Claims</h3>
+      <p>
+        Any cause of action or claim you may have arising out of or related to these Terms or the Site must be
+        commenced within one (1) year after the cause of action accrues. Otherwise, such cause of action or claim
+        is permanently barred.
+      </p>
+
+      <h2>11. Third-Party Links</h2>
+      <p>
+        The Site may contain links to third-party websites, including provider websites, review platforms, and
+        external resources. These links are provided for your convenience only. We do not control, endorse, or
+        assume any responsibility for the content, privacy policies, or practices of any third-party website.
+        Your interactions with any third-party website are solely between you and that third party.
+      </p>
+
+      <h2>12. Severability</h2>
+      <p>
+        If any provision of these Terms is held to be invalid, illegal, or unenforceable by a court of competent
+        jurisdiction, the remaining provisions shall continue in full force and effect. The invalid or unenforceable
+        provision shall be modified to the minimum extent necessary to make it valid and enforceable while preserving
+        its original intent.
+      </p>
+
+      <h2>13. Entire Agreement</h2>
+      <p>
+        These Terms, together with our <a href="/privacy/">Privacy Policy</a> and any applicable listing agreements,
+        constitute the entire agreement between you and {config.brandName} regarding your use of the Site. These Terms
+        supersede all prior or contemporaneous communications, proposals, and agreements, whether oral or written,
+        between you and {config.brandName} with respect to the Site.
+      </p>
+
+      <h2>14. Contact Us</h2>
+      <p>If you have questions about these Terms of Service, you may contact us at:</p>
+      <address class="not-italic">
+        <strong>{config.brandName}</strong><br />
+        PO Box 1547<br />
+        Austin, TX 78767<br /><br />
+        Email: <a href={`mailto:${config.contactEmail}`}>{config.contactEmail}</a><br />
+        Website: <a href={`https://${config.domain}`}>{config.domain}</a>
+      </address>
+
+      <p class="text-sm text-muted mt-8">
+        &copy; {currentYear} {config.brandName}. All rights reserved.
+      </p>
+    </div>
+  </div>
+</PageLayout>

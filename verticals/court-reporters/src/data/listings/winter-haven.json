@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "charlton-reporting-winter-haven",
+    "name": "Charlton Reporting",
+    "city": "winter-haven",
+    "state": "FL",
+    "address": "601 West Central Ave, Winter Haven, FL 33880",
+    "lat": 28.0226006,
+    "lng": -81.7333304,
+    "phone": "(863) 648-0639",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting services in central Florida.",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:21:41",
+    "sentiment": null
+  }
+]

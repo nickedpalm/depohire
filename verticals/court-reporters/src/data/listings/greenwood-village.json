@@ -1,0 +1,35 @@
+[
+  {
+    "slug": "magna-legal-services-greenwood-village",
+    "name": "Magna Legal Services",
+    "city": "greenwood-village",
+    "state": "CO",
+    "address": "9250 E. Costilla Avenue, Suite 130, Greenwood Village, CO 80112",
+    "lat": 39.6172101,
+    "lng": -104.950814,
+    "phone": "(866) 624-6221",
+    "website": "www.magnals.com",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Comprehensive legal support services including court reporting, record retrieval, and litigation consulting. Serves Denver Metro and Colorado with in-person and virtual deposition options.",
+    "certifications": [],
+    "services": [
+      "court reporting",
+      "record retrieval",
+      "litigation consulting",
+      "trial presentation",
+      "virtual depositions"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:23:55",
+    "sentiment": null
+  }
+]

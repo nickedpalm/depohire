@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "ace-court-reporting-service-llc-edinburg",
+    "name": "Ace Court Reporting Service LLC",
+    "city": "edinburg",
+    "state": "TX",
+    "address": "220 E University Dr, Edinburg, TX 78539",
+    "lat": 26.3010939,
+    "lng": -98.1609683,
+    "phone": "0514710699",
+    "website": "https://www.acecourtreporting.com",
+    "email": "annette@acecourtreporting.com",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporter services",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:21:33",
+    "sentiment": null
+  }
+]

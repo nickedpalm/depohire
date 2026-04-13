@@ -1,0 +1,74 @@
+[
+  {
+    "slug": "big-sky-reporting-billings",
+    "name": "Big Sky Reporting",
+    "city": "Billings",
+    "state": "MT",
+    "address": "2308 Interlachen Cir, Billings, MT 59105, USA",
+    "lat": 45.8405101,
+    "lng": -108.487782,
+    "phone": "(406) 248-4064",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 2.0,
+    "review_count": 1,
+    "description": "",
+    "certifications": [],
+    "services": [],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "google_maps",
+    "scraped_at": "2026-03-30 14:04:44",
+    "sentiment": {
+      "label": "negative",
+      "score": 0.25,
+      "keywords": [
+        "below average"
+      ],
+      "highlights": [],
+      "summary": "Google Maps rating: 2.0/5 from 1 review"
+    }
+  },
+  {
+    "slug": "fisher-video-conferencing-court-reporting-billings",
+    "name": "Fisher Video Conferencing & Court Reporting",
+    "city": "Billings",
+    "state": "MT",
+    "address": "2711 First Ave N, Billings, MT 59101, USA",
+    "lat": 45.782516,
+    "lng": -108.5051803,
+    "phone": "(406) 248-3267",
+    "website": "http://www.fishervideoconferencing.com/",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 5.0,
+    "review_count": 4,
+    "description": "",
+    "certifications": [],
+    "services": [],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "google_maps",
+    "scraped_at": "2026-03-30 14:04:44",
+    "sentiment": {
+      "label": "positive",
+      "score": 1.0,
+      "keywords": [
+        "highly rated",
+        "well reviewed",
+        "trusted"
+      ],
+      "highlights": [],
+      "summary": "Google Maps rating: 5.0/5 from 4 reviews"
+    }
+  }
+]

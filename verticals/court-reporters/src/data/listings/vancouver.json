@@ -1,0 +1,61 @@
+[
+  {
+    "slug": "rider-associates-inc-vancouver",
+    "name": "Rider & Associates, Inc",
+    "city": "vancouver",
+    "state": "WA",
+    "address": "PO Box 245, Vancouver, WA 98666",
+    "lat": 45.6306954,
+    "lng": -122.6744557,
+    "phone": "(360) 693-4111",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting services",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:24:20",
+    "sentiment": null
+  },
+  {
+    "slug": "schmitt-reporting-and-video-inc-vancouver",
+    "name": "Schmitt Reporting and Video, Inc",
+    "city": "vancouver",
+    "state": "WA",
+    "address": "400 Columbia, Suite 140, Vancouver, WA 98660",
+    "lat": 45.6306954,
+    "lng": -122.6744557,
+    "phone": "(360) 695-5554",
+    "website": "www.schmittreporting.com",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting and video services",
+    "certifications": [],
+    "services": [
+      "court reporting",
+      "video services"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:24:20",
+    "sentiment": null
+  }
+]

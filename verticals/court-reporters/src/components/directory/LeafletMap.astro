@@ -1,0 +1,85 @@
+---
+interface Pin {
+  lat: number;
+  lng: number;
+  name: string;
+  slug: string;
+}
+
+interface Props {
+  pins: Pin[];
+  centerLat: number;
+  centerLng: number;
+  zoom?: number;
+}
+
+const { pins, centerLat, centerLng, zoom = 11 } = Astro.props;
+---
+<div class="card overflow-hidden">
+  <div
+    id="city-map"
+    class="h-80 w-full"
+    data-center-lat={centerLat}
+    data-center-lng={centerLng}
+    data-zoom={zoom}
+    data-pins={JSON.stringify(pins)}
+  ></div>
+</div>
+
+<link rel="stylesheet" href="/vendor/leaflet/leaflet.css" />
+<script is:inline src="/vendor/leaflet/leaflet.js"></script>
+<script is:inline>
+  function initCityMap() {
+    var el = document.getElementById('city-map');
+    if (!el || el.dataset.init) return;
+    el.dataset.init = 'true';
+    var lat = parseFloat(el.dataset.centerLat);
+    var lng = parseFloat(el.dataset.centerLng);
+    var zoom = parseInt(el.dataset.zoom);
+    var pins = JSON.parse(el.dataset.pins || '[]').filter(function(p) {
+      return p.lat && p.lng && !(p.lat === 0 && p.lng === 0);
+    });
+
+    // Jitter pins at identical coordinates so they don't stack
+    var coordCounts = {};
+    pins.forEach(function(pin) {
+      var key = pin.lat.toFixed(6) + ',' + pin.lng.toFixed(6);
+      if (!coordCounts[key]) coordCounts[key] = [];
+      coordCounts[key].push(pin);
+    });
+    Object.keys(coordCounts).forEach(function(key) {
+      var group = coordCounts[key];
+      if (group.length > 1) {
+        var offset = 0.0003; // ~30 meters
+        group.forEach(function(pin, i) {
+          var angle = (2 * Math.PI * i) / group.length;
+          pin.lat = pin.lat + offset * Math.cos(angle);
+          pin.lng = pin.lng + offset * Math.sin(angle);
+        });
+      }
+    });
+
+    var map = L.map(el).setView([lat, lng], zoom);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    pins.forEach(function(pin) {
+      L.marker([pin.lat, pin.lng])
+        .addTo(map)
+        .bindPopup('<a href="/listing/' + pin.slug + '/">' + pin.name + '</a>');
+    });
+
+    if (pins.length > 1) {
+      var group = L.featureGroup(pins.map(function(p) { return L.marker([p.lat, p.lng]); }));
+      map.fitBounds(group.getBounds().pad(0.1));
+    }
+  }
+
+  document.addEventListener('astro:page-load', initCityMap);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCityMap);
+  } else {
+    initCityMap();
+  }
+</script>

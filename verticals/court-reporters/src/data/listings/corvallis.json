@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "duffey-court-reporting-corvallis",
+    "name": "Duffey Court Reporting",
+    "city": "corvallis",
+    "state": "OR",
+    "address": "420 NW 2nd Street, Corvallis, OR",
+    "lat": 44.5676266,
+    "lng": -123.2584824,
+    "phone": "541-760-2900",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Provides court reporting services in Corvallis.",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:25:17",
+    "sentiment": null
+  }
+]

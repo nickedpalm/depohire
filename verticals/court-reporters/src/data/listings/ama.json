@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "united-court-reporters-inc-ama",
+    "name": "United Court Reporters, Inc.",
+    "city": "ama",
+    "state": "LA",
+    "address": "227 Ellen Street, Ama, LA 70031",
+    "lat": 29.9508011,
+    "lng": -90.2902713,
+    "phone": "(504) 835-6804",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Home office-based court reporting service in Ama, Louisiana.",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:25:24",
+    "sentiment": null
+  }
+]

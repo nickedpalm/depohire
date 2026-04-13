@@ -1,0 +1,60 @@
+[
+  {
+    "slug": "court-reporter-depo-waltham",
+    "name": "Court Reporter Depo",
+    "city": "waltham",
+    "state": "MA",
+    "address": "1050 Winter St, Ste 1000, Waltham, MA 02451",
+    "lat": 42.3762385,
+    "lng": -71.2355644,
+    "phone": "877-808-3376",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Deposition court reporting services.",
+    "certifications": [],
+    "services": [
+      "depositions"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:22:52",
+    "sentiment": null
+  },
+  {
+    "slug": "todd-olivas-court-reporting-waltham",
+    "name": "Todd Olivas Court Reporting",
+    "city": "waltham",
+    "state": "MA",
+    "address": "1050 Winter Street, Waltham, MA 02451",
+    "lat": 42.4075169,
+    "lng": -71.2767622,
+    "phone": "951-296-0114",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting in Waltham area.",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:22:52",
+    "sentiment": null
+  }
+]

@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "hines-muhanna-flowers-erie",
+    "name": "Hines Muhanna & Flowers",
+    "city": "erie",
+    "state": "PA",
+    "address": "3622 W 10th St, Erie, PA 16505",
+    "lat": 42.0952998,
+    "lng": -80.1647272,
+    "phone": "(814) 838-9308",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting services",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:22:09",
+    "sentiment": null
+  }
+]

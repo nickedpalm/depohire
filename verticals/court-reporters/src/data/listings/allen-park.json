@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "catherine-m-collier-allen-park",
+    "name": "Catherine M. Collier",
+    "city": "allen-park",
+    "state": "MI",
+    "address": "",
+    "lat": 42.2595071,
+    "lng": -83.2107671,
+    "phone": "313-407-7261",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Solo court reporter professional in Michigan.",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:24:53",
+    "sentiment": null
+  }
+]

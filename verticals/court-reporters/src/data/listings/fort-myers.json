@@ -1,0 +1,62 @@
+[
+  {
+    "slug": "fort-myers-court-reporting-fort-myers",
+    "name": "Fort Myers Court Reporting",
+    "city": "fort-myers",
+    "state": "FL",
+    "address": "2231 First Street, Fort Myers, FL 33901",
+    "lat": 26.6443501,
+    "lng": -81.8701071,
+    "phone": "(239) 334-1411",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Local court reporting and transcription firm contracted with the circuit court.",
+    "certifications": [],
+    "services": [
+      "court reporting",
+      "transcription"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:21:41",
+    "sentiment": null
+  },
+  {
+    "slug": "martina-reporting-services-fort-myers",
+    "name": "Martina Reporting Services",
+    "city": "fort-myers",
+    "state": "FL",
+    "address": "2069 First Street, Suite 201, Fort Myers, FL 33901",
+    "lat": 26.640628,
+    "lng": -81.8723084,
+    "phone": "",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "none",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Local court reporting and transcription firm serving the circuit.",
+    "certifications": [],
+    "services": [
+      "court reporting",
+      "transcription"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:21:41",
+    "sentiment": null
+  }
+]

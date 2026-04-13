@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "boss-reporters-gary",
+    "name": "BOSS Reporters",
+    "city": "gary",
+    "state": "IN",
+    "address": "201 E. 5th Ave, Suite A, Gary, IN",
+    "lat": 41.6020962,
+    "lng": -87.3370646,
+    "phone": "219-938-9090",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting services.",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:24:36",
+    "sentiment": null
+  }
+]

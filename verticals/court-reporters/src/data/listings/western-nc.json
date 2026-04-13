@@ -1,0 +1,33 @@
+[
+  {
+    "slug": "pittman-stenography-western-nc",
+    "name": "Pittman Stenography",
+    "city": "western-nc",
+    "state": "NC",
+    "address": "",
+    "lat": 35.7801201,
+    "lng": -78.8854151,
+    "phone": "(919) 931-6222",
+    "website": "https://pittmanstenography.com",
+    "email": "pittsteno@protonmail.com",
+    "contact_form_url": "https://pittmanstenography.com",
+    "contact_method": "email",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Stenography and court reporting services for over twenty years, including CD transcription of state court recordings.",
+    "certifications": [],
+    "services": [
+      "court reporting",
+      "stenography",
+      "transcription"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:22:58",
+    "sentiment": null
+  }
+]

@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "debra-j-bartgis-sparks",
+    "name": "Debra J. Bartgis",
+    "city": "sparks",
+    "state": "NV",
+    "address": "",
+    "lat": 39.5404679,
+    "lng": -119.7487235,
+    "phone": "775-329-6323",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Solo court reporter practitioner in Sparks, NV, active since 2001.",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:25:30",
+    "sentiment": null
+  }
+]

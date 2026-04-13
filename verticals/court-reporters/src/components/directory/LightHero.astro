@@ -1,0 +1,72 @@
+---
+/**
+ * LightHero — White background hero for informational pages.
+ * Used by: advertise, pricing, about.
+ */
+
+interface Stat {
+  value: string;
+  label: string;
+}
+
+interface Props {
+  title: string;
+  subtitle?: string;
+  /** Small tagline above the title */
+  tagline?: string;
+  stats?: Stat[];
+  /** Optional alert/notice below the subtitle */
+  notice?: string;
+  align?: 'left' | 'center';
+}
+
+const { title, subtitle, tagline, stats = [], notice, align = 'left' } = Astro.props;
+const centered = align === 'center';
+---
+
+<section class:list={[
+  'max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-8',
+  centered && 'text-center',
+]}>
+  {!centered && tagline && (
+    <p class="text-primary-300 text-sm font-semibold uppercase tracking-widest mb-4">{tagline}</p>
+  )}
+
+  <div class:list={[!centered && 'max-w-3xl']}>
+    <h1 class="text-4xl md:text-5xl font-bold text-default leading-tight">
+      <Fragment set:html={title} />
+    </h1>
+    {subtitle && (
+      <p class:list={[
+        'mt-4 text-xl text-muted',
+        centered && 'max-w-3xl mx-auto',
+      ]}>
+        {subtitle}
+      </p>
+    )}
+  </div>
+
+  <slot name="after-subtitle" />
+
+  {notice && (
+    <p class="mt-3 text-sm text-amber-700 bg-amber-50 inline-block px-4 py-2 rounded-lg">
+      {notice}
+    </p>
+  )}
+
+  {stats.length > 0 && (
+    <div class:list={[
+      'grid grid-cols-2 sm:grid-cols-4 gap-4 mt-10',
+      centered ? 'max-w-3xl mx-auto' : 'max-w-3xl',
+    ]}>
+      {stats.map(s => (
+        <div class:list={[centered && 'text-center']}>
+          <p class="text-2xl font-bold text-primary">{s.value}</p>
+          <p class="text-sm text-muted">{s.label}</p>
+        </div>
+      ))}
+    </div>
+  )}
+
+  <slot />
+</section>

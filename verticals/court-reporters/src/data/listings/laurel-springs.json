@@ -1,0 +1,29 @@
+[
+  {
+    "slug": "automated-transcription-services-laurel-springs",
+    "name": "Automated Transcription Services",
+    "city": "laurel-springs",
+    "state": "NJ",
+    "address": "Post Office Box 1582, Laurel Springs, NJ 08021",
+    "lat": 39.8201141,
+    "lng": -75.0062788,
+    "phone": "856-784-4276",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Certified transcription services accepting credit cards, providing court transcriptions for New Jersey courts.",
+    "certifications": [],
+    "services": [],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:22:37",
+    "sentiment": null
+  }
+]

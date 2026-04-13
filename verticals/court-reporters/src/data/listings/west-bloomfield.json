@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "feldman-court-reporters-west-bloomfield",
+    "name": "FELDMAN COURT REPORTERS",
+    "city": "west-bloomfield",
+    "state": "MI",
+    "address": "",
+    "lat": 42.5684073,
+    "lng": -83.3740333,
+    "phone": "248-626-3434",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting firm in West Bloomfield.",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:24:53",
+    "sentiment": null
+  }
+]

@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "cjv-inc-edgewood",
+    "name": "CJV, Inc",
+    "city": "edgewood",
+    "state": "KY",
+    "address": "130 Dudley Pike Ste 170, Edgewood, KY 41017-2529",
+    "lat": 39.0186719,
+    "lng": -84.581888,
+    "phone": "(859) 581-9794",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporter service listed with Better Business Bureau in Northern Kentucky.",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:25:38",
+    "sentiment": null
+  }
+]

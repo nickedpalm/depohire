@@ -1,0 +1,66 @@
+---
+---
+<div
+  id="sticky-cta"
+  class="fixed bottom-0 left-0 right-0 z-40 bg-gradient-to-r from-primary-600 to-primary-700 text-white transform translate-y-full transition-transform duration-300 ease-in-out"
+>
+  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+    <p class="text-sm">
+      <span class="font-semibold">Need help choosing?</span>
+      <span class="hidden sm:inline text-primary-100 ml-1">Get matched with top providers in seconds.</span>
+    </p>
+    <button type="button" id="sticky-cta-btn" class="bg-white text-primary-700 font-semibold text-sm px-4 py-1.5 rounded-lg hover:bg-primary-50 transition-colors whitespace-nowrap">
+      Get Free Quotes
+    </button>
+  </div>
+</div>
+
+<script is:inline>
+  function initStickyCTA() {
+    const cta = document.getElementById('sticky-cta');
+    const btn = document.getElementById('sticky-cta-btn');
+    if (!cta || !btn || cta.dataset.init) return;
+    cta.dataset.init = 'true';
+
+    // Show after scrolling past the first listing card
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        // When the first card scrolls out of view (upward), show the CTA
+        if (!entry.isIntersecting) {
+          // Only show if multi-quote bar isn't visible
+          const mqBar = document.getElementById('multi-quote-bar');
+          if (!mqBar || mqBar.classList.contains('translate-y-full')) {
+            cta.classList.remove('translate-y-full');
+          }
+        } else {
+          cta.classList.add('translate-y-full');
+        }
+      });
+    }, { threshold: 0 });
+
+    // Observe the filter bar or first listing card
+    const target = document.getElementById('listing-filters') ||
+                   document.querySelector('[data-listing-card]');
+    if (target) observer.observe(target);
+
+    // Check sessionStorage for dismissal
+    if (sessionStorage.getItem('sticky-cta-dismissed')) {
+      cta.remove();
+      return;
+    }
+
+    // CTA button opens multi-quote modal
+    btn.addEventListener('click', () => {
+      if (typeof window._openMultiQuoteModal === 'function') {
+        window._openMultiQuoteModal();
+      }
+    });
+  }
+
+  document.addEventListener('astro:page-load', initStickyCTA);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initStickyCTA);
+  } else {
+    initStickyCTA();
+  }
+</script>

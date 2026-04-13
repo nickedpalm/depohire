@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "reporters-inc-quincy",
+    "name": "Reporters, Inc.",
+    "city": "quincy",
+    "state": "MA",
+    "address": "49 Bay Street, Suite 1, Quincy, MA 02171",
+    "lat": 42.2509914,
+    "lng": -71.0037374,
+    "phone": "617.786.7783",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting services in Quincy.",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:22:52",
+    "sentiment": null
+  }
+]

@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "legal-stenographers-millbury",
+    "name": "Legal Stenographers",
+    "city": "millbury",
+    "state": "MA",
+    "address": "P.O. Box 382, Millbury, MA 01527",
+    "lat": 42.1913817,
+    "lng": -71.7603934,
+    "phone": "508.753.5093",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Stenographic court reporting services.",
+    "certifications": [],
+    "services": [
+      "stenographic reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:22:52",
+    "sentiment": null
+  }
+]

@@ -1,0 +1,221 @@
+---
+import PageLayout from '~/layouts/PageLayout.astro';
+import LightHero from '~/components/directory/LightHero.astro';
+import config from '~/config';
+import { getAllListings, getListingCountByCity } from '~/lib/listings';
+import citiesData from '~/data/cities.json';
+
+const allListings = getAllListings();
+const cityCounts = getListingCountByCity();
+const totalCities = Object.keys(cityCounts).length;
+const totalStates = new Set(citiesData.map(c => c.state)).size;
+
+const title = `About ${config.brandName}`;
+const description = `${config.brandName} helps attorneys find curated court reporters in ${totalCities}+ cities. Researched providers, real credentials, no cold calls.`;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  name: title,
+  description,
+  mainEntity: {
+    '@type': 'Organization',
+    name: config.brandName,
+    url: config.siteUrl,
+    foundingDate: `${config.foundedYear}`,
+    description: config.description,
+    contactPoint: {
+      '@type': 'ContactPoint',
+      email: config.contactEmail,
+      contactType: 'customer service',
+    },
+    publishingPrinciples: `${config.siteUrl}/editorial-guidelines/`,
+  },
+};
+
+const metadata = { title, description };
+---
+<PageLayout metadata={metadata}>
+  <Fragment slot="announcement"><span></span></Fragment>
+
+  <LightHero
+    title="Hiring a court reporter shouldn't feel like a gamble."
+    subtitle="You've got a proceeding next week. You need a reporter who delivers accurate transcripts on time, handles realtime feeds without lag, and knows your jurisdiction's certification requirements. But you're stuck cold-calling strangers from a Google search."
+    tagline={`About ${config.brandName}`}
+    align="center"
+  />
+
+  <!-- The Stakes -->
+  <section class="py-12 sm:py-16">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6">
+      <h2 class="text-2xl sm:text-3xl font-bold text-default mb-6 text-center">What's at stake when you hire the wrong one?</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        <div class="bg-red-50 border border-red-100 rounded-xl p-5 text-center">
+          <div class="text-3xl mb-2">&#9888;&#65039;</div>
+          <p class="font-semibold text-red-800 mb-1">Inaccurate Transcript</p>
+          <p class="text-sm text-red-700">A single error in a transcript can change the meaning of testimony. Uncertified reporters miss technical terms, legal jargon, and speaker attributions.</p>
+        </div>
+        <div class="bg-red-50 border border-red-100 rounded-xl p-5 text-center">
+          <div class="text-3xl mb-2">&#128176;</div>
+          <p class="font-semibold text-red-800 mb-1">Missed Deadline</p>
+          <p class="text-sm text-red-700">Expedited transcripts are standard in litigation. An unreliable reporter who misses your deadline can delay motions, hearings, and settlement negotiations.</p>
+        </div>
+        <div class="bg-red-50 border border-red-100 rounded-xl p-5 text-center">
+          <div class="text-3xl mb-2">&#9878;&#65039;</div>
+          <p class="font-semibold text-red-800 mb-1">Appeal at Risk</p>
+          <p class="text-sm text-red-700">Appellate courts rely on the official record. A poorly prepared transcript can undermine your entire appeal strategy.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- The Guide -->
+  <section class="bg-gray-50 border-y border-gray-200 py-12 sm:py-16">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6">
+      <p class="text-primary-600 text-sm font-semibold uppercase tracking-widest mb-3 text-center">The solution</p>
+      <h2 class="text-2xl sm:text-3xl font-bold text-default mb-4 text-center">{config.brandName} takes the guesswork out of hiring.</h2>
+      <p class="text-lg text-muted text-center max-w-2xl mx-auto mb-10">
+        We built the only directory designed specifically for attorneys and law firms who need court reporters. No generic contractor listings. No pay-to-play rankings. Just carefully researched providers you can actually trust.
+      </p>
+
+      <div class="space-y-6">
+        <div class="flex gap-4 items-start">
+          <div class="w-10 h-10 rounded-xl bg-primary-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          </div>
+          <div>
+            <h3 class="font-semibold text-default text-lg">Every listing is researched</h3>
+            <p class="text-muted text-sm mt-1">We cross-reference business records, industry databases, and professional profiles. RPR certification status is front and center on every listing.</p>
+          </div>
+        </div>
+        <div class="flex gap-4 items-start">
+          <div class="w-10 h-10 rounded-xl bg-primary-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          </div>
+          <div>
+            <h3 class="font-semibold text-default text-lg">Local-first results</h3>
+            <p class="text-muted text-sm mt-1">{allListings.length.toLocaleString()}+ providers across {totalCities} cities in {totalStates} states. We surface local options first so you're not paying travel surcharges for out-of-market reporters.</p>
+          </div>
+        </div>
+        <div class="flex gap-4 items-start">
+          <div class="w-10 h-10 rounded-xl bg-primary-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          </div>
+          <div>
+            <h3 class="font-semibold text-default text-lg">Direct quote requests</h3>
+            <p class="text-muted text-sm mt-1">Submit your case details from any listing page — date, location, case type. The provider gets your request immediately. No middlemen, no phone tag.</p>
+          </div>
+        </div>
+        <div class="flex gap-4 items-start">
+          <div class="w-10 h-10 rounded-xl bg-primary-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <div>
+            <h3 class="font-semibold text-default text-lg">Free for attorneys — always</h3>
+            <p class="text-muted text-sm mt-1">No account, no subscription, no hidden fees. Search the full directory, compare providers, and request quotes at zero cost.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- The Plan: 3 Steps -->
+  <section class="py-12 sm:py-16">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 text-center">
+      <h2 class="text-2xl sm:text-3xl font-bold text-default mb-10">How it works</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
+        <div>
+          <div class="w-12 h-12 rounded-full bg-primary-600 text-white text-xl font-bold flex items-center justify-center mx-auto mb-4">1</div>
+          <h3 class="font-semibold text-default mb-2">Search your city</h3>
+          <p class="text-sm text-muted">Enter a city name or zip code. We'll show you every listed court reporter in range.</p>
+        </div>
+        <div>
+          <div class="w-12 h-12 rounded-full bg-primary-600 text-white text-xl font-bold flex items-center justify-center mx-auto mb-4">2</div>
+          <h3 class="font-semibold text-default mb-2">Compare providers</h3>
+          <p class="text-sm text-muted">Review credentials, certifications, services, and reviews. Add multiple providers to your quote list.</p>
+        </div>
+        <div>
+          <div class="w-12 h-12 rounded-full bg-primary-600 text-white text-xl font-bold flex items-center justify-center mx-auto mb-4">3</div>
+          <h3 class="font-semibold text-default mb-2">Request quotes</h3>
+          <p class="text-sm text-muted">Submit your case details — date, location, services needed. Providers respond directly to your inbox.</p>
+        </div>
+      </div>
+      <a href="/search/" class="btn-primary inline-block mt-10 no-underline text-lg px-8 py-3">Find a Court Reporter &rarr;</a>
+    </div>
+  </section>
+
+  <!-- Trust / Methodology -->
+  <section class="bg-gray-50 border-y border-gray-200 py-12 sm:py-16">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6">
+      <h2 class="text-2xl font-bold text-default mb-6">How we curate listings</h2>
+      <p class="text-muted mb-6">Every listing goes through a multi-point verification process. We don't accept payment for placement or rankings — our directory reflects what we can independently verify.</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="bg-white rounded-lg border border-gray-200 p-4">
+          <p class="font-semibold text-default text-sm">Business verification</p>
+          <p class="text-xs text-muted mt-1">We confirm the business exists, is currently operating, and serves the listed markets.</p>
+        </div>
+        <div class="bg-white rounded-lg border border-gray-200 p-4">
+          <p class="font-semibold text-default text-sm">Contact validation</p>
+          <p class="text-xs text-muted mt-1">Phone numbers, websites, and addresses are checked against public records.</p>
+        </div>
+        <div class="bg-white rounded-lg border border-gray-200 p-4">
+          <p class="font-semibold text-default text-sm">Credential tracking</p>
+          <p class="text-xs text-muted mt-1">RPR and other certifications are flagged and checked where possible.</p>
+        </div>
+        <div class="bg-white rounded-lg border border-gray-200 p-4">
+          <p class="font-semibold text-default text-sm">Review aggregation</p>
+          <p class="text-xs text-muted mt-1">Ratings and review data pulled from Google, Yelp, and industry sources.</p>
+        </div>
+      </div>
+      <p class="text-sm text-muted mt-4">Read our full <a href="/editorial-guidelines/" class="text-primary hover:underline">Editorial Guidelines</a> for details on our methodology.</p>
+    </div>
+  </section>
+
+  <!-- Team -->
+  <section class="py-12">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6">
+      <h2 class="text-2xl font-bold text-default mb-6">The team</h2>
+      <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 flex items-start gap-4">
+        <div class="w-14 h-14 rounded-full bg-primary-100 flex items-center justify-center text-primary font-bold text-xl flex-shrink-0">
+          {config.editorialAuthor.name.charAt(0)}
+        </div>
+        <div>
+          <p class="font-semibold text-default text-lg">{config.editorialAuthor.name}</p>
+          <p class="text-sm text-muted">{config.editorialAuthor.title}</p>
+          <p class="text-sm text-default mt-2">{config.editorialAuthor.bio}</p>
+          {config.editorialAuthor.linkedin && (
+            <a href={config.editorialAuthor.linkedin} class="text-sm text-primary hover:underline mt-2 inline-block" target="_blank" rel="noopener noreferrer">LinkedIn &rarr;</a>
+          )}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="bg-primary-600 text-white py-12 sm:py-16">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 text-center">
+      <h2 class="text-2xl sm:text-3xl font-bold mb-3">Ready to find a court reporter?</h2>
+      <p class="text-primary-100 text-lg mb-6">Search is free. No account needed. Find qualified providers in your city in under a minute.</p>
+      <div class="flex flex-col sm:flex-row gap-3 justify-center">
+        <a href="/search/" class="bg-white text-primary-700 font-semibold px-8 py-3 rounded-lg no-underline hover:bg-primary-50 transition-colors text-lg">Find Providers &rarr;</a>
+        <a href="/advertise/" class="border-2 border-white text-white font-semibold px-8 py-3 rounded-lg no-underline hover:bg-primary-500 transition-colors text-lg">List Your Business</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="py-10">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 text-center">
+      <h2 class="text-xl font-bold text-default mb-3">Questions?</h2>
+      <p class="text-muted mb-4">We're a small team and we read every email.</p>
+      <div class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm">
+        <a href={`mailto:${config.contactEmail}`} class="text-primary hover:underline">General: {config.contactEmail}</a>
+        <a href={`mailto:claims@${config.domain}`} class="text-primary hover:underline">Claim a listing: claims@{config.domain}</a>
+        <a href={`mailto:advertise@${config.domain}`} class="text-primary hover:underline">Advertising: advertise@{config.domain}</a>
+      </div>
+      <p class="text-xs text-muted mt-4">PO Box 1547, Austin, TX 78767</p>
+    </div>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+</PageLayout>

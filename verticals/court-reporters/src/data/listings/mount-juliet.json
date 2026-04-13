@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "bertram-reporting-services-mount-juliet",
+    "name": "Bertram Reporting Services",
+    "city": "mount-juliet",
+    "state": "TN",
+    "address": "146 Karen Drive, Mount Juliet, TN 37122",
+    "lat": 36.2422004,
+    "lng": -86.4812216,
+    "phone": "954-560-6070",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting services",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:23:14",
+    "sentiment": null
+  }
+]

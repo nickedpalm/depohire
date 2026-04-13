@@ -1,0 +1,38 @@
+---
+import config from '~/config';
+
+interface Crumb {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  crumbs: Crumb[];
+  dark?: boolean;
+}
+
+const { crumbs, dark = false } = Astro.props;
+const allCrumbs = [{ label: 'Home', href: '/' }, ...crumbs];
+
+const navClass = dark ? 'text-sm text-blue-200 mb-4' : 'text-sm text-gray-500 mb-4';
+const sepClass = dark ? 'mx-1 text-blue-400' : 'mx-1 text-gray-300';
+const linkClass = dark ? 'hover:text-white' : 'hover:text-gray-700';
+const currentClass = dark ? 'text-white font-medium' : 'text-gray-700 font-medium';
+---
+<nav aria-label="Breadcrumb" class={navClass}>
+  <ol class="flex flex-wrap items-center gap-1" itemscope itemtype="https://schema.org/BreadcrumbList">
+    {allCrumbs.map((crumb, i) => (
+      <li class="flex items-center" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        {i > 0 && <span class={sepClass}>/</span>}
+        {crumb.href ? (
+          <a href={crumb.href} itemprop="item" class={linkClass}>
+            <span itemprop="name">{crumb.label}</span>
+          </a>
+        ) : (
+          <span itemprop="name" class={currentClass}>{crumb.label}</span>
+        )}
+        <meta itemprop="position" content={String(i + 1)} />
+      </li>
+    ))}
+  </ol>
+</nav>

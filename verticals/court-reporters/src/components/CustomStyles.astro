@@ -1,0 +1,55 @@
+---
+import '@fontsource-variable/inter';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
+
+let cssVars = {
+  primary: 'rgb(37 99 235)',
+  secondary: 'rgb(30 78 216)',
+  accent: 'rgb(109 40 217)',
+};
+
+let heroGradient = {
+  start: '#1a1a2e',
+  mid: '#1e3a5f',
+  end: '#2563eb',
+};
+
+try {
+  const raw = readFileSync(resolve(process.cwd(), 'colors.json'), 'utf-8');
+  const colors = JSON.parse(raw);
+  if (colors.cssVars) {
+    cssVars = colors.cssVars;
+  }
+  if (colors.heroGradient) {
+    heroGradient = colors.heroGradient;
+  }
+} catch {
+  // Use defaults
+}
+
+const css = `:root {
+  --aw-font-sans: 'Inter Variable';
+  --aw-font-serif: 'Inter Variable';
+  --aw-font-heading: 'Inter Variable';
+
+  --aw-color-primary: ${cssVars.primary};
+  --aw-color-secondary: ${cssVars.secondary};
+  --aw-color-accent: ${cssVars.accent};
+
+  --aw-color-text-heading: rgb(0 0 0);
+  --aw-color-text-default: rgb(16 16 16);
+  --aw-color-text-muted: rgb(16 16 16 / 80%);
+  --aw-color-bg-page: rgb(255 255 255);
+  --aw-color-bg-page-dark: rgb(3 6 32);
+
+  --hero-grad-start: ${heroGradient.start};
+  --hero-grad-mid: ${heroGradient.mid};
+  --hero-grad-end: ${heroGradient.end};
+}
+:root ::selection {
+  background-color: lavender;
+}`;
+---
+
+<Fragment set:html={`<style>${css}</style>`} />

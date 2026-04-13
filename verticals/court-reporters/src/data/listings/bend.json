@@ -1,0 +1,32 @@
+[
+  {
+    "slug": "bridges-reporting-legal-video-bend",
+    "name": "Bridges Reporting & Legal Video",
+    "city": "bend",
+    "state": "OR",
+    "address": "",
+    "lat": 44.0581728,
+    "lng": -121.3153096,
+    "phone": "800-358-2345",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting and legal video services in Bend.",
+    "certifications": [],
+    "services": [
+      "court reporting",
+      "legal video"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:25:17",
+    "sentiment": null
+  }
+]

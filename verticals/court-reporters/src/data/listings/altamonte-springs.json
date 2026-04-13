@@ -1,0 +1,33 @@
+[
+  {
+    "slug": "milestone-reporting-company-altamonte-springs",
+    "name": "Milestone Reporting Company",
+    "city": "altamonte-springs",
+    "state": "FL",
+    "address": "498 Palm Springs Drive, Suite 100, Altamonte Springs, FL 32701",
+    "lat": 28.6619154,
+    "lng": -81.3885899,
+    "phone": "(855) 693-3767",
+    "website": "www.milestonereporting.com",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Full-service court reporting agency with multiple locations.",
+    "certifications": [],
+    "services": [
+      "court reporting",
+      "videoconferencing",
+      "realtime"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:21:41",
+    "sentiment": null
+  }
+]

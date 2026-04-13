@@ -1,0 +1,104 @@
+---
+/**
+ * PageHero — Dark gradient hero for content/directory pages.
+ * Used by: states, locations, blog, guides, author, search, city pages.
+ */
+import Breadcrumbs from '~/components/directory/Breadcrumbs.astro';
+
+interface Stat {
+  value: string | number;
+  label: string;
+}
+
+interface Crumb {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  title: string;
+  subtitle?: string;
+  breadcrumbs?: Crumb[];
+  stats?: Stat[];
+  /** Small dotted metadata row (e.g., "24 articles · Updated 2026") */
+  meta?: string[];
+  /** 'default' for standard pages, 'compact' for city pages */
+  size?: 'default' | 'compact';
+}
+
+const { title, subtitle, breadcrumbs = [], stats = [], meta = [], size = 'default' } = Astro.props;
+const isCompact = size === 'compact';
+---
+
+<div class="hero-gradient text-white relative overflow-hidden">
+  <div class="hero-orb" aria-hidden="true"></div>
+  <div class:list={[
+    'max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10',
+    isCompact ? 'py-8 sm:py-10' : 'pt-10 pb-14',
+  ]}>
+    {breadcrumbs.length > 0 && <Breadcrumbs crumbs={breadcrumbs} dark />}
+
+    <h1 class:list={[
+      'font-extrabold leading-tight',
+      isCompact ? 'text-2xl sm:text-[28px] md:text-4xl mb-2.5' : 'text-3xl sm:text-4xl font-extrabold mb-2.5',
+      breadcrumbs.length > 0 && !isCompact && 'mt-3',
+    ]}>
+      {title}
+    </h1>
+
+    {subtitle && (
+      <p class:list={[
+        'text-white/70 leading-relaxed',
+        isCompact ? 'text-base max-w-[550px]' : 'text-base max-w-[600px]',
+      ]}>
+        {subtitle}
+      </p>
+    )}
+
+    {stats.length > 0 && (
+      <div class:list={[
+        'flex flex-wrap',
+        isCompact ? 'gap-5 md:gap-8 mt-6' : 'gap-10 mt-7',
+      ]}>
+        {stats.map(s => (
+          <div class="flex flex-col">
+            <span class:list={[
+              'font-extrabold text-white',
+              isCompact ? 'text-[22px] sm:text-[24px] md:text-[28px]' : 'text-[32px]',
+            ]}>{typeof s.value === 'number' ? s.value.toLocaleString() : s.value}</span>
+            <span class="text-[13px] text-white/50">{s.label}</span>
+          </div>
+        ))}
+      </div>
+    )}
+
+    {meta.length > 0 && (
+      <div class="mt-6 flex items-center gap-6 text-sm text-blue-200">
+        {meta.map((m, i) => (
+          <>
+            {i > 0 && <span class="w-1 h-1 rounded-full bg-blue-400"></span>}
+            <span>{m}</span>
+          </>
+        ))}
+      </div>
+    )}
+
+    <slot />
+  </div>
+</div>
+
+<style is:global>
+  /* Breadcrumb color overrides for dark hero */
+  .hero-gradient nav[aria-label="Breadcrumb"] { color: rgba(255,255,255,0.5); }
+  .hero-gradient nav[aria-label="Breadcrumb"] a { color: rgba(255,255,255,0.6); }
+  .hero-gradient nav[aria-label="Breadcrumb"] a:hover { color: #fff; }
+  .hero-gradient nav[aria-label="Breadcrumb"] span.text-gray-700 { color: rgba(255,255,255,0.8); }
+  .hero-gradient nav[aria-label="Breadcrumb"] span.text-gray-300 { color: rgba(255,255,255,0.3); }
+
+  /* Decorative orb */
+  .hero-orb {
+    position: absolute; top: -80px; right: -30px;
+    width: 400px; height: 400px; border-radius: 50%;
+    background: rgba(59,130,246,0.1); pointer-events: none;
+  }
+</style>

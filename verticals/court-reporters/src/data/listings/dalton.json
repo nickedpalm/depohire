@@ -1,0 +1,29 @@
+[
+  {
+    "slug": "carpenter-reporterscom-dalton",
+    "name": "Carpenter Reporters.Com",
+    "city": "dalton",
+    "state": "GA",
+    "address": "",
+    "lat": 34.7691867,
+    "lng": -84.9702475,
+    "phone": "",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "none",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Full-service court reporter serving northern Georgia with in-house conference room, e-transcripts, ASCII disks, and video depositions.",
+    "certifications": [],
+    "services": [],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:22:27",
+    "sentiment": null
+  }
+]

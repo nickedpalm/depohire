@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "ace-court-reporting-service-llc-laredo",
+    "name": "Ace Court Reporting Service LLC",
+    "city": "laredo",
+    "state": "TX",
+    "address": "Washington St, Laredo, TX 78040",
+    "lat": 27.5087971,
+    "lng": -99.5055411,
+    "phone": "1749696555",
+    "website": "https://www.acecourtreporting.com",
+    "email": "annette@acecourtreporting.com",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporter services",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:21:33",
+    "sentiment": null
+  }
+]

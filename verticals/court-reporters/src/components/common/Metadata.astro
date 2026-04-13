@@ -1,0 +1,107 @@
+---
+import merge from 'lodash.merge';
+import { AstroSeo } from '@astrolib/seo';
+
+import type { Props as AstroSeoProps } from '@astrolib/seo';
+
+import { SITE, METADATA, I18N } from '~/utils/astrowind-config';
+import type { MetaData } from '~/types';
+import { getCanonical } from '~/utils/permalinks';
+
+import { adaptOpenGraphImages } from '~/utils/images';
+
+export interface Props extends MetaData {
+  dontUseTitleTemplate?: boolean;
+}
+
+const {
+  title,
+  ignoreTitleTemplate = false,
+  canonical = String(getCanonical(String(Astro.url.pathname))),
+  robots = {},
+  description,
+  openGraph = {},
+  twitter = {},
+} = Astro.props;
+
+const seoProps: AstroSeoProps = merge(
+  {
+    title: '',
+    titleTemplate: '%s',
+    canonical: canonical,
+    noindex: true,
+    nofollow: true,
+    description: undefined,
+    openGraph: {
+      url: canonical,
+      site_name: SITE?.name,
+      images: [],
+      locale: I18N?.language || 'en',
+      type: 'website',
+    },
+    twitter: {
+      cardType: openGraph?.images?.length ? 'summary_large_image' : 'summary',
+    },
+  },
+  {
+    title: METADATA?.title?.default,
+    titleTemplate: METADATA?.title?.template,
+    noindex: typeof METADATA?.robots?.index !== 'undefined' ? !METADATA.robots.index : undefined,
+    nofollow: typeof METADATA?.robots?.follow !== 'undefined' ? !METADATA.robots.follow : undefined,
+    description: METADATA?.description,
+    openGraph: METADATA?.openGraph,
+    twitter: METADATA?.twitter,
+  },
+  {
+    title: title,
+    titleTemplate: ignoreTitleTemplate ? '%s' : undefined,
+    canonical: canonical,
+    noindex: typeof robots?.index !== 'undefined' ? !robots.index : undefined,
+    nofollow: typeof robots?.follow !== 'undefined' ? !robots.follow : undefined,
+    description: description,
+    openGraph: { url: canonical, ...openGraph },
+    twitter: twitter,
+  }
+);
+
+// Build OG title with template applied (AstroSeo doesn't apply titleTemplate to og:title)
+const ogTitle = seoProps.titleTemplate && seoProps.titleTemplate !== '%s'
+  ? seoProps.titleTemplate.replace('%s', seoProps.title || '')
+  : seoProps.title || '';
+
+// Strip openGraph from seoProps so AstroSeo doesn't emit duplicate og:title
+const { openGraph: ogProps, ...seoPropsWithoutOG } = seoProps;
+const adaptedOGImages = await adaptOpenGraphImages(ogProps, Astro.site);
+---
+
+<AstroSeo {...seoPropsWithoutOG} />
+<meta property="og:title" content={ogTitle} />
+{ogProps?.type && <meta property="og:type" content={ogProps.type} />}
+{ogProps?.url && <meta property="og:url" content={ogProps.url} />}
+{ogProps?.site_name && <meta property="og:site_name" content={ogProps.site_name} />}
+{ogProps?.locale && <meta property="og:locale" content={ogProps.locale} />}
+{(ogProps?.description || seoProps?.description) && <meta property="og:description" content={ogProps?.description || seoProps.description || ''} />}
+{adaptedOGImages?.images?.length ? (
+  adaptedOGImages.images.map((img: any) => (
+    <>
+      <meta property="og:image" content={img.url} />
+      {img.width && <meta property="og:image:width" content={String(img.width)} />}
+      {img.height && <meta property="og:image:height" content={String(img.height)} />}
+      {img.alt && <meta property="og:image:alt" content={img.alt} />}
+    </>
+  ))
+) : (
+  <>
+    <meta property="og:image" content={`${SITE.site}/og-image.png`} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+  </>
+)}
+{ogProps?.article && (
+  <>
+    {ogProps.article.publishedTime && <meta property="article:published_time" content={ogProps.article.publishedTime} />}
+    {ogProps.article.modifiedTime && <meta property="article:modified_time" content={ogProps.article.modifiedTime} />}
+    {ogProps.article.authors?.map((author: string) => <meta property="article:author" content={author} />)}
+    {ogProps.article.tags?.map((tag: string) => <meta property="article:tag" content={tag} />)}
+  </>
+)}

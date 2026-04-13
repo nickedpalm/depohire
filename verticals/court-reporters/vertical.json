@@ -1,0 +1,65 @@
+{
+  "name": "Court Reporters",
+  "brandName": "StenoScout",
+  "slug": "court-reporters",
+  "domain": "stenoscout.com",
+  "siteUrl": "https://stenoscout.com",
+  "tagline": "Find certified court reporters and stenographers near you",
+  "description": "The most comprehensive directory of court reporters and stenographers in the United States",
+  "jobValue": "$250-1,500+ per session",
+  "industry": "legal",
+  "primaryKeyword": "court reporter",
+  "secondaryKeywords": [
+    "stenographer",
+    "court reporting service",
+    "certified court reporter",
+    "realtime reporter",
+    "deposition reporter",
+    "legal transcription"
+  ],
+  "certifications": [
+    "RPR (Registered Professional Reporter)",
+    "RMR (Registered Merit Reporter)",
+    "RDR (Registered Diplomate Reporter)",
+    "CRR (Certified Realtime Reporter)",
+    "CLVS (Certified Legal Video Specialist)",
+    "CSR (Certified Shorthand Reporter)"
+  ],
+  "extraFields": [
+    "certifications",
+    "years_experience",
+    "services",
+    "coverage_area",
+    "equipment"
+  ],
+  "cityPagePromptContext": "Court reporters (also called stenographers) create verbatim transcripts\nof legal proceedings including depositions, trials, hearings, and\narbitrations. They use stenotype machines, voice writing, or digital\nrecording to capture testimony. Many offer realtime reporting, rough\ndrafts, and expedited transcript delivery. Attorneys, law firms, and\ncourts hire them for civil and criminal proceedings.\n",
+  "contactEmail": "contact@stenoscout.com",
+  "editorialAuthor": {
+    "name": "Nick Palmer",
+    "title": "Founder & Lead Researcher",
+    "bio": "After years working in the legal services industry, Nick built this directory to help attorneys and legal professionals find qualified court reporters without the guesswork.",
+    "linkedin": "https://linkedin.com/in/nickedpalmer"
+  },
+  "stripeSponsoredLink": "",
+  "stripeCityProLink": "",
+  "stripeFeaturedMonthlyLink": "https://buy.stripe.com/14AaEWazocFW81m3s5a3u1A",
+  "stripeFeaturedAnnualLink": "https://buy.stripe.com/4gM9AS6j85dubdy4w9a3u1B",
+  "stripeCityProMonthlyLink": "https://buy.stripe.com/3cI3cu0YO7lCdlG4w9a3u1C",
+  "stripeCityProAnnualLink": "https://buy.stripe.com/5kQ5kC6j8dK0bdybYBa3u1D",
+  "stripeFeaturedProductId": "prod_UKS9nouzTcwInb",
+  "stripeCityProProductId": "prod_UKSONa9CI8Cywx",
+  "stripeFeaturedMonthlyPriceId": "price_1TLnTUCIgRyRDQ2PoVnsCyTs",
+  "stripeFeaturedAnnualPriceId": "price_1TLnTpCIgRyRDQ2PwUBolGtZ",
+  "stripeCityProMonthlyPriceId": "price_1TLnTrCIgRyRDQ2PFEBdv5W4",
+  "stripeCityProAnnualPriceId": "price_1TLnTsCIgRyRDQ2P0zgdxMww",
+  "pricing": {
+    "featuredMonthlyUsd": 79,
+    "featuredAnnualUsd": 711,
+    "cityProMonthlyUsd": 249,
+    "cityProAnnualUsd": 2241
+  },
+  "turnstileSitekey": "0x4AAAAAACyf8viJgUXreScx",
+  "turnsiteSitekey": "0x4AAAAAACyf8viJgUXreScx",
+  "googleAnalyticsId": "G-M9342V5KWE",
+  "foundedYear": 2026
+}

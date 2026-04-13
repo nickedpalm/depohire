@@ -1,0 +1,29 @@
+[
+  {
+    "slug": "audioedge-transcription-llc-unknown",
+    "name": "AudioEdge Transcription, LLC",
+    "city": "unknown",
+    "state": "NJ",
+    "address": "23 Vreeland Road, Suite 204",
+    "lat": 0,
+    "lng": 0,
+    "phone": "201-317-7352",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Transcription services for legal audio, accepting credit cards.",
+    "certifications": [],
+    "services": [],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:22:37",
+    "sentiment": null
+  }
+]

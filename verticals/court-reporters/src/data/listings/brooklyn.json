@@ -1,0 +1,33 @@
+[
+  {
+    "slug": "steno-brooklyn",
+    "name": "Steno",
+    "city": "brooklyn",
+    "state": "NY",
+    "address": "",
+    "lat": 40.6526006,
+    "lng": -73.9497211,
+    "phone": "7152702619",
+    "website": "http://steno.com/locations/brooklyn",
+    "email": "concierge@steno.com",
+    "contact_form_url": "http://steno.com/contact",
+    "contact_method": "email",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting and litigation support in Brooklyn, including stenographers and videographers for local courts.",
+    "certifications": [],
+    "services": [
+      "stenographic reporting",
+      "legal videography",
+      "litigation support"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:21:21",
+    "sentiment": null
+  }
+]

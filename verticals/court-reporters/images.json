@@ -1,0 +1,59 @@
+{
+  "cities": {
+    "new-york": {
+      "url": "https://images.unsplash.com/photo-1570304816841-906a17d7b067?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxOZXclMjBZb3JrJTIwc2t5bGluZXxlbnwwfDB8fHwxNzc0NTI2NTIzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Mark Boss",
+      "photographer_url": "https://unsplash.com/@vork",
+      "unsplash_url": "https://unsplash.com/photos/chrysler-building-new-york-aTWNx7yoJWo"
+    },
+    "los-angeles": {
+      "url": "https://images.unsplash.com/flagged/photo-1575555201693-7cd442b8023f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxMb3MlMjBBbmdlbGVzJTIwc2t5bGluZXxlbnwwfDB8fHwxNzc0NTI2NTk4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Cedric Letsch",
+      "photographer_url": "https://unsplash.com/@cedricletsch",
+      "unsplash_url": "https://unsplash.com/photos/green-palm-tree-and-city-view-UZVlSjrIJ3o"
+    },
+    "chicago": {
+      "url": "https://images.unsplash.com/photo-1575380591643-b2c92368dc6d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxDaGljYWdvJTIwc2t5bGluZXxlbnwwfDB8fHwxNzc0NTI2Njc0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Rohan Gangopadhyay",
+      "photographer_url": "https://unsplash.com/@rohan_gangopadhyay",
+      "unsplash_url": "https://unsplash.com/photos/photography-of-cityscape-heIaYq6A7tg"
+    },
+    "houston": {
+      "url": "https://images.unsplash.com/photo-1692154600992-463fa9b27abd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxIb3VzdG9uJTIwc2t5bGluZXxlbnwwfDB8fHwxNzc1MTMxMzgwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Jeswin Thomas",
+      "photographer_url": "https://unsplash.com/@jeswinthomas",
+      "unsplash_url": "https://unsplash.com/photos/a-view-of-a-city-at-night-from-the-top-of-a-building-DdsXgbHVg7M"
+    },
+    "phoenix": {
+      "url": "https://images.unsplash.com/photo-1729041534038-fdc1f9cf3d3a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxQaG9lbml4JTIwc2t5bGluZXxlbnwwfDB8fHwxNzc1MTMxNDU2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Nils Huenerfuerst",
+      "photographer_url": "https://unsplash.com/@nhuenerfuerst",
+      "unsplash_url": "https://unsplash.com/photos/a-view-of-a-city-with-tall-buildings-RcDEbNQsjHU"
+    },
+    "philadelphia": {
+      "url": "https://images.unsplash.com/photo-1569761316261-9a8696fa2ca3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxQaGlsYWRlbHBoaWElMjBza3lsaW5lfGVufDB8MHx8fDE3NzU3MzYwMTR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "ActionVance",
+      "photographer_url": "https://unsplash.com/@actionvance",
+      "unsplash_url": "https://unsplash.com/photos/aerial-photo-of-buildings-guy5aS3GvgA"
+    },
+    "san-antonio": {
+      "url": "https://images.unsplash.com/photo-1514510249063-e0faf6c6ec0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxTYW4lMjBBbnRvbmlvJTIwc2t5bGluZXxlbnwwfDB8fHwxNzc1NzM2MDg5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Matthew LeJune",
+      "photographer_url": "https://unsplash.com/@matthewlejune",
+      "unsplash_url": "https://unsplash.com/photos/aerial-view-of-white-building-IpvDhQjrewM"
+    },
+    "san-diego": {
+      "url": "https://images.unsplash.com/photo-1634312944845-72e0075cf500?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxTYW4lMjBEaWVnbyUyMHNreWxpbmV8ZW58MHwwfHx8MTc3NTczNjE2NHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Justin Wolff",
+      "photographer_url": "https://unsplash.com/@jayphoto",
+      "unsplash_url": "https://unsplash.com/photos/a-large-body-of-water-with-a-city-in-the-background-IgpQ-nYh3Tk"
+    },
+    "dallas": {
+      "url": "https://images.unsplash.com/photo-1625950019503-cae6a7825762?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxEYWxsYXMlMjBza3lsaW5lfGVufDB8MHx8fDE3NzU3MzYyNDB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Max Fray",
+      "photographer_url": "https://unsplash.com/@thmxfy",
+      "unsplash_url": "https://unsplash.com/photos/city-skyline-during-night-time-V6CQgi7Pgdc"
+    }
+  },
+  "articles": {}
+}

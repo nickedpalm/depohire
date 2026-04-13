@@ -1,0 +1,60 @@
+[
+  {
+    "slug": "eyal-court-reporting-inc-newton",
+    "name": "Eyal Court Reporting, Inc.",
+    "city": "newton",
+    "state": "MA",
+    "address": "Paragon Towers, 233 Needham Street, Newton, MA 02459",
+    "lat": 42.3300435,
+    "lng": -71.194862,
+    "phone": "617.723.9432",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Full-service court reporting in Newton.",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:22:52",
+    "sentiment": null
+  },
+  {
+    "slug": "gabriel-sweeney-court-reporting-newton",
+    "name": "Gabriel & Sweeney Court Reporting",
+    "city": "newton",
+    "state": "MA",
+    "address": "15 Van Wart Path, Newton, MA 02459",
+    "lat": 42.2899534,
+    "lng": -71.1867769,
+    "phone": "508.272.1586",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Professional court reporting by Kathryn R. Sweeney, FAPR, RMR, CRR.",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:22:52",
+    "sentiment": null
+  }
+]

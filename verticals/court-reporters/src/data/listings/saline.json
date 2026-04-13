@@ -1,0 +1,32 @@
+[
+  {
+    "slug": "accurate-transcription-services-saline",
+    "name": "Accurate Transcription Services",
+    "city": "saline",
+    "state": "MI",
+    "address": "",
+    "lat": 42.1667072,
+    "lng": -83.7816075,
+    "phone": "734-944-5818",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Provides accurate transcription services for court reporting needs.",
+    "certifications": [],
+    "services": [
+      "transcription",
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:24:53",
+    "sentiment": null
+  }
+]

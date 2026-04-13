@@ -1,0 +1,133 @@
+---
+import PageLayout from '~/layouts/PageLayout.astro';
+import Breadcrumbs from '~/components/directory/Breadcrumbs.astro';
+import ListingDetail from '~/components/directory/ListingDetail.astro';
+import ContactForm from '~/components/directory/ContactForm.astro';
+import ReviewForm from '~/components/directory/ReviewForm.astro';
+import AdSlot from '~/components/directory/AdSlot.astro';
+import RelatedContent from '~/components/directory/RelatedContent.astro';
+import NewsletterSignup from '~/components/directory/NewsletterSignup.astro';
+import config from '~/config';
+import citiesData from '~/data/cities.json';
+import { getAllListings } from '~/lib/listings';
+
+export async function getStaticPaths() {
+  const listings = getAllListings();
+  return listings.map(listing => ({
+    params: { slug: listing.slug },
+    props: { listing },
+  }));
+}
+
+function titleCase(str: string) { return str.replace(/\b\w/g, (c: string) => c.toUpperCase()); }
+
+const { listing } = Astro.props;
+const citySlug = listing.city.toLowerCase().replace(/\s+/g, '-');
+const cityInfo = citiesData.find(c => c.slug === citySlug || c.city === listing.city);
+const cityName = cityInfo?.city || titleCase(listing.city);
+const cityLabel = `${cityName}, ${listing.state}`;
+// Derive state slug for breadcrumbs when cityInfo is missing
+const stateInfo = citiesData.find(c => c.state === listing.state);
+const stateSlug = cityInfo?.stateSlug || stateInfo?.stateSlug || 'all';
+const stateName = cityInfo?.stateName || stateInfo?.stateName || listing.state;
+const suffix = ` | ${cityLabel} | ${config.brandName}`;
+const maxNameLen = 60 - suffix.length;
+const truncatedName = listing.name.length > maxNameLen ? listing.name.slice(0, maxNameLen - 1).trim() + '…' : listing.name;
+const title = `${truncatedName}${suffix}`;
+const description = listing.description
+  ? `${listing.name} — court reporter in ${cityName}, ${listing.state}. ${listing.description.slice(0, 120)}${listing.description.length > 120 ? '...' : ''}`
+  : `${listing.name} is a court reporter in ${cityName}, ${listing.state}.${listing.certifications?.length ? ` Certifications: ${listing.certifications.join(', ')}.` : ''}${listing.rating ? ` Rated ${listing.rating}/5.` : ''} Request a free quote on ${config.brandName}.`;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  name: listing.name,
+  description: listing.description || `${listing.name} is a court reporter serving ${cityName}, ${listing.state}.${listing.services?.length ? ' Services: ' + listing.services.join(', ') + '.' : ''}`,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: listing.address,
+    addressLocality: cityName,
+    addressRegion: listing.state,
+  },
+  telephone: listing.phone,
+  url: listing.website,
+  ...(listing.website ? { sameAs: [listing.website] } : {}),
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: listing.lat,
+    longitude: listing.lng,
+  },
+  areaServed: {
+    '@type': 'City',
+    name: cityName,
+  },
+  ...(config.jobValue ? { priceRange: config.jobValue } : {}),
+  ...(listing.certifications?.length ? {
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'Services',
+      itemListElement: listing.services?.map(s => ({
+        '@type': 'Offer',
+        itemOffered: { '@type': 'Service', name: s },
+      })) || [],
+    },
+  } : {}),
+  ...(listing.certifications?.length ? {
+    hasCredential: listing.certifications.map(c => ({
+      '@type': 'EducationalOccupationalCredential',
+      credentialCategory: 'Professional Certification',
+      name: c,
+    })),
+  } : {}),
+  ...(listing.rating > 0 && listing.review_count > 0 ? {
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: listing.rating,
+      reviewCount: listing.review_count,
+      bestRating: 5,
+      worstRating: 1,
+    },
+  } : {}),
+};
+
+const ogImage = `/og/listing/${listing.slug}.png`;
+const metadata = {
+  title,
+  ignoreTitleTemplate: true,
+  description,
+  openGraph: { images: [{ url: ogImage, width: 1200, height: 630 }] },
+};
+---
+<PageLayout metadata={metadata}>
+  <Fragment slot="announcement"><span></span></Fragment>
+  <div class="bg-surface-page min-h-screen">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8" data-pagefind-body>
+      <Breadcrumbs crumbs={[
+        { label: stateName, href: `/states/${stateSlug}/` },
+        { label: cityName, href: `/locations/${stateSlug}/${cityInfo?.slug || citySlug}/` },
+        { label: listing.name },
+      ]} />
+
+      <ListingDetail listing={listing} />
+
+      <div class="mt-4">
+        <ContactForm listingName={listing.name} listingEmail={listing.email} listingSlug={listing.slug} city={cityName} />
+      </div>
+
+      <div class="mt-4">
+        <ReviewForm listingSlug={listing.slug} listingName={listing.name} />
+      </div>
+
+      <div class="mt-4">
+        <AdSlot placement="listing-bottom" city={cityInfo?.city} state={listing.state} />
+      </div>
+
+      <RelatedContent city={cityName} state={listing.state} currentSlug={listing.slug} />
+
+      <div class="mt-6">
+        <NewsletterSignup variant="compact" city={cityName} />
+      </div>
+    </div>
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+</PageLayout>

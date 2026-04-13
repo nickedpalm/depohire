@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "principal-court-reporting-johnstown",
+    "name": "Principal Court Reporting",
+    "city": "johnstown",
+    "state": "PA",
+    "address": "544 Grove Ave, Johnstown, PA 15902",
+    "lat": 40.29701,
+    "lng": -78.909463,
+    "phone": "(814) 269-4666",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting services",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:22:09",
+    "sentiment": null
+  }
+]

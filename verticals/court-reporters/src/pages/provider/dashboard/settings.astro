@@ -1,0 +1,239 @@
+---
+import DashboardLayout from '~/layouts/DashboardLayout.astro';
+import config from '~/config';
+---
+<DashboardLayout title={`Settings — ${config.brandName}`} activePage="settings">
+
+  <div class="dash-topbar">
+    <div>
+      <h1>Settings</h1>
+      <div class="dash-topbar-sub">Manage your account and notification preferences.</div>
+    </div>
+  </div>
+
+  <div id="settings-save-banner" style="display:none;padding:10px 20px;border-radius:12px;font-size:13px;font-weight:600;text-align:center;margin-bottom:16px" role="status" aria-live="polite"></div>
+
+  <!-- Account info -->
+  <div class="dash-card" style="margin-bottom:20px">
+    <div class="dash-card-header"><h2>Account Information</h2></div>
+    <div class="dash-card-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div>
+          <label style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6px">Email</label>
+          <div id="settings-email" style="background:#f9fafb;padding:10px 14px;border-radius:10px;border:1px solid #e5e7eb;font-size:14px;color:#6b7280"></div>
+        </div>
+        <div>
+          <label style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6px">Account Type</label>
+          <div style="background:#f9fafb;padding:10px 14px;border-radius:10px;border:1px solid #e5e7eb;font-size:14px;color:#6b7280">Business</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification prefs -->
+  <div class="dash-card" style="margin-bottom:20px">
+    <div class="dash-card-header"><h2>Notification Preferences</h2></div>
+    <div class="dash-card-body">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="font-size:14px;font-weight:600;color:#1a1a2e">New quote requests</div>
+            <div style="font-size:12px;color:#6b7280">Get notified when an attorney sends a quote request</div>
+          </div>
+          <label class="dash-toggle"><input type="checkbox" id="tog-new-quotes" checked /><span class="dash-toggle-slider"></span></label>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="font-size:14px;font-weight:600;color:#1a1a2e">Quote request reminders</div>
+            <div style="font-size:12px;color:#6b7280">Reminder if you haven't responded within 24 hours</div>
+          </div>
+          <label class="dash-toggle"><input type="checkbox" id="tog-reminders" checked /><span class="dash-toggle-slider"></span></label>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="font-size:14px;font-weight:600;color:#1a1a2e">Monthly performance report</div>
+            <div style="font-size:12px;color:#6b7280">Summary of views, quotes, and ranking</div>
+          </div>
+          <label class="dash-toggle"><input type="checkbox" id="tog-monthly" checked /><span class="dash-toggle-slider"></span></label>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="font-size:14px;font-weight:600;color:#1a1a2e">Marketing & tips</div>
+            <div style="font-size:12px;color:#6b7280">Occasional tips to improve your listing</div>
+          </div>
+          <label class="dash-toggle"><input type="checkbox" id="tog-marketing" /><span class="dash-toggle-slider"></span></label>
+        </div>
+      </div>
+      <p style="font-size:12px;color:#9ca3af;margin-top:16px">Notification settings are saved automatically. Email delivery is managed through your Listmonk subscription.</p>
+    </div>
+  </div>
+
+  <!-- Listing visibility -->
+  <div class="dash-card" style="margin-bottom:20px">
+    <div class="dash-card-header"><h2>Listing Visibility</h2></div>
+    <div class="dash-card-body">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div>
+          <div style="font-size:14px;font-weight:600;color:#1a1a2e">Listing is active</div>
+          <div style="font-size:12px;color:#6b7280">Your listing is visible to attorneys searching {config.brandName}</div>
+        </div>
+        <label class="dash-toggle"><input type="checkbox" id="tog-visible" checked /><span class="dash-toggle-slider"></span></label>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-size:14px;font-weight:600;color:#1a1a2e">Accept quote requests</div>
+          <div style="font-size:12px;color:#6b7280">Allow attorneys to send you quote requests</div>
+        </div>
+        <label class="dash-toggle"><input type="checkbox" id="tog-accept-quotes" checked /><span class="dash-toggle-slider"></span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Claimed listings -->
+  <div class="dash-card" style="margin-bottom:20px">
+    <div class="dash-card-header"><h2>Claimed Listings</h2></div>
+    <div class="dash-card-body" id="claimed-listings">
+      <p style="color:#9ca3af;font-size:13px">Loading...</p>
+    </div>
+  </div>
+
+  <!-- Danger zone -->
+  <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:14px;border-left:4px solid #ef4444;padding:24px">
+    <h2 style="font-size:15px;font-weight:700;color:#991b1b;margin-bottom:8px">Danger Zone</h2>
+    <div style="display:flex;gap:20px">
+      <div style="flex:1">
+        <p style="font-size:14px;font-weight:600;color:#991b1b">Unclaim Listing</p>
+        <p style="font-size:12px;color:#b91c1c;margin:4px 0 12px">Release your claim. Another provider can then claim it.</p>
+        <button id="unclaim-btn" class="dash-btn" style="background:#fecaca;color:#991b1b;font-size:12px">Unclaim Listing</button>
+      </div>
+      <div style="flex:1">
+        <p style="font-size:14px;font-weight:600;color:#991b1b">Delete Account</p>
+        <p style="font-size:12px;color:#b91c1c;margin:4px 0 12px">Permanently delete your {config.brandName} account and data.</p>
+        <a href={`mailto:${config.contactEmail}?subject=Delete my account`} class="dash-btn" style="background:#fecaca;color:#991b1b;font-size:12px;text-decoration:none">Contact Support</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Logout -->
+  <div style="text-align:center;margin-top:28px">
+    <button id="logout-btn" style="font-size:14px;font-weight:600;color:#6b7280;background:none;border:none;cursor:pointer">Log out</button>
+  </div>
+
+  <script is:inline>
+    window.addEventListener('dash-ready', async function() {
+      var state = window.dashState;
+      var slug = state.currentSlug;
+      document.getElementById('settings-email').textContent = state.provider.email;
+
+      // Claimed listings
+      function escHtml(str) { var d = document.createElement('div'); d.textContent = str || ''; return d.innerHTML; }
+      var el = document.getElementById('claimed-listings');
+      if (state.listings.length === 0) {
+        el.innerHTML = '<p style="color:#9ca3af;font-size:13px">No claimed listings.</p>';
+      } else {
+        el.innerHTML = state.listings.map(function(s) {
+          var safe = escHtml(s);
+          return '<a href="/listing/' + encodeURIComponent(s) + '/" target="_blank" rel="noopener" style="display:block;background:#f9fafb;padding:12px 16px;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:8px;font-size:14px;color:#2563eb;text-decoration:none;font-weight:500">' + safe + ' &rarr;</a>';
+        }).join('');
+      }
+
+      // Load saved settings from D1
+      if (slug) {
+        try {
+          var resp = await fetch('/api/provider/listing?slug=' + encodeURIComponent(slug), { credentials: 'include' });
+          var result = await resp.json();
+          if (result.data) {
+            var d = result.data;
+            if (d.visible === false) document.getElementById('tog-visible').checked = false;
+            if (d.accept_quotes === false) document.getElementById('tog-accept-quotes').checked = false;
+            if (d.notify_new_quotes === false) document.getElementById('tog-new-quotes').checked = false;
+            if (d.notify_reminders === false) document.getElementById('tog-reminders').checked = false;
+            if (d.notify_monthly_report === false) document.getElementById('tog-monthly').checked = false;
+            if (d.notify_marketing === true) document.getElementById('tog-marketing').checked = true;
+          }
+        } catch (e) { console.error('Failed to load settings:', e); }
+      }
+
+      // Auto-save toggles
+      var toggleIds = [
+        ['tog-visible', 'visible'],
+        ['tog-accept-quotes', 'accept_quotes'],
+        ['tog-new-quotes', 'notify_new_quotes'],
+        ['tog-reminders', 'notify_reminders'],
+        ['tog-monthly', 'notify_monthly_report'],
+        ['tog-marketing', 'notify_marketing'],
+      ];
+
+      toggleIds.forEach(function(pair) {
+        var checkbox = document.getElementById(pair[0]);
+        if (!checkbox) return;
+        checkbox.addEventListener('change', function() {
+          var body = { slug: slug };
+          body[pair[1]] = checkbox.checked;
+          var banner = document.getElementById('settings-save-banner');
+          fetch('/api/provider/listing', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(body),
+          }).then(function(resp) {
+            if (resp.ok) {
+              banner.textContent = 'Setting saved.';
+              banner.style.background = '#ecfdf5'; banner.style.color = '#065f46'; banner.style.border = '1px solid #a7f3d0';
+            } else {
+              banner.textContent = 'Failed to save setting.';
+              banner.style.background = '#fef2f2'; banner.style.color = '#991b1b'; banner.style.border = '1px solid #fecaca';
+            }
+            banner.style.display = 'block';
+            setTimeout(function() { banner.style.display = 'none'; }, 2500);
+          }).catch(function(e) {
+            console.error('Save failed:', e);
+            banner.textContent = 'Network error saving setting.';
+            banner.style.background = '#fef2f2'; banner.style.color = '#991b1b'; banner.style.border = '1px solid #fecaca';
+            banner.style.display = 'block';
+            setTimeout(function() { banner.style.display = 'none'; }, 3000);
+          });
+        });
+      });
+
+      // Unclaim
+      document.getElementById('unclaim-btn').addEventListener('click', async function() {
+        if (!slug) return;
+        if (!confirm('Are you sure you want to unclaim this listing? This cannot be undone.')) return;
+
+        var btn = document.getElementById('unclaim-btn');
+        btn.textContent = 'Unclaiming...';
+        btn.disabled = true;
+
+        try {
+          var resp = await fetch('/api/provider/claim', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ listing_slug: slug }),
+          });
+          var result = await resp.json();
+          if (result.ok) {
+            alert('Listing unclaimed successfully.');
+            window.location.href = '/';
+          } else {
+            alert(result.error || 'Failed to unclaim listing.');
+            btn.textContent = 'Unclaim Listing';
+            btn.disabled = false;
+          }
+        } catch (e) {
+          alert('Something went wrong. Please try again.');
+          btn.textContent = 'Unclaim Listing';
+          btn.disabled = false;
+        }
+      });
+
+      // Logout
+      document.getElementById('logout-btn').addEventListener('click', async function() {
+        await fetch('/api/auth/session', { method:'DELETE', credentials:'include' });
+        window.location.href = '/provider/login';
+      });
+    });
+  </script>
+
+</DashboardLayout>

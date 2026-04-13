@@ -1,0 +1,32 @@
+[
+  {
+    "slug": "capitol-reporters-carson-city",
+    "name": "Capitol Reporters",
+    "city": "carson-city",
+    "state": "NV",
+    "address": "",
+    "lat": 39.1663259,
+    "lng": -119.7670374,
+    "phone": "775-882-5322",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporters serving Carson City and Reno area.",
+    "certifications": [],
+    "services": [
+      "court reporting",
+      "depositions"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:25:30",
+    "sentiment": null
+  }
+]

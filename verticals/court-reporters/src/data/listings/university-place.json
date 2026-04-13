@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "shepard-transcription-llc-university-place",
+    "name": "Shepard Transcription, LLC",
+    "city": "university-place",
+    "state": "WA",
+    "address": "PO Box 65691, University Place, WA 98464",
+    "lat": 47.2258172,
+    "lng": -122.5371325,
+    "phone": "253-686-2202",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Transcription services",
+    "certifications": [],
+    "services": [
+      "transcription"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:24:20",
+    "sentiment": null
+  }
+]

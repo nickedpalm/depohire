@@ -1,0 +1,29 @@
+[
+  {
+    "slug": "magna-legal-services-east-hanover",
+    "name": "Magna Legal Services",
+    "city": "east-hanover",
+    "state": "NJ",
+    "address": "120 Eagle Rock Ave. Suite 315, East Hanover, NJ 07936",
+    "lat": 40.8200998,
+    "lng": -74.3648731,
+    "phone": "(866) 624-6221",
+    "website": "https://magnals.com/office-locations/new-jersey/",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Full-service court reporting, litigation support, videography, and conference rooms in New Jersey.",
+    "certifications": [],
+    "services": [],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:22:37",
+    "sentiment": null
+  }
+]

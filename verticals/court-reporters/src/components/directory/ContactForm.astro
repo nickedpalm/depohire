@@ -1,0 +1,127 @@
+---
+import Turnstile from '~/components/common/Turnstile.astro';
+import config from '~/config';
+
+interface Props {
+  listingName: string;
+  listingEmail?: string;
+  listingSlug?: string;
+  city?: string;
+}
+
+const { listingName, listingEmail, listingSlug = '', city = '' } = Astro.props;
+const API_URL = '/api/leads';
+---
+<div class="card-section" id="contact-form-card">
+  <h3 class="text-base font-bold mb-4 flex items-center gap-2"><svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg> Request a Quote from {listingName}</h3>
+  <form id="quote-form" class="flex flex-col gap-3.5" data-api-url={API_URL}>
+    <input type="hidden" name="provider_name" value={listingName} />
+    <input type="hidden" name="provider_email" value={listingEmail || ''} />
+    <input type="hidden" name="provider_slug" value={listingSlug} />
+    <input type="hidden" name="city" value={city} />
+    <!-- Honeypot -->
+    <div class="absolute -left-[9999px]" aria-hidden="true">
+      <input type="text" name="company_url" tabindex="-1" autocomplete="off" />
+    </div>
+    <div>
+      <label for="attorney_name" class="block text-[13px] font-semibold mb-1.5 text-gray-700">Your Name</label>
+      <input type="text" id="attorney_name" name="attorney_name" required placeholder="Full name" class="w-full border-[1.5px] border-gray-300 rounded-[10px] px-3.5 py-2.5 text-sm font-sans transition-colors focus:outline-none focus:border-primary-600 focus:ring-2 focus:ring-primary-600/15" />
+    </div>
+    <div>
+      <label for="attorney_email" class="block text-[13px] font-semibold mb-1.5 text-gray-700">Email</label>
+      <input type="email" id="attorney_email" name="attorney_email" required placeholder="you@firm.com" class="w-full border-[1.5px] border-gray-300 rounded-[10px] px-3.5 py-2.5 text-sm font-sans transition-colors focus:outline-none focus:border-primary-600 focus:ring-2 focus:ring-primary-600/15" />
+    </div>
+    <div>
+      <label for="attorney_phone" class="block text-[13px] font-semibold mb-1.5 text-gray-700">Phone <span style="color:#9ca3af; font-weight:400;">(optional)</span></label>
+      <input type="tel" id="attorney_phone" name="attorney_phone" placeholder="(555) 000-0000" class="w-full border-[1.5px] border-gray-300 rounded-[10px] px-3.5 py-2.5 text-sm font-sans transition-colors focus:outline-none focus:border-primary-600 focus:ring-2 focus:ring-primary-600/15" />
+    </div>
+    <div>
+      <label for="case_details" class="block text-[13px] font-semibold mb-1.5 text-gray-700">Case Details</label>
+      <textarea id="case_details" name="case_details" rows="3" placeholder="Date, location, type of proceeding..." class="w-full border-[1.5px] border-gray-300 rounded-[10px] px-3.5 py-2.5 text-sm font-sans transition-colors focus:outline-none focus:border-primary-600 focus:ring-2 focus:ring-primary-600/15 resize-y min-h-[80px]"></textarea>
+    </div>
+    <div class="cf-turnstile" data-sitekey={config.turnsiteSitekey} data-theme="light"></div>
+    <button type="submit" class="btn-action-primary w-full" id="quote-submit-btn">
+      Send Request
+    </button>
+    <p class="text-center text-xs text-gray-500 mt-1">Sent directly to {listingName}. Free, no obligation.</p>
+  </form>
+
+  <!-- Success state -->
+  <div id="quote-success" class="hidden text-center py-6" role="status" aria-live="polite">
+    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+      <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+      </svg>
+    </div>
+    <h3 class="text-lg font-semibold text-gray-900">Quote Request Sent!</h3>
+    <p class="text-sm text-gray-600 mt-1">Your request has been sent to {listingName}. They'll respond directly to your email, usually within 1 business day.</p>
+  </div>
+
+  <!-- Error state -->
+  <div id="quote-error" class="hidden bg-red-50 border border-red-200 rounded-lg p-3 mt-3" role="alert" aria-live="assertive">
+    <p class="text-sm text-red-700" id="quote-error-msg">Something went wrong. Please try again.</p>
+  </div>
+</div>
+
+
+<script is:inline>
+  function initContactForm() {
+    const form = document.getElementById('quote-form');
+    if (!form || form.dataset.init) return;
+    form.dataset.init = 'true';
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('quote-submit-btn');
+      const errorDiv = document.getElementById('quote-error');
+      const successDiv = document.getElementById('quote-success');
+      errorDiv.classList.add('hidden');
+
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+
+      const turnstileInput = form.querySelector('[name="cf-turnstile-response"]');
+      const data = {
+        attorney_name: form.attorney_name.value,
+        attorney_email: form.attorney_email.value,
+        attorney_phone: form.attorney_phone.value,
+        case_details: form.case_details.value,
+        city: form.city.value,
+        honeypot: form.company_url.value,
+        turnstile_token: turnstileInput ? turnstileInput.value : '',
+        providers: [{
+          name: form.provider_name.value,
+          email: form.provider_email.value,
+          slug: form.provider_slug.value,
+        }],
+      };
+
+      try {
+        const resp = await fetch(form.dataset.apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        if (!resp.ok) {
+          const err = await resp.json().catch(() => ({}));
+          throw new Error(err.error || err.detail || 'Request failed');
+        }
+        form.classList.add('hidden');
+        successDiv.classList.remove('hidden');
+      } catch (err) {
+        document.getElementById('quote-error-msg').textContent = err.message || 'Something went wrong. Please try again.';
+        errorDiv.classList.remove('hidden');
+        btn.disabled = false;
+        btn.textContent = 'Send Request';
+        if (window.turnstile) turnstile.reset();
+      }
+    });
+  }
+  document.addEventListener('astro:page-load', initContactForm);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initContactForm);
+  } else {
+    initContactForm();
+  }
+</script>
+<Turnstile />

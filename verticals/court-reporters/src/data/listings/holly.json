@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "about-town-court-reporting-inc-holly",
+    "name": "ABOUT TOWN COURT REPORTING, INC.",
+    "city": "holly",
+    "state": "MI",
+    "address": "",
+    "lat": 42.7919727,
+    "lng": -83.6277255,
+    "phone": "(248) 634-3369",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Registered court reporting firm providing court reporting services in Michigan.",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:24:53",
+    "sentiment": null
+  }
+]

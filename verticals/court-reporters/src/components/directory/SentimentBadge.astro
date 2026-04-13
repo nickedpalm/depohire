@@ -1,0 +1,24 @@
+---
+interface Props {
+  label: 'positive' | 'mixed' | 'negative';
+  score: number;
+  size?: 'sm' | 'md';
+}
+
+const { label, score, size = 'md' } = Astro.props;
+
+const styles = {
+  positive: { bg: 'bg-emerald-100', text: 'text-emerald-800', icon: '↑' },
+  mixed: { bg: 'bg-amber-100', text: 'text-amber-800', icon: '→' },
+  negative: { bg: 'bg-red-100', text: 'text-red-800', icon: '↓' },
+};
+
+const s = styles[label];
+const pct = Math.round(score * 100);
+const sizeClasses = size === 'sm' ? 'text-xs px-1.5 py-0.5' : 'text-sm px-2 py-0.5';
+---
+<span class={`inline-flex items-center gap-1 rounded-full font-medium ${s.bg} ${s.text} ${sizeClasses}`} title={`Sentiment score: ${pct}%`}>
+  <span class="font-semibold">{s.icon}</span>
+  <span class="capitalize">{label}</span>
+  <span class="opacity-60">{pct}%</span>
+</span>

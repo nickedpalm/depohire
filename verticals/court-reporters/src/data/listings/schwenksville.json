@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "elite-court-reporting-schwenksville",
+    "name": "Elite Court Reporting",
+    "city": "schwenksville",
+    "state": "PA",
+    "address": "252 2nd St, Schwenksville, PA 19473-1105",
+    "lat": 40.2542893,
+    "lng": -75.4649829,
+    "phone": "(484) 885-8833",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting services",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:22:09",
+    "sentiment": null
+  }
+]

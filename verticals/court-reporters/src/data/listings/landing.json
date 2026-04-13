@@ -1,0 +1,29 @@
+[
+  {
+    "slug": "access-transcripts-llc-landing",
+    "name": "Access Transcripts, LLC",
+    "city": "landing",
+    "state": "NJ",
+    "address": "517 Dell Road, Landing, NJ 07850",
+    "lat": 40.9088675,
+    "lng": -74.6571746,
+    "phone": "1-855-USE-ACCESS (873-2223)",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court transcription services with email contact for legal transcripts.",
+    "certifications": [],
+    "services": [],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:22:37",
+    "sentiment": null
+  }
+]

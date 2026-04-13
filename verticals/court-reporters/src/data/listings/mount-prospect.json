@@ -1,0 +1,32 @@
+[
+  {
+    "slug": "stenograph-llc-mount-prospect",
+    "name": "Stenograph, L.L.C.",
+    "city": "mount-prospect",
+    "state": "IL",
+    "address": "1500 Bishop Ct, Mount Prospect, IL 60056-6039",
+    "lat": 42.078817,
+    "lng": -87.913003,
+    "phone": "(800) 323-4247",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Stenograph machines, court reporting",
+    "certifications": [],
+    "services": [
+      "stenograph machines",
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:21:52",
+    "sentiment": null
+  }
+]

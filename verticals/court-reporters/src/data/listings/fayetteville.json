@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "bryant-court-reporting-services-inc-fayetteville",
+    "name": "Bryant Court Reporting Services, Inc.",
+    "city": "fayetteville",
+    "state": "NC",
+    "address": "",
+    "lat": 35.0525759,
+    "lng": -78.878292,
+    "phone": "(910) 433-2926",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting services in Fayetteville, NC.",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:22:58",
+    "sentiment": null
+  }
+]

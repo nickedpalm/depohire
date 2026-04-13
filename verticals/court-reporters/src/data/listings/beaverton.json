@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "cci-court-reporting-beaverton",
+    "name": "CCI Court Reporting",
+    "city": "beaverton",
+    "state": "OR",
+    "address": "14780 SW Osprey Dr Ste 240, Beaverton, OR",
+    "lat": 45.4871723,
+    "lng": -122.80378,
+    "phone": "800-356-4561",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting services in Beaverton area.",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:25:17",
+    "sentiment": null
+  }
+]

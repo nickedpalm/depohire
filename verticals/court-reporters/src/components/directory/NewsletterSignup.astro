@@ -1,0 +1,119 @@
+---
+interface Props {
+  variant?: 'hero' | 'inline' | 'compact';
+  city?: string;
+}
+
+const { variant = 'inline', city } = Astro.props;
+
+const isHero = variant === 'hero';
+const isCompact = variant === 'compact';
+
+const wrapperClass = isHero
+  ? 'hero-gradient rounded-2xl p-8 sm:p-12 text-center text-white'
+  : isCompact
+  ? 'bg-gray-50 border border-gray-200 rounded-xl p-6 text-center'
+  : 'bg-gradient-to-r from-primary-50 to-primary-100 border border-primary-200 rounded-xl p-6 sm:p-8 text-center';
+
+const headingClass = isHero
+  ? 'text-2xl sm:text-3xl font-bold mb-3'
+  : isCompact
+  ? 'text-lg font-bold text-gray-900 mb-2'
+  : 'text-xl sm:text-2xl font-bold text-gray-900 mb-2';
+
+const subClass = isHero
+  ? 'text-primary-100 mb-8 max-w-lg mx-auto'
+  : isCompact
+  ? 'text-sm text-gray-600 mb-4'
+  : 'text-gray-600 mb-6 max-w-lg mx-auto';
+
+const inputClass = isHero
+  ? 'flex-1 px-4 py-3 rounded-lg text-gray-900 placeholder-gray-400 border-0 focus:ring-2 focus:ring-primary-300 outline-none'
+  : 'flex-1 px-4 py-2.5 rounded-lg text-gray-900 placeholder-gray-400 border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none text-sm';
+
+const btnClass = isHero
+  ? 'px-6 py-3 bg-white text-navy-950 font-semibold rounded-lg hover:bg-primary-50 transition-colors whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed'
+  : 'px-5 py-2.5 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed text-sm';
+
+const msgClass = isHero
+  ? 'text-xs text-primary-200 mt-3'
+  : 'text-xs text-gray-500 mt-3';
+
+const uid = `nl-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<div class={wrapperClass} data-newsletter-signup data-nl-city={city || ''}>
+  <h3 class={headingClass}>
+    {isCompact ? 'Stay Updated' : 'Monthly Cost & Compliance Updates'}
+  </h3>
+  <p class={subClass}>
+    {isCompact
+      ? 'Pricing data and hiring tips for litigation teams.'
+      : 'Pricing data, certification changes, and hiring tips for litigation teams. No spam — just useful content, once a month.'}
+  </p>
+  <form class="flex flex-col sm:flex-row gap-2 max-w-md mx-auto" data-nl-form>
+    <label for={uid} class="sr-only">Email address</label>
+    <input
+      id={uid}
+      type="email"
+      name="email"
+      placeholder="you@lawfirm.com"
+      required
+      autocomplete="email"
+      class={inputClass}
+    />
+    <button type="submit" class={btnClass}>Subscribe</button>
+  </form>
+  <p data-nl-msg class={msgClass}>Free. Unsubscribe anytime.</p>
+</div>
+
+<script is:inline>
+(function() {
+  function initNewsletterForms() {
+    document.querySelectorAll('[data-newsletter-signup]').forEach(function(wrapper) {
+      if (wrapper.dataset.nlInit) return;
+      wrapper.dataset.nlInit = 'true';
+      var form = wrapper.querySelector('[data-nl-form]');
+      var msg = wrapper.querySelector('[data-nl-msg]');
+      if (!form) return;
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var input = form.querySelector('input[type="email"]');
+        var email = input ? input.value : '';
+        if (!email) return;
+        var btn = form.querySelector('button[type="submit"]');
+        if (btn.disabled) return;
+        btn.disabled = true;
+        btn.textContent = 'Subscribing...';
+        var controller = new AbortController();
+        var timeout = setTimeout(function() { controller.abort(); }, 10000);
+        fetch('/api/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email, city: wrapper.dataset.nlCity || '' }),
+          signal: controller.signal,
+        }).then(function(resp) {
+          clearTimeout(timeout);
+          if (resp.ok) {
+            if (msg) { msg.textContent = "You're subscribed! Check your inbox."; msg.style.color = '#86efac'; msg.style.fontWeight = '500'; }
+            form.reset();
+            btn.disabled = true;
+            btn.textContent = 'Subscribed';
+          } else { throw new Error('Failed'); }
+        }).catch(function() {
+          clearTimeout(timeout);
+          if (msg) { msg.textContent = 'Something went wrong. Please try again.'; msg.style.color = '#fca5a5'; }
+          btn.disabled = false;
+          btn.textContent = 'Subscribe';
+        });
+      });
+    });
+  }
+  document.addEventListener('astro:page-load', initNewsletterForms);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initNewsletterForms);
+  } else {
+    initNewsletterForms();
+  }
+})();
+</script>

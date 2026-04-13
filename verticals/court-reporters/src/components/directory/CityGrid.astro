@@ -1,0 +1,32 @@
+---
+import config from '~/config';
+
+interface CityEntry {
+  slug: string;
+  stateSlug: string;
+  city: string;
+  state: string;
+  listingCount: number;
+}
+
+interface Props {
+  cities: CityEntry[];
+  title?: string;
+}
+
+const { cities, title } = Astro.props;
+---
+<section class="container-narrow py-12">
+  {title && <h2 class="text-2xl font-bold text-gray-900 mb-6">{title}</h2>}
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+    {cities.map((c) => (
+      <a href={`/locations/${c.stateSlug}/${c.slug}/`} class="card p-4 text-center no-underline hover:border-primary-300 group">
+        <span class="block font-semibold text-gray-900 group-hover:text-primary-600">{c.city}</span>
+        <span class="text-sm text-gray-500">{c.state}</span>
+        {c.listingCount > 0 && (
+          <span class="block text-xs text-primary-600 mt-1">{c.listingCount} {c.listingCount === 1 ? config.primaryKeyword : config.primaryKeyword + 's'}</span>
+        )}
+      </a>
+    ))}
+  </div>
+</section>

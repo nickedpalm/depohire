@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "donna-m-mcmullen-court-reporting-monaca",
+    "name": "Donna M McMullen Court Reporting",
+    "city": "monaca",
+    "state": "PA",
+    "address": "154 Pleasantview Dr, Monaca, PA 15061",
+    "lat": 40.6872885,
+    "lng": -80.2714505,
+    "phone": "(724) 728-4026",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting services",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:22:09",
+    "sentiment": null
+  }
+]

@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "todd-olivas-associates-wellesley-hills",
+    "name": "Todd Olivas & Associates",
+    "city": "wellesley-hills",
+    "state": "MA",
+    "address": "70 Walnut Street, Wellesley Hills, MA 02481",
+    "lat": 42.3224983,
+    "lng": -71.2551992,
+    "phone": "951-296-0114",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting associates.",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:22:52",
+    "sentiment": null
+  }
+]

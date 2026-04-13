@@ -1,0 +1,29 @@
+[
+  {
+    "slug": "lexitas-princeton",
+    "name": "Lexitas",
+    "city": "princeton",
+    "state": "NJ",
+    "address": "",
+    "lat": 40.3496953,
+    "lng": -74.6597376,
+    "phone": "1212374770",
+    "website": "https://www.lexitaslegal.com/locations/princeton",
+    "email": "nytristatehelp@lexitaslegal.com",
+    "contact_form_url": "https://www.lexitaslegal.com/locations/princeton",
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting and deposition services tailored for Princeton, NJ legal needs.",
+    "certifications": [],
+    "services": [],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:22:37",
+    "sentiment": null
+  }
+]

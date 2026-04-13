@@ -1,0 +1,29 @@
+[
+  {
+    "slug": "art-agency-rockaway",
+    "name": "A.R.T. Agency",
+    "city": "rockaway",
+    "state": "NJ",
+    "address": "10 Duncan Lane, Rockaway, NJ 07866",
+    "lat": 40.9035773,
+    "lng": -74.5186046,
+    "phone": "973-335-0769",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Agency providing court reporting and transcription services accepting credit cards.",
+    "certifications": [],
+    "services": [],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:22:37",
+    "sentiment": null
+  }
+]

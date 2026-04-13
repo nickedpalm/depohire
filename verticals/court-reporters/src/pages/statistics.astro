@@ -1,0 +1,159 @@
+---
+import PageLayout from '~/layouts/PageLayout.astro';
+import Breadcrumbs from '~/components/directory/Breadcrumbs.astro';
+import LeafletMap from '~/components/directory/LeafletMap.astro';
+import config from '~/config';
+import citiesData from '~/data/cities.json';
+import { getAllListings, getListingCountByCity, getListingCountByState } from '~/lib/listings';
+
+const currentYear = new Date().getFullYear();
+const capitalizedKeyword = config.primaryKeyword.replace(/\b\w/g, c => c.toUpperCase());
+const title = `${capitalizedKeyword} Industry Statistics (${currentYear})`;
+const description = `Data-driven overview of the ${config.primaryKeyword} industry: providers by state, average ratings, coverage maps, and market insights.`;
+
+const listings = getAllListings();
+const countByCity = getListingCountByCity();
+const countByState = getListingCountByState();
+
+const totalListings = listings.length;
+const totalCities = Object.keys(countByCity).length;
+const totalStates = Object.keys(countByState).length;
+const avgRating = listings.filter(l => l.rating > 0).reduce((sum, l) => sum + l.rating, 0) / (listings.filter(l => l.rating > 0).length || 1);
+const withWebsite = listings.filter(l => l.website).length;
+const withCerts = listings.filter(l => l.certifications && l.certifications.length > 0).length;
+const withSentiment = listings.filter(l => l.sentiment).length;
+const positiveSentiment = listings.filter(l => l.sentiment?.label === 'positive').length;
+
+const stateEntries = Object.entries(countByState).sort((a, b) => b[1] - a[1]);
+
+const cityEntries = Object.entries(countByCity)
+  .map(([slug, count]) => {
+    const city = citiesData.find(c => c.slug === slug);
+    return { slug, count, name: city?.city || slug, state: city?.state || '', stateSlug: city?.stateSlug || '' };
+  })
+  .sort((a, b) => b.count - a.count);
+
+const cityPins = cityEntries.map(ce => {
+  const city = citiesData.find(c => c.slug === ce.slug);
+  return city ? { lat: city.lat, lng: city.lng, name: `${ce.name}: ${ce.count} providers`, slug: ce.slug } : null;
+}).filter(Boolean);
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Dataset',
+  name: title,
+  description,
+  creator: { '@type': 'Organization', name: config.name },
+  dateModified: new Date().toISOString(),
+  distribution: {
+    '@type': 'DataDownload',
+    contentUrl: `${config.siteUrl}/statistics/`,
+    encodingFormat: 'text/html',
+  },
+};
+
+const metadata = { title, description };
+---
+<PageLayout metadata={metadata}>
+  <Fragment slot="announcement"><span></span></Fragment>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <Breadcrumbs crumbs={[{ label: 'Statistics' }]} />
+
+    <h1 class="text-3xl font-bold text-default mb-2">{title}</h1>
+    <p class="text-muted mb-8">A data-driven snapshot of the {config.primaryKeyword} market across the United States.</p>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
+      <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 text-center">
+        <p class="text-3xl font-bold text-primary">{totalListings}</p>
+        <p class="text-sm text-muted mt-1">Total Providers</p>
+      </div>
+      <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 text-center">
+        <p class="text-3xl font-bold text-primary">{totalCities}</p>
+        <p class="text-sm text-muted mt-1">Cities Covered</p>
+      </div>
+      <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 text-center">
+        <p class="text-3xl font-bold text-primary">{totalStates}</p>
+        <p class="text-sm text-muted mt-1">States</p>
+      </div>
+      <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 text-center">
+        <p class="text-3xl font-bold text-primary">{avgRating.toFixed(1)}</p>
+        <p class="text-sm text-muted mt-1">Avg. Rating</p>
+      </div>
+    </div>
+
+    {cityPins.length > 0 && (
+      <div class="mb-10">
+        <h2 class="text-xl font-bold text-default mb-4">Coverage Map</h2>
+        <LeafletMap pins={cityPins} centerLat={39.8} centerLng={-98.5} zoom={4} />
+      </div>
+    )}
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+      <div>
+        <h2 class="text-xl font-bold text-default mb-4">Providers by State</h2>
+        <div class="space-y-2">
+          {stateEntries.slice(0, 15).map(([state, count], i) => (
+            <div class="flex items-center gap-3">
+              <span class="text-sm font-mono text-muted w-6">{i + 1}.</span>
+              <span class="text-sm font-semibold text-default w-8">{state}</span>
+              <div class="flex-1 bg-gray-100 rounded-full h-4 overflow-hidden">
+                <div class="bg-primary h-full rounded-full" style={`width: ${(count / stateEntries[0][1]) * 100}%`}></div>
+              </div>
+              <span class="text-sm text-muted w-8 text-right">{count}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-bold text-default mb-4">Top Cities</h2>
+        <div class="space-y-2">
+          {cityEntries.slice(0, 15).map((ce, i) => (
+            <div class="flex items-center gap-3">
+              <span class="text-sm font-mono text-muted w-6">{i + 1}.</span>
+              <a href={`/locations/${ce.stateSlug}/${ce.slug}/`} class="text-sm font-semibold text-primary hover:underline no-underline flex-1 truncate">{ce.name}, {ce.state}</a>
+              <span class="text-sm text-muted">{ce.count}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-10">
+      <h2 class="text-xl font-bold text-default mb-4">Industry Metrics</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-gray-200">
+              <th class="text-left py-2 text-muted font-medium">Metric</th>
+              <th class="text-right py-2 text-muted font-medium">Value</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            <tr><td class="py-2">Total providers listed</td><td class="py-2 text-right font-semibold">{totalListings}</td></tr>
+            <tr><td class="py-2">Average rating (where available)</td><td class="py-2 text-right font-semibold">{avgRating.toFixed(1)} / 5.0</td></tr>
+            <tr><td class="py-2">Providers with website</td><td class="py-2 text-right font-semibold">{withWebsite} ({Math.round(withWebsite/totalListings*100)}%)</td></tr>
+            <tr><td class="py-2">With professional certifications</td><td class="py-2 text-right font-semibold">{withCerts} ({Math.round(withCerts/totalListings*100)}%)</td></tr>
+            <tr><td class="py-2">With review sentiment data</td><td class="py-2 text-right font-semibold">{withSentiment}</td></tr>
+            {withSentiment > 0 && (
+              <tr><td class="py-2">Positive sentiment rate</td><td class="py-2 text-right font-semibold">{Math.round(positiveSentiment/withSentiment*100)}%</td></tr>
+            )}
+            <tr><td class="py-2">Typical service cost</td><td class="py-2 text-right font-semibold">{config.jobValue || 'Varies'}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="bg-gray-50 border border-gray-200 rounded-xl p-5 text-sm text-muted">
+      <p>
+        <strong>Methodology:</strong> Data sourced from public business directories, review platforms, and professional registries.
+        Statistics reflect the current state of our database as of the most recent build.
+        See our <a href="/editorial-guidelines/" class="text-primary hover:underline">Editorial Guidelines</a> for details on our data collection process.
+      </p>
+      <p class="mt-2">
+        Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+      </p>
+    </div>
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+</PageLayout>

@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "cornerstone-court-reporting-inc-lake-orion",
+    "name": "Cornerstone Court Reporting, Inc.",
+    "city": "lake-orion",
+    "state": "MI",
+    "address": "",
+    "lat": 42.7844752,
+    "lng": -83.2396612,
+    "phone": "248-202-8858",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting firm serving Michigan.",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:24:53",
+    "sentiment": null
+  }
+]

@@ -1,0 +1,278 @@
+---
+import DashboardLayout from '~/layouts/DashboardLayout.astro';
+import config from '~/config';
+---
+<DashboardLayout title={`Edit Profile — ${config.brandName}`} activePage="profile">
+
+  <div class="dash-topbar">
+    <div>
+      <h1>Edit Profile</h1>
+      <div class="dash-topbar-sub">Update your business information visible to attorneys.</div>
+    </div>
+    <button id="save-btn" class="dash-btn dash-btn-primary">Save Changes</button>
+  </div>
+
+  <!-- Save banner -->
+  <div id="save-banner" style="display:none;background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:600;margin-bottom:20px;text-align:center"></div>
+
+  <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:20px">
+    <!-- Left: Form -->
+    <div>
+      <div class="dash-card" style="margin-bottom:20px">
+        <div class="dash-card-header"><h2>Business Information</h2></div>
+        <div class="dash-card-body">
+          <form id="profile-form" style="display:flex;flex-direction:column;gap:16px">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+              <div>
+                <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:6px">Business Name</label>
+                <input type="text" name="name" class="dash-input" placeholder="Your business name" />
+              </div>
+              <div>
+                <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:6px">Phone</label>
+                <input type="tel" name="phone" class="dash-input" placeholder="(555) 123-4567" />
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+              <div>
+                <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:6px">Website</label>
+                <input type="url" name="website" class="dash-input" placeholder="https://yoursite.com" />
+              </div>
+              <div>
+                <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:6px">Contact Email</label>
+                <input type="email" name="email" class="dash-input" placeholder="contact@yoursite.com" />
+              </div>
+            </div>
+            <div>
+              <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:6px">Description</label>
+              <textarea name="description" rows="5" class="dash-input" placeholder="Tell attorneys why they should hire you..."></textarea>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+              <div>
+                <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:6px">Coverage Area</label>
+                <input type="text" name="coverage_area" class="dash-input" placeholder="e.g., Greater NYC metro" />
+              </div>
+              <div>
+                <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:6px">Years of Experience</label>
+                <input type="number" name="years_experience" class="dash-input" placeholder="15" min="0" max="99" />
+              </div>
+            </div>
+            <div>
+              <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:6px">Sample Work URL</label>
+              <input type="url" name="sample_work_url" class="dash-input" placeholder="https://youtube.com/watch?v=..." />
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Services -->
+      <div class="dash-card" style="margin-bottom:20px">
+        <div class="dash-card-header"><h2>Services</h2></div>
+        <div class="dash-card-body">
+          <div id="services-list" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px"></div>
+          <div style="display:flex;gap:8px">
+            <input type="text" id="new-service" class="dash-input" placeholder="Add a service (e.g., Realtime Reporting)" style="flex:1" />
+            <button id="add-service" class="dash-btn dash-btn-outline">Add</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Certifications -->
+      <div class="dash-card">
+        <div class="dash-card-header"><h2>Certifications</h2></div>
+        <div class="dash-card-body">
+          <div id="certs-list" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px"></div>
+          <div style="display:flex;gap:8px">
+            <input type="text" id="new-cert" class="dash-input" placeholder="Add certification (e.g., RPR)" style="flex:1" />
+            <button id="add-cert" class="dash-btn dash-btn-outline">Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Preview -->
+    <div>
+      <div class="dash-card" style="position:sticky;top:32px">
+        <div class="dash-card-header"><h2>Live Preview</h2></div>
+        <div id="profile-preview" class="dash-card-body">
+          <p style="color:#9ca3af;font-size:13px;text-align:center">Fill in your profile to see a preview</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline>
+    window.addEventListener('dash-ready', async function() {
+      var slug = window.dashState.currentSlug;
+      var services = [];
+      var certifications = [];
+
+      // Load listing data
+      try {
+        var resp = await fetch('/api/provider/listing?slug=' + slug, { credentials: 'include' });
+        if (resp.ok) {
+          var result = await resp.json();
+          var d = result.data || {};
+          var form = document.getElementById('profile-form');
+          ['name','phone','website','email','description','coverage_area','years_experience','sample_work_url'].forEach(function(f) {
+            var el = form.querySelector('[name="'+f+'"]');
+            if (el && d[f] !== undefined && d[f] !== null) el.value = d[f];
+          });
+          services = Array.isArray(d.services) ? d.services.slice() : [];
+          certifications = Array.isArray(d.certifications) ? d.certifications.slice() : [];
+          renderTags();
+          updatePreview();
+        }
+      } catch(e) { console.error(e); }
+
+      function renderTags() {
+        document.getElementById('services-list').innerHTML = services.map(function(s,i) {
+          return '<span style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;font-size:13px;font-weight:500;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe">' +
+            escapeHtml(s) + '<button data-rm="service" data-i="'+i+'" style="color:#93c5fd;font-size:16px;cursor:pointer;background:none;border:none;padding:0;line-height:1">&times;</button></span>';
+        }).join('');
+        document.getElementById('certs-list').innerHTML = certifications.map(function(c,i) {
+          return '<span style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;font-size:13px;font-weight:500;background:#fef3c7;color:#92400e;border:1px solid #fde68a">' +
+            escapeHtml(c) + '<button data-rm="cert" data-i="'+i+'" style="color:#fbbf24;font-size:16px;cursor:pointer;background:none;border:none;padding:0;line-height:1">&times;</button></span>';
+        }).join('');
+      }
+
+      document.addEventListener('click', function(e) {
+        var btn = e.target.closest('[data-rm]');
+        if (!btn) return;
+        var idx = parseInt(btn.dataset.i);
+        if (btn.dataset.rm === 'service') services.splice(idx, 1);
+        else certifications.splice(idx, 1);
+        renderTags();
+      });
+
+      document.getElementById('add-service').addEventListener('click', function() {
+        var inp = document.getElementById('new-service');
+        var v = inp.value.trim();
+        if (v && services.indexOf(v) === -1) { services.push(v); renderTags(); inp.value = ''; }
+      });
+      document.getElementById('add-cert').addEventListener('click', function() {
+        var inp = document.getElementById('new-cert');
+        var v = inp.value.trim();
+        if (v && certifications.indexOf(v) === -1) { certifications.push(v); renderTags(); inp.value = ''; }
+      });
+      document.getElementById('new-service').addEventListener('keydown', function(e) { if (e.key==='Enter') { e.preventDefault(); document.getElementById('add-service').click(); }});
+      document.getElementById('new-cert').addEventListener('keydown', function(e) { if (e.key==='Enter') { e.preventDefault(); document.getElementById('add-cert').click(); }});
+
+      // Validation
+      function validateProfile() {
+        var form = document.getElementById('profile-form');
+        var email = form.querySelector('[name="email"]').value.trim();
+        var website = form.querySelector('[name="website"]').value.trim();
+        var phone = form.querySelector('[name="phone"]').value.trim();
+        var demoUrl = form.querySelector('[name="sample_work_url"]').value.trim();
+        var errors = [];
+        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.push('Invalid email address.');
+        if (website && !/^https?:\/\/.+/.test(website)) errors.push('Website must start with http:// or https://');
+        if (phone && phone.replace(/[\s\-\(\)\.+]/g, '').length < 7) errors.push('Phone number is too short.');
+        if (demoUrl && !/^https?:\/\/.+/.test(demoUrl)) errors.push('Sample work URL must start with http:// or https://');
+        return errors;
+      }
+
+      // Unsaved changes detection
+      var savedState = '';
+      function getFormState() {
+        var form = document.getElementById('profile-form');
+        var fields = {};
+        ['name','phone','website','email','description','coverage_area','years_experience','sample_work_url'].forEach(function(f) {
+          var el = form.querySelector('[name="'+f+'"]');
+          fields[f] = el ? el.value : '';
+        });
+        fields.services = services.slice().sort().join(',');
+        fields.certifications = certifications.slice().sort().join(',');
+        return JSON.stringify(fields);
+      }
+      function markSaved() { savedState = getFormState(); }
+      function hasUnsavedChanges() { return savedState !== getFormState(); }
+
+      // Track changes after initial load
+      setTimeout(markSaved, 500);
+
+      window.addEventListener('beforeunload', function(e) {
+        if (hasUnsavedChanges()) { e.preventDefault(); }
+      });
+
+      // Save
+      document.getElementById('save-btn').addEventListener('click', async function() {
+        var btn = this;
+        var banner = document.getElementById('save-banner');
+        var form = document.getElementById('profile-form');
+
+        var errors = validateProfile();
+        if (errors.length > 0) {
+          banner.textContent = errors[0];
+          banner.style.display = 'block';
+          banner.style.background = '#fef2f2'; banner.style.borderColor = '#fecaca'; banner.style.color = '#991b1b';
+          setTimeout(function() { banner.style.display = 'none'; }, 4000);
+          return;
+        }
+
+        btn.textContent = 'Saving...'; btn.disabled = true;
+
+        var payload = {
+          slug: slug,
+          name: form.querySelector('[name="name"]').value.trim(),
+          phone: form.querySelector('[name="phone"]').value.trim(),
+          website: form.querySelector('[name="website"]').value.trim(),
+          email: form.querySelector('[name="email"]').value.trim(),
+          description: form.querySelector('[name="description"]').value.trim(),
+          coverage_area: form.querySelector('[name="coverage_area"]').value.trim(),
+          years_experience: parseInt(form.querySelector('[name="years_experience"]').value) || null,
+          sample_work_url: form.querySelector('[name="sample_work_url"]').value.trim(),
+          services: services,
+          certifications: certifications,
+        };
+
+        try {
+          var resp = await fetch('/api/provider/listing', { method:'PUT', headers:{'Content-Type':'application/json'}, credentials:'include', body:JSON.stringify(payload) });
+          if (resp.ok) {
+            banner.textContent = 'Changes saved successfully!';
+            banner.style.display = 'block';
+            banner.style.background = '#ecfdf5'; banner.style.borderColor = '#a7f3d0'; banner.style.color = '#065f46';
+            updatePreview();
+            markSaved();
+            setTimeout(function() { banner.style.display = 'none'; }, 3000);
+          } else {
+            var err = await resp.json();
+            banner.textContent = err.error || 'Failed to save.';
+            banner.style.display = 'block';
+            banner.style.background = '#fef2f2'; banner.style.borderColor = '#fecaca'; banner.style.color = '#991b1b';
+          }
+        } catch(e) {
+          banner.textContent = 'Network error.';
+          banner.style.display = 'block';
+          banner.style.background = '#fef2f2'; banner.style.borderColor = '#fecaca'; banner.style.color = '#991b1b';
+        }
+        btn.textContent = 'Save Changes'; btn.disabled = false;
+      });
+
+      function updatePreview() {
+        var form = document.getElementById('profile-form');
+        var name = form.querySelector('[name="name"]').value || 'Your Business';
+        var initials = name.substring(0,2).toUpperCase();
+        var desc = form.querySelector('[name="description"]').value || '';
+        var area = form.querySelector('[name="coverage_area"]').value || '';
+
+        document.getElementById('profile-preview').innerHTML =
+          '<div style="padding:16px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0">' +
+            '<div style="display:flex;align-items:center;gap:14px;margin-bottom:12px">' +
+              '<div style="width:48px;height:48px;background:#2563eb;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff">' + initials + '</div>' +
+              '<div><div style="font-size:16px;font-weight:700">' + escapeHtml(name) + ' <span style="font-size:11px;font-weight:600;padding:3px 8px;border-radius:4px;background:#ecfdf5;color:#059669">&#x2713; Verified</span></div>' +
+              '<div style="font-size:13px;color:#6b7280">' + escapeHtml(area) + '</div></div>' +
+            '</div>' +
+            (desc ? '<div style="font-size:13px;color:#6b7280;line-height:1.5;margin-bottom:12px">' + escapeHtml(desc).substring(0,150) + (desc.length > 150 ? '...' : '') + '</div>' : '') +
+            '<div style="display:flex;flex-wrap:wrap;gap:6px">' +
+              services.map(function(s) { return '<span style="background:#eff6ff;color:#2563eb;font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px">' + escapeHtml(s) + '</span>'; }).join('') +
+              certifications.map(function(c) { return '<span style="background:#fef3c7;color:#92400e;font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px">' + escapeHtml(c) + '</span>'; }).join('') +
+            '</div>' +
+          '</div>';
+      }
+
+      function escapeHtml(str) { var d = document.createElement('div'); d.textContent = str || ''; return d.innerHTML; }
+    });
+  </script>
+
+</DashboardLayout>

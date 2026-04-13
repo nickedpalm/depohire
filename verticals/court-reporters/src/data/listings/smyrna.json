@@ -1,0 +1,33 @@
+[
+  {
+    "slug": "lexitas-smyrna",
+    "name": "Lexitas",
+    "city": "smyrna",
+    "state": "TN",
+    "address": "1015 Avery Park Dr., Smyrna, TN 37167",
+    "lat": 35.9455491,
+    "lng": -86.5056407,
+    "phone": "615-595-0073",
+    "website": "https://www.lexitaslegal.com/locations/smyrna",
+    "email": "tn.scheduling@lexitaslegal.com",
+    "contact_form_url": "https://www.lexitaslegal.com/locations/smyrna",
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Full-service court reporting and deposition services with certified stenographic shorthand reporters",
+    "certifications": [],
+    "services": [
+      "court reporting",
+      "depositions",
+      "accurate and timely deliverables"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:23:14",
+    "sentiment": null
+  }
+]

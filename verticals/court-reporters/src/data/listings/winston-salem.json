@@ -1,0 +1,34 @@
+[
+  {
+    "slug": "naegeli-deposition-trial-winston-salem",
+    "name": "NAEGELI Deposition & Trial",
+    "city": "winston-salem",
+    "state": "NC",
+    "address": "",
+    "lat": 36.0998131,
+    "lng": -80.2440518,
+    "phone": "(800) 528-3335",
+    "website": "https://www.naegeliusa.com/locations/winston-salem-north-carolina-court-reporters",
+    "email": "SCHEDULE@NAEGELIUSA.COM",
+    "contact_form_url": "https://www.naegeliusa.com/contact",
+    "contact_method": "email",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Full-service court reporting and litigation support firm specializing in reporting, videography, and trial support.",
+    "certifications": [],
+    "services": [
+      "court reporting",
+      "videography",
+      "interpreting",
+      "trial presentation"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:22:58",
+    "sentiment": null
+  }
+]

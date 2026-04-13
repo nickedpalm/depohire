@@ -1,0 +1,197 @@
+---
+import config from '~/config';
+import citiesData from '~/data/cities.json';
+import { getListingCountByCity } from '~/lib/listings';
+
+interface Props {
+  size?: 'hero' | 'compact';
+}
+
+const { size = 'hero' } = Astro.props;
+const isHero = size === 'hero';
+
+const cityCounts = getListingCountByCity();
+const citiesWithCounts = citiesData
+  .map(c => ({ slug: c.slug, stateSlug: c.stateSlug, city: c.city, state: c.state, lat: c.lat, lng: c.lng, count: cityCounts[c.slug] || 0 }))
+  .filter(c => c.count > 0);
+---
+<div class={isHero ? 'py-16 sm:py-24 bg-gradient-to-br from-primary-600 to-primary-800 text-white' : ''}>
+  <div class="container-narrow text-center">
+    {isHero && (
+      <>
+        <h1 class="text-3xl sm:text-5xl font-bold mb-4">{config.tagline}</h1>
+        <p class="text-lg sm:text-xl text-primary-100 mb-8 max-w-2xl mx-auto">{config.description}</p>
+      </>
+    )}
+    <div class={`relative max-w-xl mx-auto ${isHero ? '' : 'my-4'}`}>
+      <div class={`flex gap-2`}>
+        <div class="relative flex-1">
+          <input
+            type="text"
+            id="smart-search"
+            placeholder={`City name or zip code...`}
+            autocomplete="off"
+            role="combobox"
+            aria-expanded="false"
+            aria-controls="smart-search-results"
+            aria-autocomplete="list"
+            class={`w-full px-4 rounded-lg border-0 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-primary-300 ${isHero ? 'py-4 text-lg' : 'py-2 min-h-[44px]'}`}
+          />
+          <div id="smart-search-results" role="listbox" aria-label="Search results" class="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg mt-1 shadow-xl max-h-64 overflow-y-auto hidden z-30 text-left"></div>
+        </div>
+        <button type="button" id="smart-search-btn" class={`bg-primary-500 hover:bg-primary-400 text-white font-semibold rounded-lg transition-colors ${isHero ? 'px-8 py-4 text-lg' : 'px-4 py-2'}`}>
+          Search
+        </button>
+      </div>
+      <!-- Loading state for zip lookup -->
+      <div id="zip-loading" class="hidden mt-2 text-sm text-primary-200">
+        Finding providers near you...
+      </div>
+    </div>
+    <script type="application/json" id="search-cities-data" set:html={JSON.stringify(citiesWithCounts)} />
+  </div>
+</div>
+
+<script is:inline>
+  function initSmartSearch() {
+    const input = document.getElementById('smart-search');
+    const results = document.getElementById('smart-search-results');
+    const btn = document.getElementById('smart-search-btn');
+    const loading = document.getElementById('zip-loading');
+    const dataEl = document.getElementById('search-cities-data');
+    if (!input || !results || !dataEl || input.dataset.init) return;
+    input.dataset.init = 'true';
+
+    const cities = JSON.parse(dataEl.textContent);
+
+    function haversine(lat1, lng1, lat2, lng2) {
+      const R = 3959;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLng = (lng2 - lng1) * Math.PI / 180;
+      const a = Math.sin(dLat/2) ** 2 + Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) * Math.sin(dLng/2) ** 2;
+      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
+    function showCityResults(matches) {
+      if (matches.length === 0) {
+        results.innerHTML = '<div class="px-4 py-3 text-sm text-gray-500">No providers found nearby. <a href="/states/all/" class="text-primary-600 underline">Browse all states</a></div>';
+      } else {
+        results.innerHTML = matches.map(c => {
+          const dist = c.distance !== undefined ? ` <span class="text-gray-400">${Math.round(c.distance)} mi</span>` : '';
+          return `<a href="/locations/${c.stateSlug}/${c.slug}/" class="flex items-center justify-between px-4 py-2.5 text-sm hover:bg-primary-50 no-underline text-gray-700 border-b border-gray-50 last:border-0">
+            <span><strong>${c.city}</strong>, ${c.state}</span>
+            <span class="text-xs text-gray-400">${c.count} providers${dist}</span>
+          </a>`;
+        }).join('');
+      }
+      results.classList.remove('hidden');
+      input.setAttribute('aria-expanded', 'true');
+    }
+
+    function hideResults() {
+      results.classList.add('hidden');
+      input.setAttribute('aria-expanded', 'false');
+    }
+
+    function searchCities(q) {
+      q = q.toLowerCase().trim();
+      if (q.length < 2) { hideResults(); return; }
+
+      const matches = cities.filter(c =>
+        c.city.toLowerCase().includes(q) ||
+        c.state.toLowerCase().includes(q) ||
+        (c.city + ', ' + c.state).toLowerCase().includes(q)
+      ).slice(0, 8);
+
+      showCityResults(matches);
+    }
+
+    async function searchZip(zip) {
+      loading?.classList.remove('hidden');
+      hideResults();
+
+      try {
+        const resp = await fetch(`https://api.zippopotam.us/us/${zip}`);
+        if (!resp.ok) throw new Error('Invalid zip');
+        const data = await resp.json();
+        const lat = parseFloat(data.places[0].latitude);
+        const lng = parseFloat(data.places[0].longitude);
+        const placeName = data.places[0]['place name'];
+        const stateAbbr = data.places[0]['state abbreviation'];
+
+        // Find nearest cities
+        const nearest = cities
+          .map(c => ({ ...c, distance: haversine(lat, lng, c.lat, c.lng) }))
+          .sort((a, b) => a.distance - b.distance)
+          .slice(0, 6);
+
+        // Prepend a header (sanitize API response)
+        const headerDiv = document.createElement('div');
+        headerDiv.className = 'px-4 py-2 text-xs text-gray-500 bg-gray-50 border-b';
+        headerDiv.textContent = `Nearest providers to ${placeName}, ${stateAbbr} (${zip})`;
+        results.innerHTML = '';
+        results.appendChild(headerDiv);
+        nearest.forEach(c => {
+          const a = document.createElement('a');
+          a.href = `/locations/${c.stateSlug}/${c.slug}/`;
+          a.className = 'flex items-center justify-between px-4 py-2.5 text-sm hover:bg-primary-50 no-underline text-gray-700 border-b border-gray-50 last:border-0';
+          a.innerHTML = `<span><strong>${c.city}</strong>, ${c.state}</span><span class="text-xs text-gray-400">${c.count} providers &middot; ${Math.round(c.distance)} mi</span>`;
+          results.appendChild(a);
+        });
+        results.classList.remove('hidden');
+      } catch {
+        results.innerHTML = '<div class="px-4 py-3 text-sm text-gray-500">Could not find that zip code. Try a city name instead.</div>';
+        results.classList.remove('hidden');
+      } finally {
+        loading?.classList.add('hidden');
+      }
+    }
+
+    function isZipCode(val) {
+      return /^\d{5}$/.test(val.trim());
+    }
+
+    input.addEventListener('input', () => {
+      const val = input.value.trim();
+      if (isZipCode(val)) {
+        searchZip(val);
+      } else {
+        searchCities(val);
+      }
+    });
+
+    btn.addEventListener('click', () => {
+      const val = input.value.trim();
+      if (isZipCode(val)) {
+        searchZip(val);
+      } else if (val.length >= 2) {
+        searchCities(val);
+      }
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        btn.click();
+      }
+    });
+
+    input.addEventListener('blur', () => {
+      setTimeout(() => hideResults(), 200);
+    });
+    input.addEventListener('focus', () => {
+      if (input.value.trim().length >= 2) {
+        const val = input.value.trim();
+        if (isZipCode(val)) searchZip(val);
+        else searchCities(val);
+      }
+    });
+  }
+
+  document.addEventListener('astro:page-load', initSmartSearch);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSmartSearch);
+  } else {
+    initSmartSearch();
+  }
+</script>

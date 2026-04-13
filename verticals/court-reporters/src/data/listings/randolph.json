@@ -1,0 +1,29 @@
+[
+  {
+    "slug": "rose-audiovideo-production-randolph",
+    "name": "Rose AudioVideo Production",
+    "city": "randolph",
+    "state": "NJ",
+    "address": "20 Harmony Road, Randolph, NJ 07869",
+    "lat": 40.8679802,
+    "lng": -74.5878193,
+    "phone": "201-394-5050",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Audio and video production services for court reporting.",
+    "certifications": [],
+    "services": [],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:22:37",
+    "sentiment": null
+  }
+]

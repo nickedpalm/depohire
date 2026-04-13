@@ -1,0 +1,33 @@
+[
+  {
+    "slug": "kentuckiana-court-reporters-llc-london",
+    "name": "Kentuckiana Court Reporters, LLC",
+    "city": "london",
+    "state": "KY",
+    "address": "908 West Fifth Street, Suite 110, London, KY",
+    "lat": 37.1283343,
+    "lng": -84.0835576,
+    "phone": "502-589-2273",
+    "website": "https://www.kentuckianareporters.com",
+    "email": "schedule@kentuckianareporters.com",
+    "contact_form_url": "https://www.kentuckianareporters.com",
+    "contact_method": "email",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Eastern Kentucky office for court reporting services including depositions and conference rooms.",
+    "certifications": [],
+    "services": [
+      "court reporting",
+      "depositions",
+      "conference rooms"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:25:38",
+    "sentiment": null
+  }
+]

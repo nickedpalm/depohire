@@ -1,0 +1,33 @@
+[
+  {
+    "slug": "mm-reporting-inc-itasca",
+    "name": "M&M Reporting, Inc.",
+    "city": "itasca",
+    "state": "IL",
+    "address": "1 Pierce Pl Ste 475w, Itasca, IL 60143-2618",
+    "lat": 41.9712977,
+    "lng": -88.0129164,
+    "phone": "(630) 775-1503",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting, medical records, medical transcription",
+    "certifications": [],
+    "services": [
+      "court reporting",
+      "medical records",
+      "medical transcription"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:21:52",
+    "sentiment": null
+  }
+]

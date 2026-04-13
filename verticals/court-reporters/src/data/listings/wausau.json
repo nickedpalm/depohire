@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "willette-court-reporting-llc-wausau",
+    "name": "Willette Court Reporting, LLC",
+    "city": "wausau",
+    "state": "WI",
+    "address": "630 Fourth Street, Wausau, WI",
+    "lat": 44.9597858,
+    "lng": -89.6272791,
+    "phone": "(715) 355-4384",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting services",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:25:07",
+    "sentiment": null
+  }
+]

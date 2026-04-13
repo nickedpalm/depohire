@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "robbins-reporting-decatur",
+    "name": "Robbins Reporting",
+    "city": "decatur",
+    "state": "IN",
+    "address": "Post Office Box 2, Decatur, IN 46733",
+    "lat": 39.2862128,
+    "lng": -85.4943058,
+    "phone": "219-997-6810",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Solo court reporter providing reporting services.",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:24:36",
+    "sentiment": null
+  }
+]

@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "legal-solutions-network-melbourne",
+    "name": "Legal Solutions Network",
+    "city": "melbourne",
+    "state": "FL",
+    "address": "202 N. Harbour City Blvd., Suite 300, Melbourne, FL 32901",
+    "lat": 28.0785034,
+    "lng": -80.6077908,
+    "phone": "(407) 253-3300",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Provides court reporting and legal support services.",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:21:41",
+    "sentiment": null
+  }
+]

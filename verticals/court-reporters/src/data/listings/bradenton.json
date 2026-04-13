@@ -1,0 +1,32 @@
+[
+  {
+    "slug": "a-1-court-reporting-bradenton",
+    "name": "A-1 Court Reporting",
+    "city": "bradenton",
+    "state": "FL",
+    "address": "",
+    "lat": 27.4989278,
+    "lng": -82.5748194,
+    "phone": "(941) 366-6634",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting and transcription services approved by the 12th Judicial Circuit.",
+    "certifications": [],
+    "services": [
+      "court reporting",
+      "transcription"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:21:41",
+    "sentiment": null
+  }
+]

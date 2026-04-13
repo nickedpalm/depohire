@@ -1,0 +1,44 @@
+[
+  {
+    "slug": "court-reporter-rate-guide-2026",
+    "title": "Court Reporter Rate Guide 2026",
+    "subtitle": "Real pricing data — per-page rates, appearance fees, and hidden costs across all 50 states",
+    "description": "The most comprehensive court reporter pricing guide available. Understand how reporter billing works, benchmark against federal JCUS rate caps, and compare per-page and per-diem rates across metro areas and service levels.",
+    "bullets": [
+      "Federal and private per-page transcript rates",
+      "Rates by metro area and service level",
+      "Hidden fees to watch for (expedited, realtime, copies, exhibits)",
+      "How to negotiate better rates with agencies and freelancers"
+    ],
+    "pdfUrl": "/guides/pdf/court-reporter-rate-guide-2026.pdf",
+    "category": "Pricing"
+  },
+  {
+    "slug": "court-reporter-certification-vetting-guide",
+    "title": "Court Reporter Certification & Vetting Guide",
+    "subtitle": "How to verify credentials and avoid unqualified reporters",
+    "description": "Understand the NCRA certification hierarchy, verify credentials with a step-by-step process, and use a field-tested vetting questionnaire before booking any court reporter.",
+    "bullets": [
+      "RPR, RMR, RDR, CRR certifications explained",
+      "Step-by-step credential verification process",
+      "10 red flags that indicate an unqualified reporter",
+      "Sample vetting questionnaire you can send to providers"
+    ],
+    "pdfUrl": "/guides/pdf/court-reporter-certification-vetting-guide.pdf",
+    "category": "Hiring"
+  },
+  {
+    "slug": "remote-court-reporting-setup-checklist",
+    "title": "Remote Court Reporting Setup Checklist",
+    "subtitle": "Everything you need for a legally defensible remote deposition with a court reporter",
+    "description": "A practical technology and protocol checklist for attorneys and paralegals running remote depositions. Covers participant and reporter equipment, pre-deposition testing, stipulations, and backup protocols.",
+    "bullets": [
+      "Participant tech checklist (HD webcam, Ethernet, lighting, exhibits)",
+      "Court reporter equipment (steno writer, CAT software, realtime streaming)",
+      "Pre-deposition protocol (24–48 hour system test, stipulations)",
+      "Backup plans for audio, internet, and hardware failures"
+    ],
+    "pdfUrl": "/guides/pdf/remote-court-reporting-setup-checklist.pdf",
+    "category": "How-To"
+  }
+]

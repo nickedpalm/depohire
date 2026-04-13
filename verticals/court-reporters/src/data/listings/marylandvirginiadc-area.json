@@ -1,0 +1,39 @@
+[
+  {
+    "slug": "misty-klapper-associates-marylandvirginiadc-area",
+    "name": "Misty Klapper & Associates",
+    "city": "marylandvirginiadc-area",
+    "state": "MD",
+    "address": "",
+    "lat": 0,
+    "lng": 0,
+    "phone": "251212-1044",
+    "website": "http://mistyklapperassociates.com",
+    "email": "misty@mistyklapperassociates.com",
+    "contact_form_url": "http://mistyklapperassociates.com/contact-us/",
+    "contact_method": "email",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Accurate, timely court reporting services for over 30 years serving Virginia, Maryland, and Washington, D.C. area.",
+    "certifications": [],
+    "services": [
+      "court reporting",
+      "realtime reporting",
+      "videography",
+      "text-to-video synchronization",
+      "internet streaming",
+      "transcription",
+      "CART",
+      "government hearing transcripts",
+      "e-transcripts"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:23:28",
+    "sentiment": null
+  }
+]

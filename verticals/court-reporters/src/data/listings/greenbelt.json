@@ -1,0 +1,33 @@
+[
+  {
+    "slug": "capital-reporting-company-greenbelt",
+    "name": "Capital Reporting Company",
+    "city": "greenbelt",
+    "state": "MD",
+    "address": "6301 Ivy Lane, Suite 700, Greenbelt, MD 20770",
+    "lat": 39.004607,
+    "lng": -76.8756838,
+    "phone": "301-841-8347",
+    "website": "https://www.capitalreportingcompany.com",
+    "email": "",
+    "contact_form_url": "https://www.capitalreportingcompany.com/contact-us/",
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Full-service court reporting company with experienced Maryland court reporters and national coverage.",
+    "certifications": [],
+    "services": [
+      "court reporting",
+      "depositions",
+      "transcription"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:23:28",
+    "sentiment": null
+  }
+]

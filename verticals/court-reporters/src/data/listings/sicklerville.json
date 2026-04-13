@@ -1,0 +1,29 @@
+[
+  {
+    "slug": "amd-transcripts-llc-sicklerville",
+    "name": "AMD Transcripts, LLC",
+    "city": "sicklerville",
+    "state": "NJ",
+    "address": "54 Red Bank Drive, Sicklerville, NJ 08081",
+    "lat": 39.768695,
+    "lng": -75.036064,
+    "phone": "",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "none",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court transcription services accepting credit cards.",
+    "certifications": [],
+    "services": [],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:22:37",
+    "sentiment": null
+  }
+]

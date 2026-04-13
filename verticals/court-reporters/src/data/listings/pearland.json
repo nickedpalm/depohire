@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "lea-abbott-sturm-pearland",
+    "name": "Lea Abbott Sturm",
+    "city": "pearland",
+    "state": "TX",
+    "address": "2917 Emerald Brook Ln, Pearland, TX 77584",
+    "lat": 29.5575412,
+    "lng": -95.4116682,
+    "phone": "832-444-8088",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Certified court reporter",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:21:33",
+    "sentiment": null
+  }
+]

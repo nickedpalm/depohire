@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "ace-reporting-services-inc-yakima",
+    "name": "Ace Reporting Services, Inc",
+    "city": "yakima",
+    "state": "WA",
+    "address": "1402 Third Ave, Suite 210, Yakima, WA 98901",
+    "lat": 46.601557,
+    "lng": -120.510842,
+    "phone": "",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "none",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting services",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:24:20",
+    "sentiment": null
+  }
+]

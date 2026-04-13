@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "vsm-reporting-llc-littleton",
+    "name": "VSM Reporting, LLC",
+    "city": "littleton",
+    "state": "CO",
+    "address": "P.O. Box 271208, Littleton, CO 80127",
+    "lat": 39.613321,
+    "lng": -105.016649,
+    "phone": "(303) 979-0959",
+    "website": "www.vsmreporting.com",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting services in Denver and Colorado Springs",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:23:55",
+    "sentiment": null
+  }
+]

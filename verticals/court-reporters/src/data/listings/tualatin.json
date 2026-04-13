@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "gertz-court-reporting-tualatin",
+    "name": "Gertz Court Reporting",
+    "city": "tualatin",
+    "state": "OR",
+    "address": "19200 SW 46th Ave., Tualatin, OR",
+    "lat": 45.3808844,
+    "lng": -122.7248792,
+    "phone": "503-692-3390",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting services in Tualatin.",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:25:17",
+    "sentiment": null
+  }
+]

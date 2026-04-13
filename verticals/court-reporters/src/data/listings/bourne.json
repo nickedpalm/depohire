@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "acc-reporting-inc-bourne",
+    "name": "ACC Reporting, Inc.",
+    "city": "bourne",
+    "state": "MA",
+    "address": "83A Waterhouse Road, Bourne, MA 02532",
+    "lat": 41.7336545,
+    "lng": -70.5897133,
+    "phone": "508.420.7904",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting services on Cape Cod area.",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:22:52",
+    "sentiment": null
+  }
+]

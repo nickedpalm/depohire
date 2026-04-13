@@ -1,0 +1,32 @@
+[
+  {
+    "slug": "acorn-transcriptions-llc-north-port",
+    "name": "Acorn Transcriptions LLC",
+    "city": "north-port",
+    "state": "FL",
+    "address": "3572 Acorn Street, North Port, FL 34286",
+    "lat": 27.0885017,
+    "lng": -82.2049807,
+    "phone": "(941) 426-4465",
+    "website": "www.acornfla.com",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court-approved transcription services for judicial circuits.",
+    "certifications": [],
+    "services": [
+      "transcription",
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:21:41",
+    "sentiment": null
+  }
+]

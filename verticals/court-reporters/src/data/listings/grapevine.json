@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "stryker-reporting-grapevine",
+    "name": "Stryker Reporting",
+    "city": "grapevine",
+    "state": "TX",
+    "address": "1450 Hughes Rd Ste 230, Grapevine, TX 76051",
+    "lat": 32.9337381,
+    "lng": -97.0788754,
+    "phone": "",
+    "website": "http://strykerreporting.com",
+    "email": "renee@strykerreporting.com",
+    "contact_form_url": "http://strykerreporting.com",
+    "contact_method": "email",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporter services",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:21:33",
+    "sentiment": null
+  }
+]

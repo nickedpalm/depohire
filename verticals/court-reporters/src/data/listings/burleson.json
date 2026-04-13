@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "amy-massey-associates-burleson",
+    "name": "Amy Massey & Associates",
+    "city": "burleson",
+    "state": "TX",
+    "address": "6724 Kirk Ln, Burleson, TX 76028",
+    "lat": 30.4764878,
+    "lng": -96.6353488,
+    "phone": "1774462525",
+    "website": "http://amymasseyandassociates.com",
+    "email": "amymasseyassociates@gmail.com",
+    "contact_form_url": "https://dallasftworthcourtreporter.com/contact/",
+    "contact_method": "email",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporter services",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:21:33",
+    "sentiment": null
+  }
+]

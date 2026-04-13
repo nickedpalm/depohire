@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "exceptional-reporting-corpus-christi",
+    "name": "Exceptional Reporting",
+    "city": "corpus-christi",
+    "state": "TX",
+    "address": "Corpus Christi, TX 78413",
+    "lat": 27.7635302,
+    "lng": -97.4033191,
+    "phone": "",
+    "website": "https://www.exceptionalreporting.com",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "website_only",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporter services",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:21:33",
+    "sentiment": null
+  }
+]

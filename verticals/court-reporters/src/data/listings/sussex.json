@@ -1,0 +1,29 @@
+[
+  {
+    "slug": "accurate-transcriptions-llc-sussex",
+    "name": "Accurate Transcriptions, LLC",
+    "city": "sussex",
+    "state": "NJ",
+    "address": "93 Brink Road, Sussex, NJ 07461",
+    "lat": 41.2585332,
+    "lng": -74.6732811,
+    "phone": "973-271-1410",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Accurate court transcription services accepting credit cards.",
+    "certifications": [],
+    "services": [],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:22:37",
+    "sentiment": null
+  }
+]

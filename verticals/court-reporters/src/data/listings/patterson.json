@@ -1,0 +1,34 @@
+[
+  {
+    "slug": "pilant-court-reporting-patterson",
+    "name": "Pilant Court Reporting",
+    "city": "patterson",
+    "state": "LA",
+    "address": "1128 Main St, Patterson, LA 70392",
+    "lat": 29.6951353,
+    "lng": -91.3026,
+    "phone": "800-841-6863",
+    "website": "https://pilant.com",
+    "email": "",
+    "contact_form_url": "https://pilant.com/contact-us/",
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Certified court reporters and legal videographers serving multiple Louisiana locations including Shreveport, New Orleans, Lafayette, and more; supports Zoom and Teams.",
+    "certifications": [],
+    "services": [
+      "court reporting",
+      "legal videography",
+      "conference rooms",
+      "remote depositions"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:25:24",
+    "sentiment": null
+  }
+]

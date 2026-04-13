@@ -1,0 +1,191 @@
+---
+import PageLayout from '~/layouts/PageLayout.astro';
+import FAQAccordion from '~/components/directory/FAQAccordion.astro';
+import LightHero from '~/components/directory/LightHero.astro';
+import config from '~/config';
+import citiesData from '~/data/cities.json';
+
+const totalCities = citiesData.length;
+
+// Pricing (USD) — sourced from configs/<slug>.yaml `pricing` block via factory.py
+const featuredMo = config.pricing?.featuredMonthlyUsd ?? 79;
+const featuredYr = config.pricing?.featuredAnnualUsd ?? featuredMo * 10;
+const featuredSavings = featuredMo * 12 - featuredYr;
+const cityProMo = config.pricing?.cityProMonthlyUsd ?? 149;
+const fmt = (n: number) => n.toLocaleString('en-US');
+
+const metadata = {
+  title: 'Advertise',
+  description: `Get a featured listing in the #1 ${config.primaryKeyword} directory. Attorneys in ${totalCities}+ cities searching — put your business at the top. Plans from $${featuredMo}/mo.`,
+};
+---
+<PageLayout metadata={metadata}>
+  <Fragment slot="announcement"><span></span></Fragment>
+
+  <LightHero
+    title="Attorneys in your city are searching for a videographer <em>right now.</em>"
+    subtitle={`Without a Sponsored listing, they find your competitor first. ${config.brandName} puts you at the top of results in your city — with quote requests routed directly to your inbox.`}
+    notice="Limited availability: We cap Sponsored listings at 2–3 per city to protect the value of each placement."
+    stats={[
+      { value: `${totalCities}+`, label: 'Cities covered' },
+      { value: '1,000+', label: 'Monthly attorney searches' },
+      { value: '2–3', label: 'Sponsored slots per city max' },
+      { value: '$0', label: 'Setup fees, ever' },
+    ]}
+  />
+
+  <!-- Plans -->
+  <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+      <!-- Featured -->
+      <div class="card p-6 border-2 border-primary">
+        <h3 class="text-xl font-bold text-default">Featured Listing</h3>
+        <p class="text-sm text-muted mt-1">One job covers months of listing fees.</p>
+        <div class="mt-4 mb-6">
+          <span class="text-4xl font-extrabold text-default">${fmt(featuredMo)}</span>
+          <span class="text-muted">/month</span>
+        </div>
+        <ul class="space-y-3 text-sm">
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Pinned to #1 in your city results
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            "Sponsored" badge — visible immediately
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Quote requests emailed directly to you
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Extended bio + full service list
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Direct booking link on your profile
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            CLVS badge (if applicable)
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Monthly impressions report
+          </li>
+        </ul>
+      </div>
+
+      <!-- City Pro -->
+      <div class="card p-6">
+        <h3 class="text-xl font-bold text-default">City Pro</h3>
+        <p class="text-sm text-muted mt-1">Everything in Featured, plus editorial SEO + newsletter.</p>
+        <div class="mt-4 mb-6">
+          <span class="text-4xl font-extrabold text-default">${fmt(cityProMo)}</span>
+          <span class="text-muted">/month</span>
+        </div>
+        <ul class="space-y-3 text-sm">
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            All Featured features
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Named in "Best in [City]" guide post
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Dofollow backlink to your website
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Sponsor slot in monthly attorney email
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Priority support & quarterly review
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Add-ons -->
+    <div class="card p-6 mt-6">
+      <h3 class="font-bold text-default mb-3">A La Carte Add-Ons</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+        <div>
+          <p class="font-semibold">Additional city</p>
+          <p class="text-muted">$49/mo</p>
+        </div>
+        <div>
+          <p class="font-semibold">Newsletter spot (one-time)</p>
+          <p class="text-muted">$99</p>
+        </div>
+        <div>
+          <p class="font-semibold">City guide mention (one-time)</p>
+          <p class="text-muted">$149</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="text-sm text-muted mt-4">We evaluate all applicants for professionalism, legal videography experience, and verifiable client history.</p>
+  </section>
+
+  <!-- Checkout -->
+  <section class="bg-gray-50 py-12" id="advertise-form">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-2xl font-bold text-default mb-2">Ready? Pick your plan and check out instantly.</h2>
+      <p class="text-muted mb-8">Secure payment via Stripe. Cancel anytime. Your listing goes live within 2–3 business days.</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg mx-auto">
+        <a href={config.stripeFeaturedMonthlyLink} target="_blank" rel="noopener" class="btn-primary py-4 text-center no-underline text-lg">
+          Featured &mdash; ${fmt(featuredMo)}/mo
+        </a>
+        <a href={config.stripeCityProMonthlyLink} target="_blank" rel="noopener" class="btn-primary py-4 text-center no-underline text-lg bg-green-700 hover:bg-green-600">
+          City Pro &mdash; ${fmt(cityProMo)}/mo
+        </a>
+      </div>
+      <p class="text-xs text-muted mt-4">Questions? Email <a href={`mailto:${config.contactEmail}`} class="text-primary hover:underline">{config.contactEmail}</a></p>
+    </div>
+  </section>
+
+  <!-- ROI -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
+    <h2 class="text-3xl font-bold text-default">One job pays for months of listing fees.</h2>
+    <p class="mt-4 text-lg text-muted max-w-2xl mx-auto">
+      The average engagement pays {config.jobValue}. A Featured listing is ${fmt(featuredMo)}/month — or ${fmt(featuredYr)}/year (save ${fmt(featuredSavings)}). One booked job from {config.brandName} and you're profitable for the rest of the year.
+    </p>
+    <a href={config.stripeFeaturedMonthlyLink} target="_blank" rel="noopener" class="btn-primary inline-block mt-6 no-underline">Get Featured &mdash; ${fmt(featuredMo)}/mo &rarr;</a>
+  </section>
+
+  <!-- FAQ -->
+  <section class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <FAQAccordion faqs={[
+      {
+        question: 'Will this actually send me clients?',
+        answer: "That depends on your city and how competitive you are on price and credibility. What we can say: every quote form submitted on your listing page is emailed directly to you — name, email, case type, and preferred date.",
+      },
+      {
+        question: 'Who sees my listing?',
+        answer: "Primarily litigation attorneys, paralegals, and legal ops professionals searching for deposition videographers in their city. Traffic is high-intent — people don't search 'deposition videographer Chicago' unless they're about to hire one.",
+      },
+      {
+        question: 'Do I need to be CLVS certified?',
+        answer: 'Preferred but not required. We evaluate all applicants on professional credentials and a verifiable track record in legal videography.',
+      },
+      {
+        question: 'How long does setup take?',
+        answer: 'Sponsored listings go live within 2–3 business days of approval.',
+      },
+      {
+        question: 'Can I advertise in multiple cities?',
+        answer: 'Yes — each additional city is $49/month on top of your base plan. Regional firms commonly list in 2–3 metros.',
+      },
+      {
+        question: 'Is there a contract or setup fee?',
+        answer: "No setup fee. No annual contract. Month-to-month with 30 days notice to cancel. We want you to stay because it's working, not because you're locked in.",
+      },
+    ]} />
+  </section>
+</PageLayout>

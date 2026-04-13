@@ -1,0 +1,8 @@
+name = "stenoscout"
+compatibility_date = "2024-09-23"
+
+[[d1_databases]]
+binding = "LEADS_DB"
+database_name = "stenoscout-db"
+database_id = "ec19faea-6aea-4e1f-bc94-4f1b9e55e831"
+migrations_dir = "migrations"

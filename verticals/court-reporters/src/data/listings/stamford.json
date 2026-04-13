@@ -1,0 +1,37 @@
+[
+  {
+    "slug": "huseby-court-reporting-stamford",
+    "name": "Huseby Court Reporting",
+    "city": "Stamford",
+    "state": "CT",
+    "address": "6 Landmark Square, Stamford, CT 06901, USA",
+    "lat": 41.05466879999999,
+    "lng": -73.5379655,
+    "phone": "(203) 316-8591",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 1.0,
+    "review_count": 1,
+    "description": "",
+    "certifications": [],
+    "services": [],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "google_maps",
+    "scraped_at": "2026-03-30 14:04:57",
+    "sentiment": {
+      "label": "negative",
+      "score": 0.0,
+      "keywords": [
+        "below average"
+      ],
+      "highlights": [],
+      "summary": "Google Maps rating: 1.0/5 from 1 review"
+    }
+  }
+]

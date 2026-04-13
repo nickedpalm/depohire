@@ -1,0 +1,252 @@
+---
+import PageLayout from '~/layouts/PageLayout.astro';
+import PageHero from '~/components/directory/PageHero.astro';
+import config from '~/config';
+import citiesData from '~/data/cities.json';
+import { getListingCountByCity, getAllListings } from '~/lib/listings';
+
+const cityCounts = getListingCountByCity();
+const allListings = getAllListings();
+
+// Build state groups with cities
+const stateMap = new Map<string, {
+  name: string;
+  slug: string;
+  abbr: string;
+  cities: { city: string; slug: string; stateSlug: string; listingCount: number }[];
+  providerCount: number;
+}>();
+
+for (const city of citiesData) {
+  if (!stateMap.has(city.state)) {
+    stateMap.set(city.state, {
+      name: city.stateName,
+      slug: city.stateSlug,
+      abbr: city.state,
+      cities: [],
+      providerCount: 0,
+    });
+  }
+  const s = stateMap.get(city.state)!;
+  const count = cityCounts[city.slug] || 0;
+  s.cities.push({ city: city.city, slug: city.slug, stateSlug: city.stateSlug, listingCount: count });
+  s.providerCount += count;
+}
+
+const stateGroups = Array.from(stateMap.values())
+  .sort((a, b) => a.name.localeCompare(b.name))
+  .map(s => ({
+    ...s,
+    cities: s.cities.sort((a, b) => b.listingCount - a.listingCount || a.city.localeCompare(b.city)),
+  }));
+
+const totalProviders = allListings.length;
+const totalCities = citiesData.length;
+const totalStates = stateGroups.length;
+const citiesWithProviders = citiesData.filter(c => (cityCounts[c.slug] || 0) > 0).length;
+const currentYear = new Date().getFullYear();
+
+const title = `All Court Reporter Locations`;
+const description = `Browse ${totalProviders.toLocaleString()}+ curated court reporters across ${citiesWithProviders} cities in ${totalStates} states. Find providers near your next proceeding.`;
+const metadata = { title, description };
+---
+<PageLayout metadata={metadata}>
+  <Fragment slot="announcement"><span></span></Fragment>
+
+  <PageHero
+    title="All Court Reporter Locations"
+    subtitle={`Browse ${totalProviders.toLocaleString()} curated providers across ${citiesWithProviders} cities in ${totalStates} states. Find certified court reporters near your next proceeding.`}
+    breadcrumbs={[{ label: 'Locations' }]}
+    stats={[
+      { value: totalProviders, label: 'providers' },
+      { value: totalCities, label: 'cities' },
+      { value: totalStates, label: 'states' },
+    ]}
+  />
+
+  {/* Search filter */}
+  <div class="loc-filter-bar">
+    <label for="locSearchInput" class="sr-only">Search cities or states</label>
+    <input type="text" class="loc-search-input" placeholder="Search cities or states..." id="locSearchInput" />
+    <div class="loc-result-count" id="locResultCount"></div>
+  </div>
+
+  {/* State groups */}
+  <div class="loc-content">
+    {stateGroups.map(s => (
+      <div class="loc-state-group" data-state={s.name.toLowerCase()}>
+        <div class="loc-state-header">
+          <a href={`/states/${s.slug}/`} class="loc-state-link">
+            <h2 class="loc-state-name">{s.name}</h2>
+            <span class="loc-state-abbr">{s.abbr}</span>
+          </a>
+          <span class="loc-state-count">{s.providerCount} {s.providerCount === 1 ? 'provider' : 'providers'}</span>
+        </div>
+        <div class="loc-city-grid">
+          {s.cities.map(c => (
+            <a
+              class="loc-city-card"
+              href={`/locations/${c.stateSlug}/${c.slug}/`}
+              data-search={`${c.city} ${s.name} ${s.abbr}`.toLowerCase()}
+            >
+              <span class="loc-city-name">{c.city}</span>
+              {c.listingCount > 0 ? (
+                <span class="loc-city-count">{c.listingCount}</span>
+              ) : (
+                <span class="loc-city-count loc-zero">0</span>
+              )}
+            </a>
+          ))}
+        </div>
+      </div>
+    ))}
+
+    {/* No results message */}
+    <div class="loc-no-results" id="locNoResults" style="display:none;">
+      <p>No cities or states match your search. Try a different term.</p>
+    </div>
+  </div>
+
+  {/* Bottom CTA */}
+  <div class="loc-bottom-cta-wrap">
+    <div class="loc-bottom-cta">
+      <h2>Are you a court reporter?</h2>
+      <p>Get listed in your city. Attorneys are actively searching for providers like you.</p>
+      <a href="/advertise/" class="loc-bottom-cta-btn">List Your Business &rarr;</a>
+      <div class="loc-bottom-cta-sub">Free to claim &middot; Sponsored from $79/mo &middot; No contracts</div>
+    </div>
+  </div>
+
+  <script is:inline>
+    (function() {
+      var search = document.getElementById('locSearchInput');
+      var resultCount = document.getElementById('locResultCount');
+      var noResults = document.getElementById('locNoResults');
+      if (!search) return;
+
+      search.addEventListener('input', function() {
+        var q = this.value.toLowerCase().trim();
+        var groups = document.querySelectorAll('.loc-state-group');
+        var visibleCities = 0;
+        var visibleStates = 0;
+
+        groups.forEach(function(group) {
+          var stateName = group.dataset.state || '';
+          var cards = group.querySelectorAll('.loc-city-card');
+          var stateHasVisible = false;
+
+          if (!q) {
+            group.style.display = '';
+            cards.forEach(function(c) { c.style.display = ''; });
+            visibleCities += cards.length;
+            visibleStates++;
+            return;
+          }
+
+          // If state name matches, show all cities in that state
+          var stateMatch = stateName.includes(q);
+
+          cards.forEach(function(c) {
+            var match = stateMatch || (c.dataset.search || '').includes(q);
+            c.style.display = match ? '' : 'none';
+            if (match) { stateHasVisible = true; visibleCities++; }
+          });
+
+          group.style.display = stateHasVisible ? '' : 'none';
+          if (stateHasVisible) visibleStates++;
+        });
+
+        if (q) {
+          resultCount.textContent = visibleCities + ' ' + (visibleCities === 1 ? 'city' : 'cities') + ' in ' + visibleStates + ' ' + (visibleStates === 1 ? 'state' : 'states');
+          noResults.style.display = visibleCities === 0 ? '' : 'none';
+        } else {
+          resultCount.textContent = '';
+          noResults.style.display = 'none';
+        }
+      });
+    })();
+  </script>
+</PageLayout>
+
+<style is:global>
+  /* Filter bar */
+  .loc-filter-bar {
+    max-width: 1200px; margin: 0 auto; padding: 24px 40px 8px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .loc-search-input {
+    flex: 1; max-width: 400px; padding: 12px 16px 12px 42px;
+    border: 1.5px solid #d1d5db; border-radius: 10px; font-size: 14px; font-family: inherit;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") 14px center no-repeat;
+    transition: border-color 0.2s;
+  }
+  .loc-search-input:focus { outline: none; border-color: #2563eb; }
+  .loc-result-count { font-size: 13px; color: #6b7280; font-weight: 500; }
+
+  /* Content */
+  .loc-content { max-width: 1200px; margin: 0 auto; padding: 16px 40px 48px; }
+
+  /* State group */
+  .loc-state-group { margin-bottom: 32px; }
+  .loc-state-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-bottom: 10px; margin-bottom: 12px; border-bottom: 1px solid #e5e7eb;
+  }
+  .loc-state-link {
+    display: flex; align-items: center; gap: 10px;
+    text-decoration: none; color: inherit;
+  }
+  .loc-state-link:hover .loc-state-name { color: #2563eb; }
+  .loc-state-name { font-size: 20px; font-weight: 800; color: #1a1a2e; transition: color 0.15s; }
+  .loc-state-abbr { font-size: 13px; font-weight: 600; color: #9ca3af; }
+  .loc-state-count { font-size: 13px; color: #6b7280; font-weight: 500; white-space: nowrap; }
+
+  /* City grid */
+  .loc-city-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .loc-city-card {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;
+    text-decoration: none; color: inherit; transition: all 0.15s;
+  }
+  .loc-city-card:hover { border-color: #2563eb; background: #eff6ff; }
+  .loc-city-name { font-size: 14px; font-weight: 600; color: #1a1a2e; }
+  .loc-city-count {
+    font-size: 12px; font-weight: 700; color: #2563eb; background: #eff6ff;
+    padding: 2px 8px; border-radius: 6px; min-width: 24px; text-align: center;
+  }
+  .loc-city-count.loc-zero { color: #9ca3af; background: #f3f4f6; }
+
+  /* No results */
+  .loc-no-results { text-align: center; padding: 40px 20px; color: #6b7280; font-size: 15px; }
+
+  /* Bottom CTA */
+  .loc-bottom-cta-wrap { max-width: 1200px; margin: 0 auto; padding: 0 40px 48px; }
+  .loc-bottom-cta {
+    background: linear-gradient(135deg, #1a1a2e 0%, #2d2b55 50%, #1e40af 100%);
+    border-radius: 20px; padding: 48px; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .loc-bottom-cta::before {
+    content: ''; position: absolute; top: -60px; right: -40px;
+    width: 250px; height: 250px; border-radius: 50%;
+    background: rgba(59,130,246,0.12); pointer-events: none;
+  }
+  .loc-bottom-cta h2 { font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 8px; position: relative; }
+  .loc-bottom-cta p { font-size: 15px; color: #a5b4fc; margin-bottom: 24px; position: relative; }
+  .loc-bottom-cta-btn {
+    background: #2563eb; color: #fff; border: none; border-radius: 10px;
+    padding: 14px 28px; font-size: 15px; font-weight: 600; cursor: pointer;
+    position: relative; text-decoration: none; display: inline-block;
+  }
+  .loc-bottom-cta-sub { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 12px; position: relative; }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    .loc-stat-num { font-size: 24px; }
+    .loc-filter-bar { padding: 16px 20px 8px; flex-wrap: wrap; }
+    .loc-content { padding: 16px 20px 40px; }
+    .loc-city-grid { grid-template-columns: repeat(2, 1fr); }
+    .loc-bottom-cta-wrap { padding: 0 20px 40px; }
+    .loc-bottom-cta { padding: 32px 24px; }
+  }
+</style>

@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "monick-court-reporters-inc-reading",
+    "name": "Monick Court Reporters Inc.",
+    "city": "reading",
+    "state": "PA",
+    "address": "519 Jefferson Blvd, Reading, PA 19609-2303",
+    "lat": 40.335345,
+    "lng": -75.9279495,
+    "phone": "(610) 777-6050",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting services",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:22:09",
+    "sentiment": null
+  }
+]

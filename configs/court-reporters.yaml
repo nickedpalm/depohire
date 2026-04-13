@@ -1,80 +1,80 @@
 name: Court Reporters
 slug: court-reporters
 domain: stenoscout.com
-tagline: "Find certified court reporters and stenographers near you"
-description: "The most comprehensive directory of court reporters and stenographers in the United States"
-
-# Business context
-job_value: "$250-1,500+ per session"
+tagline: Find certified court reporters and stenographers near you
+description: The most comprehensive directory of court reporters and stenographers in the United States
+job_value: $250-1,500+ per session
 industry: legal
 certifications:
-  - "RPR (Registered Professional Reporter)"
-  - "RMR (Registered Merit Reporter)"
-  - "RDR (Registered Diplomate Reporter)"
-  - "CRR (Certified Realtime Reporter)"
-  - "CLVS (Certified Legal Video Specialist)"
-  - "CSR (Certified Shorthand Reporter)"
-
-# Scraping targets
+- RPR (Registered Professional Reporter)
+- RMR (Registered Merit Reporter)
+- RDR (Registered Diplomate Reporter)
+- CRR (Certified Realtime Reporter)
+- CLVS (Certified Legal Video Specialist)
+- CSR (Certified Shorthand Reporter)
 scrape_sources:
-  - type: google_maps
-    query: "court reporter"
-  - type: google_maps
-    query: "stenographer"
-  - type: google_maps
-    query: "court reporting service"
-  - type: yelp
-    query: "court reporter"
-  - type: custom
-    url: "https://www.ncra.org/home/professionals-resources"
-    note: "NCRA directory"
+- type: google_maps
+  query: court reporter
+- type: google_maps
+  query: stenographer
+- type: google_maps
+  query: court reporting service
+- type: yelp
+  query: court reporter
+- type: custom
+  url: https://www.ncra.org/home/professionals-resources
+  note: NCRA directory
+city_page_prompt_context: 'Court reporters (also called stenographers) create verbatim transcripts
 
-# Content config
-city_page_prompt_context: |
-  Court reporters (also called stenographers) create verbatim transcripts
   of legal proceedings including depositions, trials, hearings, and
+
   arbitrations. They use stenotype machines, voice writing, or digital
+
   recording to capture testimony. Many offer realtime reporting, rough
+
   drafts, and expedited transcript delivery. Attorneys, law firms, and
+
   courts hire them for civil and criminal proceedings.
 
-# Editorial
-contact_email: "contact@stenoscout.com"
+  '
+contact_email: contact@stenoscout.com
 founded_year: 2026
 editorial_author:
-  name: "Nick Palmer"
-  title: "Founder & Lead Researcher"
-  bio: "After years working in the legal services industry, Nick built this directory to help attorneys and legal professionals find qualified court reporters without the guesswork."
-  linkedin: "https://linkedin.com/in/nickedpalmer"
-
-# SEO
-primary_keyword: "court reporter"
+  name: Nick Palmer
+  title: Founder & Lead Researcher
+  bio: After years working in the legal services industry, Nick built this directory to help attorneys
+    and legal professionals find qualified court reporters without the guesswork.
+  linkedin: https://linkedin.com/in/nickedpalmer
+primary_keyword: court reporter
 secondary_keywords:
-  - "stenographer"
-  - "court reporting service"
-  - "certified court reporter"
-  - "realtime reporter"
-  - "deposition reporter"
-  - "legal transcription"
-
-# Listing schema fields (beyond standard name/address/phone)
+- stenographer
+- court reporting service
+- certified court reporter
+- realtime reporter
+- deposition reporter
+- legal transcription
 extra_fields:
-  - certifications
-  - years_experience
-  - services
-  - coverage_area
-  - equipment
-
-# Brand
+- certifications
+- years_experience
+- services
+- coverage_area
+- equipment
 brand_name: StenoScout
-primary_color: "#4f46e5"
-
-# Payments & integrations
-stripe_featured_monthly_link: "https://buy.stripe.com/cNi3cu36W49q0yUfaNa3u06"
-stripe_featured_annual_link: "https://buy.stripe.com/dRm4gyePEbBSbdy1jXa3u07"
-stripe_city_pro_monthly_link: "https://buy.stripe.com/28EbJ0fTIfS895qe6Ja3u08"
-stripe_city_pro_annual_link: "https://buy.stripe.com/6oU9ASdLAbBS95q7Ila3u09"
-stripe_featured_product_id: "prod_UFN1337yq46Txc"
-stripe_city_pro_product_id: "prod_UFN1TfMROgL2W2"
-turnstile_sitekey: "0x4AAAAAACyf8viJgUXreScx"
-google_analytics_id: "G-M9342V5KWE"
+primary_color: '#4f46e5'
+pricing:
+  featured_monthly_usd: 79
+  featured_annual_usd: 711
+  city_pro_monthly_usd: 249
+  city_pro_annual_usd: 2241
+stripe_featured_monthly_link: https://buy.stripe.com/14AaEWazocFW81m3s5a3u1A
+stripe_featured_annual_link: https://buy.stripe.com/4gM9AS6j85dubdy4w9a3u1B
+stripe_city_pro_monthly_link: https://buy.stripe.com/3cI3cu0YO7lCdlG4w9a3u1C
+stripe_city_pro_annual_link: https://buy.stripe.com/5kQ5kC6j8dK0bdybYBa3u1D
+stripe_featured_product_id: prod_UKS9nouzTcwInb
+stripe_city_pro_product_id: prod_UKSONa9CI8Cywx
+stripe_featured_monthly_price_id: price_1TLnTUCIgRyRDQ2PoVnsCyTs
+stripe_featured_annual_price_id: price_1TLnTpCIgRyRDQ2PwUBolGtZ
+stripe_city_pro_monthly_price_id: price_1TLnTrCIgRyRDQ2PFEBdv5W4
+stripe_city_pro_annual_price_id: price_1TLnTsCIgRyRDQ2P0zgdxMww
+turnstile_sitekey: 0x4AAAAAACyf8viJgUXreScx
+google_analytics_id: G-M9342V5KWE

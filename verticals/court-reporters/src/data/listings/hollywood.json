@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "veritext-court-reporting-company-hollywood",
+    "name": "Veritext Court Reporting Company",
+    "city": "hollywood",
+    "state": "FL",
+    "address": "3440 Hollywood Blvd STE 415, Hollywood, FL 33021",
+    "lat": 26.0112014,
+    "lng": -80.1494901,
+    "phone": "(305) 376-8800",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "National court reporting company with Florida presence.",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:21:41",
+    "sentiment": null
+  }
+]

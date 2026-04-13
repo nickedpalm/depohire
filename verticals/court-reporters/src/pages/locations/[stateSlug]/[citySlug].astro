@@ -1,0 +1,890 @@
+---
+import PageLayout from '~/layouts/PageLayout.astro';
+import MultiQuoteBar from '~/components/directory/MultiQuoteBar.astro';
+import StickyCTA from '~/components/directory/StickyCTA.astro';
+import LeafletMap from '~/components/directory/LeafletMap.astro';
+import RelatedContent from '~/components/directory/RelatedContent.astro';
+import PageHero from '~/components/directory/PageHero.astro';
+import FAQAccordion from '~/components/directory/FAQAccordion.astro';
+import NewsletterSignup from '~/components/directory/NewsletterSignup.astro';
+import config from '~/config';
+import citiesData from '~/data/cities.json';
+import { getListingsForCity } from '~/lib/listings';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const cityContent = await getCollection('cities');
+  return citiesData.map(city => {
+    const content = cityContent.find(c => c.data.slug === city.slug);
+    return {
+      params: { stateSlug: city.stateSlug, citySlug: city.slug },
+      props: { cityInfo: city, content },
+    };
+  });
+}
+
+const { cityInfo, content } = Astro.props;
+const allListings = getListingsForCity(cityInfo.slug);
+const { Content } = content ? await render(content) : { Content: null };
+
+// Nearby cities
+function haversineDistance(lat1: number, lng1: number, lat2: number, lng2: number) {
+  const R = 3959;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat/2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng/2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+import { getListingCountByCity } from '~/lib/listings';
+const cityCounts = getListingCountByCity();
+const nearbyCities = citiesData
+  .filter(c => c.slug !== cityInfo.slug && (cityCounts[c.slug] || 0) > 0)
+  .map(c => ({ ...c, distance: haversineDistance(cityInfo.lat, cityInfo.lng, c.lat, c.lng), listingCount: cityCounts[c.slug] || 0 }))
+  .sort((a, b) => a.distance - b.distance)
+  .slice(0, 8);
+
+// Sort: featured first, then claimed with reviews, then claimed, then unclaimed
+const featured = allListings.filter(l => l.featured);
+const claimed = allListings.filter(l => !l.featured && l.claimed).sort((a, b) => (b.rating || 0) - (a.rating || 0));
+const unclaimed = allListings.filter(l => !l.featured && !l.claimed).sort((a, b) => (b.rating || 0) - (a.rating || 0));
+const listings = [...featured, ...claimed, ...unclaimed];
+
+const pins = listings.filter(l => l.lat && l.lat !== 0).map(l => ({ lat: l.lat, lng: l.lng, name: l.name, slug: l.slug }));
+
+// Stats
+const ratedListings = listings.filter(l => l.rating > 0);
+const avgRating = ratedListings.length > 0 ? (ratedListings.reduce((s, l) => s + l.rating, 0) / ratedListings.length).toFixed(1) : null;
+const totalReviews = listings.reduce((s, l) => s + (l.review_count || 0), 0);
+const certifiedCount = listings.filter(l => l.certifications?.some(c => c.toUpperCase().includes('RPR'))).length;
+const certPct = listings.length > 0 ? Math.round(certifiedCount / listings.length * 100) : 0;
+
+const currentYear = new Date().getFullYear();
+const currentMonth = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+const title = listings.length > 0
+  ? `${listings.length} Best Court Reporters in ${cityInfo.city}, ${cityInfo.state} (${currentYear})`
+  : `Find Court Reporters in ${cityInfo.city}, ${cityInfo.state} (${currentYear})`;
+const metaDescription = listings.length > 0
+  ? `Compare ${listings.length} curated court reporters in ${cityInfo.city}, ${cityInfo.state}. ${certifiedCount > 0 ? `${certifiedCount} RPR-certified. ` : ''}Read real reviews, check credentials, and request free quotes. Updated ${currentMonth}.`
+  : `Find court reporters in ${cityInfo.city}, ${cityInfo.state}. Browse nearby cities with verified providers, check credentials, and request free quotes. Updated ${currentMonth}.`;
+
+// Initials helper
+function getInitials(name: string): string {
+  return name.split(/\s+/).map(w => w[0]).join('').substring(0, 2).toUpperCase();
+}
+
+// Star string helper
+function starString(rating: number): string {
+  const full = Math.floor(rating);
+  const half = rating - full >= 0.5;
+  return '★'.repeat(full) + (half ? '★' : '') + '☆'.repeat(5 - full - (half ? 1 : 0));
+}
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: title,
+  description: metaDescription,
+  numberOfItems: listings.length,
+  itemListElement: listings.map((l, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    item: {
+      '@type': 'LocalBusiness',
+      name: l.name,
+      address: l.address,
+      telephone: l.phone,
+      url: `${config.siteUrl}/listing/${l.slug}/`,
+    },
+  })),
+};
+
+const placeSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Place',
+  name: `Court Reporters in ${cityInfo.city}, ${cityInfo.state}`,
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: cityInfo.lat,
+    longitude: cityInfo.lng,
+  },
+  ...(avgRating ? {
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: parseFloat(avgRating),
+      reviewCount: totalReviews,
+      bestRating: 5,
+      worstRating: 1,
+    },
+  } : {}),
+  containedInPlace: {
+    '@type': 'AdministrativeArea',
+    name: cityInfo.state,
+  },
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: `How much does a court reporter cost in ${cityInfo.city}?`,
+      acceptedAnswer: { '@type': 'Answer', text: `Court reporting in ${cityInfo.city} typically costs ${config.jobValue || '$250-$1,500+'}, depending on duration, complexity, realtime requirements, and turnaround time. Expedited transcripts and realtime feeds will cost more.` },
+    },
+    {
+      '@type': 'Question',
+      name: `What should I look for in a court reporter?`,
+      acceptedAnswer: { '@type': 'Answer', text: `Look for RPR certification (Registered Professional Reporter) from NCRA — it's the industry gold standard. Also check reviews, ask about realtime capabilities, and confirm they can handle your jurisdiction's requirements.` },
+    },
+    {
+      '@type': 'Question',
+      name: `How many court reporters are in ${cityInfo.city}?`,
+      acceptedAnswer: { '@type': 'Answer', text: `There are currently ${listings.length} court reporting providers listed in ${cityInfo.city}, ${cityInfo.state} on ${config.brandName}.${claimed.length + featured.length > 0 ? ` Of those, ${claimed.length + featured.length} have claimed profiles with complete information and reviews.` : ''}` },
+    },
+    {
+      '@type': 'Question',
+      name: `What does "Sponsored" mean on a listing?`,
+      acceptedAnswer: { '@type': 'Answer', text: `Sponsored providers pay for premium placement and appear at the top of search results. They have claimed profiles and typically respond faster to quote requests. All providers on ${config.brandName} — sponsored or not — are real businesses.` },
+    },
+  ],
+};
+
+const ogImage = `/og/city/${cityInfo.stateSlug}/${cityInfo.slug}.png`;
+const metadata = {
+  title,
+  description: metaDescription,
+  openGraph: { images: [{ url: ogImage, width: 1200, height: 630 }] },
+};
+---
+<PageLayout metadata={metadata}>
+  <Fragment slot="announcement"><span></span></Fragment>
+
+  <PageHero
+    title={`Court Reporters in ${cityInfo.city}, ${cityInfo.state}`}
+    subtitle="Compare curated court reporters, check certifications, read reviews, and request quotes — all in one place."
+    breadcrumbs={[
+      { label: cityInfo.stateName || cityInfo.state, href: `/states/${cityInfo.stateSlug}/` },
+      { label: cityInfo.city },
+    ]}
+    stats={[
+      { value: listings.length, label: 'providers' },
+      ...(avgRating ? [{ value: avgRating, label: 'avg rating' }] : []),
+      ...(totalReviews > 0 ? [{ value: totalReviews, label: 'reviews' }] : []),
+    ]}
+    size="compact"
+  >
+    <div class="flex gap-3 md:gap-5 mt-5 flex-wrap">
+      <div class="flex items-center gap-1.5 text-xs text-white/50 font-medium"><span class="text-sm">&#x2713;</span> Researched credentials</div>
+      <div class="flex items-center gap-1.5 text-xs text-white/50 font-medium"><span class="text-sm">&#x2713;</span> Free quotes, no obligation</div>
+      <div class="flex items-center gap-1.5 text-xs text-white/50 font-medium"><span class="text-sm">&#x2713;</span> Updated {currentMonth}</div>
+    </div>
+  </PageHero>
+
+  {/* ═══ CONTENT ═══ */}
+  <div class="max-w-[1200px] mx-auto px-4 sm:px-6 md:px-10 py-5 sm:py-6 md:py-8 pb-10">
+
+    {/* Map */}
+    {pins.length > 0 && (
+      <div class="mb-6 rounded-2xl overflow-hidden border border-gray-200">
+        <LeafletMap pins={pins} centerLat={cityInfo.lat} centerLng={cityInfo.lng} />
+      </div>
+    )}
+
+    {/* Top Providers Highlight */}
+    {(() => {
+      const topProviders = listings.filter(l => l.rating >= 4 && l.review_count > 0).slice(0, 3);
+      return topProviders.length > 0 ? (
+        <div class="mb-6 bg-gradient-to-r from-primary-50 to-primary-100 rounded-2xl border border-primary-100 p-5">
+          <h2 class="text-sm font-bold text-primary-800 mb-3">Top-Rated in {cityInfo.city}</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {topProviders.map((p, i) => (
+              <a href={`/listing/${p.slug}/`} class="flex items-center gap-3 bg-white rounded-xl p-3 no-underline hover:shadow-md transition-shadow border border-primary-100/50">
+                <div class="w-10 h-10 rounded-lg bg-primary-600 text-white flex items-center justify-center text-sm font-bold flex-shrink-0">{getInitials(p.name)}</div>
+                <div class="min-w-0">
+                  <div class="text-sm font-semibold text-navy-950 truncate">{p.name}</div>
+                  <div class="text-xs text-amber-600 font-medium">{starString(p.rating)} {p.rating} ({p.review_count})</div>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      ) : null;
+    })()}
+
+    {/* Filters — only show when there are listings */}
+    {listings.length > 0 && <div class="flex items-center gap-2 md:gap-3 mb-6 flex-wrap" id="listing-filters">
+      <span class="city-results-count text-[13px] text-gray-400 font-medium">{listings.length} providers</span>
+      <div role="group" aria-label="Filter providers" class="flex items-center gap-2 md:gap-3 flex-wrap">
+        <button class="city-filter-pill filter-pill active" data-filter="all" aria-pressed="true">All</button>
+        <button class="city-filter-pill filter-pill" data-filter="has-reviews" aria-pressed="false">Has Reviews</button>
+        <button class="city-filter-pill filter-pill" data-filter="rpr" aria-pressed="false">RPR Certified</button>
+        <button class="city-filter-pill filter-pill" data-filter="rating-4" aria-pressed="false">4+ Stars</button>
+      </div>
+      <select class="ml-auto md:ml-auto max-md:ml-0 max-md:w-full px-3.5 py-2.5 rounded-lg text-[13px] font-medium bg-white border-[1.5px] border-gray-200 text-gray-700 cursor-pointer font-[inherit] min-h-[44px]" id="sort-select">
+        <option value="default">Sort: Recommended</option>
+        <option value="rating-desc">Rating (high to low)</option>
+        <option value="reviews-desc">Most Reviews</option>
+        <option value="name-asc">Name (A-Z)</option>
+      </select>
+    </div>}
+
+    {listings.length > 0 ? (
+      <div data-pagefind-body>
+
+        {/* ═══ FEATURED PROVIDERS ═══ */}
+        {featured.length > 0 && (
+          <>
+            <div class="section-label">
+              <span>&#x26A1; SPONSORED PROVIDERS</span>
+              <span class="section-label-line"></span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-9">
+              {featured.map(listing => {
+                const initials = getInitials(listing.name);
+                const hasRPR = listing.certifications?.some(c => c.toUpperCase().includes('RPR'));
+                const stars = starString(listing.rating);
+                const desc = listing.description && listing.description.length > 180 ? listing.description.slice(0, 180) + '...' : listing.description;
+                const tags = [...(listing.certifications || []), ...(listing.services || [])].slice(0, 4);
+                return (
+                  <div class="card-featured city-featured-card overflow-hidden relative" data-listing-card data-has-reviews={listing.review_count > 0 ? 'true' : 'false'} data-rpr={hasRPR ? 'true' : 'false'} data-rating={String(listing.rating || 0)} data-review-count={String(listing.review_count || 0)} data-name={listing.name} data-provider-name={listing.name} data-provider-email={listing.email || ''} data-provider-slug={listing.slug}>
+                    <div class="bg-gradient-to-br from-primary-600 to-primary-700 text-white text-[11px] font-bold tracking-wide px-4 py-1.5 flex items-center gap-1.5" title="This provider pays for premium placement">&#x26A1; SPONSORED {listing.review_count > 0 ? `\u00B7 ${listing.rating} stars from ${listing.review_count} reviews` : ''}</div>
+                    <div class="p-5">
+                      <div class="flex items-start gap-4">
+                        <div class="city-featured-avatar w-14 h-14 rounded-[14px] flex items-center justify-center text-xl font-bold text-white flex-shrink-0 bg-gradient-to-br from-primary-600 to-primary-800">{initials}</div>
+                        <div class="flex-1">
+                          <div class="text-[17px] font-bold mb-0.5 flex items-center gap-2 flex-wrap">
+                            <a href={`/listing/${listing.slug}/`} class="city-featured-name-link text-navy-950 no-underline hover:text-primary-600">{listing.name}</a>
+                            {hasRPR && <span class="city-verified-badge inline-flex items-center gap-0.5 bg-emerald-50 text-emerald-600 text-[11px] font-semibold px-1.5 py-0.5 rounded-[5px] whitespace-nowrap">&#x2713; RPR</span>}
+                          </div>
+                          <div class="text-[13px] text-gray-500">{listing.city}, {listing.state}{listing.coverage_area ? ` \u00B7 ${listing.coverage_area}` : ''}</div>
+                          {listing.review_count > 0 && (
+                            <div class="flex items-center gap-1.5 mt-1.5">
+                              <span class="text-amber-500 text-sm">{stars}</span>
+                              <span class="text-sm font-bold">{listing.rating}</span>
+                              <span class="text-[13px] text-gray-400">({listing.review_count} reviews)</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      {desc && <div class="city-featured-desc text-[13px] text-gray-600 leading-relaxed mt-3 line-clamp-2">{desc}</div>}
+                      {tags.length > 0 && (
+                        <div class="city-featured-tags flex flex-wrap gap-1.5 mt-3">
+                          {tags.map(t => <span class="city-tag bg-primary-50 text-primary-600 text-[11px] font-semibold px-2.5 py-1 rounded-md">{t}</span>)}
+                        </div>
+                      )}
+                      <div class="flex items-center justify-between mt-4 pt-3.5 border-t border-gray-100 flex-wrap gap-2">
+                        <div>
+                          {listing.phone && <div class="city-featured-phone flex items-center gap-1.5 text-[13px] font-semibold text-navy-950">&#x1F4DE; {listing.phone}</div>}
+                        </div>
+                        {listing.email ? (
+                          <button class="btn-action-primary select-quote-btn" data-selected="false" data-provider-name={listing.name} data-provider-email={listing.email} data-provider-slug={listing.slug}>
+                            <svg class="w-4 h-4 hidden check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span class="btn-label">+ Request Quote</span>
+                          </button>
+                        ) : listing.website ? (
+                          <a href={listing.website} target="_blank" rel="noopener" class="btn-action-secondary">Visit Website</a>
+                        ) : listing.phone ? (
+                          <a href={`tel:${listing.phone}`} class="btn-action-secondary">Call</a>
+                        ) : null}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
+
+        {/* ═══ CLAIMED PROVIDERS ═══ */}
+        {claimed.length > 0 && (
+          <>
+            <div class="section-label">
+              <span>CLAIMED PROVIDERS</span>
+              <span class="section-label-line"></span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 mb-9" data-listing-grid>
+              {claimed.map(listing => {
+                const initials = getInitials(listing.name);
+                const hasRPR = listing.certifications?.some(c => c.toUpperCase().includes('RPR'));
+                const stars = starString(listing.rating);
+                const desc = listing.description && listing.description.length > 140 ? listing.description.slice(0, 140) + '...' : listing.description;
+                const tags = [...(listing.certifications || []), ...(listing.services || [])].slice(0, 3);
+                return (
+                  <div class="card-hover city-provider-card p-5" data-listing-card data-has-reviews={listing.review_count > 0 ? 'true' : 'false'} data-rpr={hasRPR ? 'true' : 'false'} data-rating={String(listing.rating || 0)} data-review-count={String(listing.review_count || 0)} data-name={listing.name} data-provider-name={listing.name} data-provider-email={listing.email || ''} data-provider-slug={listing.slug}>
+                    <div class="flex items-start gap-3.5">
+                      <div class="city-provider-avatar city-avatar-claimed w-[46px] h-[46px] rounded-xl flex items-center justify-center text-base font-bold text-white flex-shrink-0 bg-primary-600">{initials}</div>
+                      <div class="flex-1 min-w-0">
+                        <div class="text-[15px] font-bold mb-0.5 flex items-center gap-1.5 flex-wrap">
+                          <a href={`/listing/${listing.slug}/`} class="city-provider-name-link text-navy-950 no-underline hover:text-primary-600">{listing.name}</a>
+                          {hasRPR && <span class="city-verified-badge inline-flex items-center gap-0.5 bg-emerald-50 text-emerald-600 text-[11px] font-semibold px-1.5 py-0.5 rounded-[5px] whitespace-nowrap">&#x2713;</span>}
+                        </div>
+                        <div class="text-xs text-gray-500">{listing.city}, {listing.state}</div>
+                        {listing.review_count > 0 && (
+                          <div class="flex items-center gap-1.5 mt-1 text-[13px]">
+                            <span class="text-amber-500 text-sm">{stars}</span>
+                            <span class="text-sm font-bold">{listing.rating}</span>
+                            <span class="text-[13px] text-gray-400">({listing.review_count} reviews)</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    {desc && <div class="city-provider-desc text-[13px] text-gray-500 leading-snug mt-2.5 line-clamp-2">{desc}</div>}
+                    {tags.length > 0 && (
+                      <div class="city-provider-tags flex flex-wrap gap-1.5 mt-2.5">
+                        {tags.map(t => <span class="city-tag-muted bg-gray-100 text-gray-500 text-[11px] font-semibold px-2.5 py-1 rounded-md">{t}</span>)}
+                      </div>
+                    )}
+                    <div class="flex items-center justify-between mt-3.5 pt-3 border-t border-gray-100 flex-wrap gap-2">
+                      {listing.phone ? <span class="city-provider-phone text-[13px] font-semibold text-navy-950">&#x1F4DE; {listing.phone}</span> : <span></span>}
+                      {listing.email ? (
+                        <button class="btn-action-secondary select-quote-btn" data-selected="false" data-provider-name={listing.name} data-provider-email={listing.email} data-provider-slug={listing.slug}>
+                          <svg class="w-4 h-4 hidden check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                          <span class="btn-label">+ Quote</span>
+                        </button>
+                      ) : listing.website ? (
+                        <a href={listing.website} target="_blank" rel="noopener" class="btn-action-secondary">Visit Website</a>
+                      ) : null}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
+
+        {/* Mid-page CTA */}
+        <div class="bg-gradient-to-br from-primary-50 to-primary-100 border border-primary-200 rounded-2xl px-8 py-7 mb-9 flex items-center justify-between flex-wrap gap-4 max-md:flex-col max-md:text-center">
+          <div>
+            <h3 class="text-[17px] font-bold text-primary-800 mb-1">Are you a court reporter in {cityInfo.city}?</h3>
+            <p class="text-sm text-primary-500">Claim your free listing or get Sponsored placement to appear above other providers.</p>
+          </div>
+          <a href="/advertise/" class="btn-action-primary">List Your Business &rarr;</a>
+        </div>
+
+        {/* ═══ OTHER PROVIDERS (Unclaimed) ═══ */}
+        {unclaimed.length > 0 && (
+          <>
+            <div class="section-label">
+              <span>OTHER PROVIDERS</span>
+              <span class="section-label-line"></span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 mb-9" data-listing-grid>
+              {unclaimed.map(listing => {
+                const initials = getInitials(listing.name);
+                const hasRPR = listing.certifications?.some(c => c.toUpperCase().includes('RPR'));
+                const stars = starString(listing.rating);
+                const desc = listing.description && listing.description.length > 140 ? listing.description.slice(0, 140) + '...' : listing.description;
+                const tags = [...(listing.certifications || []), ...(listing.services || [])].slice(0, 2);
+                return (
+                  <div class="bg-gray-50 rounded-card p-5 border border-dashed border-gray-300 city-unclaimed-card relative" data-listing-card data-has-reviews={listing.review_count > 0 ? 'true' : 'false'} data-rpr={hasRPR ? 'true' : 'false'} data-rating={String(listing.rating || 0)} data-review-count={String(listing.review_count || 0)} data-name={listing.name} data-provider-name={listing.name} data-provider-email={listing.email || ''} data-provider-slug={listing.slug}>
+                    <span class="city-unclaimed-tag absolute top-3 right-3 text-[10px] font-semibold text-gray-400 bg-gray-100 px-2 py-0.5 rounded">Unclaimed</span>
+                    <div class="flex items-start gap-3.5">
+                      <div class="city-provider-avatar city-avatar-unclaimed w-[46px] h-[46px] rounded-xl flex items-center justify-center text-base font-bold text-white flex-shrink-0 bg-slate-400">{initials}</div>
+                      <div class="flex-1 min-w-0">
+                        <div class="text-[15px] font-bold mb-0.5 flex items-center gap-1.5 flex-wrap">
+                          <a href={`/listing/${listing.slug}/`} class="city-unclaimed-name-link text-gray-500 no-underline hover:text-gray-600">{listing.name}</a>
+                        </div>
+                        <div class="text-xs text-gray-500">{listing.city}, {listing.state}</div>
+                        {listing.review_count > 0 ? (
+                          <div class="flex items-center gap-1.5 mt-1 text-[13px]">
+                            <span class="text-amber-500 text-sm">{stars}</span>
+                            <span class="text-sm font-bold">{listing.rating}</span>
+                            <span class="text-[13px] text-gray-400">({listing.review_count} reviews)</span>
+                          </div>
+                        ) : (
+                          <div class="text-xs text-gray-500 italic mt-1">No reviews yet</div>
+                        )}
+                      </div>
+                    </div>
+                    {listing.review_count > 0 && desc ? (
+                      <div class="city-provider-desc text-[13px] text-gray-500 leading-snug mt-2.5 line-clamp-2">{desc}</div>
+                    ) : (
+                      <div class="city-unclaimed-desc text-[13px] text-gray-500 italic leading-snug mt-2.5">No description available. This listing has not been claimed by the business owner.</div>
+                    )}
+                    {tags.length > 0 && (
+                      <div class="city-provider-tags flex flex-wrap gap-1.5 mt-2.5">
+                        {tags.map(t => <span class="city-tag-faded bg-gray-100 text-gray-500 text-[11px] font-semibold px-2.5 py-1 rounded-md">{t}</span>)}
+                      </div>
+                    )}
+                    <div class="flex items-center justify-between mt-3.5 pt-3 border-t border-gray-100 flex-wrap gap-2">
+                      {listing.phone ? (
+                        <span class="city-phone-blurred text-[13px] text-gray-400 tracking-wider">&#x2022;&#x2022;&#x2022;-&#x2022;&#x2022;&#x2022;-&#x2022;&#x2022;&#x2022;&#x2022;</span>
+                      ) : (
+                        <span class="text-[13px] text-gray-400">No phone listed</span>
+                      )}
+                      {listing.email ? (
+                        <button class="btn-action-secondary select-quote-btn" data-selected="false" data-provider-name={listing.name} data-provider-email={listing.email} data-provider-slug={listing.slug}>
+                          <svg class="w-4 h-4 hidden check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                          <span class="btn-label">+ Quote</span>
+                        </button>
+                      ) : listing.website ? (
+                        <a href={listing.website} target="_blank" rel="noopener" class="btn-action-secondary opacity-50 cursor-not-allowed" style="text-decoration:none;">Visit Website</a>
+                      ) : (
+                        <span class="btn-action-secondary opacity-50 cursor-not-allowed city-btn-unavailable">Contact unavailable</span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
+      </div>
+    ) : (
+      <div class="card-base text-center py-16 px-6">
+        <div class="text-4xl mb-4">&#x1F4CB;</div>
+        <h3 class="text-xl font-semibold text-default mb-2">No {config.primaryKeyword}s listed in {cityInfo.city} yet</h3>
+        <p class="text-muted text-sm max-w-md mx-auto mb-6">
+          We're actively expanding our directory. In the meantime, try browsing nearby cities or check back soon as new providers are added regularly.
+        </p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <a href={`/locations/${cityInfo.stateSlug}/`} class="btn-primary inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium no-underline">
+            Browse {cityInfo.state} providers
+          </a>
+          <a href="/advertise/" class="text-sm text-primary hover:underline no-underline">
+            Know a {config.primaryKeyword} here? Submit a listing &rarr;
+          </a>
+        </div>
+      </div>
+    )}
+
+    {listings.length > 0 && (
+      <StickyCTA />
+      <MultiQuoteBar />
+    )}
+
+    {/* How It Works */}
+    <div class="bg-white rounded-2xl border border-gray-200 px-4 sm:px-6 md:px-8 py-6 md:py-7 mb-9 mt-5">
+      <h2 class="text-lg font-bold mb-5">How {config.brandName} Works</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+        <div class="text-center">
+          <div class="w-12 h-12 bg-primary-50 rounded-xl flex items-center justify-center text-[22px] mx-auto mb-3">&#x1F50D;</div>
+          <h3 class="text-sm font-bold mb-1">Browse & Compare</h3>
+          <p class="text-[13px] text-gray-500 leading-snug">View curated providers, check certifications, and read real client reviews.</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-primary-50 rounded-xl flex items-center justify-center text-[22px] mx-auto mb-3">&#x1F4E9;</div>
+          <h3 class="text-sm font-bold mb-1">Request Quotes</h3>
+          <p class="text-[13px] text-gray-500 leading-snug">Select up to 5 providers and send your case details. Free, no obligation.</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-primary-50 rounded-xl flex items-center justify-center text-[22px] mx-auto mb-3">&#x2696;&#xFE0F;</div>
+          <h3 class="text-sm font-bold mb-1">Book Your Court Reporter</h3>
+          <p class="text-[13px] text-gray-500 leading-snug">Compare quotes, check availability, and book directly with the provider.</p>
+        </div>
+      </div>
+    </div>
+
+    {/* ═══ CONTENT + SIDEBAR ═══ */}
+    {Content && (
+      <div class="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8 mt-8 mb-9">
+        {/* Main content */}
+        <div class="prose prose-lg max-w-none">
+          <Content />
+        </div>
+
+        {/* Sidebar */}
+        <aside class="space-y-5 lg:sticky lg:top-24 lg:self-start">
+          {/* Quick Facts */}
+          <div class="card-base p-5">
+            <h3 class="text-sm font-bold text-navy-950 mb-3">Quick Facts</h3>
+            <div class="space-y-2.5">
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-gray-500">Providers</span>
+                <span class="font-bold text-navy-950">{listings.length}</span>
+              </div>
+              {avgRating && (
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-gray-500">Avg. Rating</span>
+                  <span class="font-bold text-navy-950">{avgRating} <span class="text-amber-500">&#9733;</span></span>
+                </div>
+              )}
+              {certifiedCount > 0 && (
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-gray-500">RPR Certified</span>
+                  <span class="font-bold text-navy-950">{certifiedCount} ({certPct}%)</span>
+                </div>
+              )}
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-gray-500">Price Range</span>
+                <span class="font-bold text-navy-950">{config.jobValue || '$250–$1,500+'}</span>
+              </div>
+              {totalReviews > 0 && (
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-gray-500">Total Reviews</span>
+                  <span class="font-bold text-navy-950">{totalReviews}</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Nearby Cities (sidebar) */}
+          {nearbyCities.length > 0 && (
+            <div class="card-base p-5">
+              <h3 class="text-sm font-bold text-navy-950 mb-3">Nearby Cities</h3>
+              <div class="space-y-2">
+                {nearbyCities.map(c => (
+                  <a class="flex items-center justify-between text-sm no-underline hover:text-primary-600 py-1" href={`/locations/${c.stateSlug}/${c.slug}/`}>
+                    <span class="font-medium text-gray-700">{c.city}, {c.state}</span>
+                    <span class="text-xs text-gray-400">{c.listingCount}</span>
+                  </a>
+                ))}
+              </div>
+              <a href={`/states/${cityInfo.stateSlug}/`} class="text-xs text-primary-600 font-medium mt-3 inline-block no-underline hover:underline">View all in {cityInfo.stateName || cityInfo.state} &rarr;</a>
+            </div>
+          )}
+
+          {/* Newsletter (sidebar) */}
+          <NewsletterSignup variant="compact" city={cityInfo.city} />
+        </aside>
+      </div>
+    )}
+
+    {/* Fallback: if no Content, render nearby/newsletter inline */}
+    {!Content && nearbyCities.length > 0 && (
+      <div class="mb-9">
+        <h2 class="text-lg font-bold mb-4">Nearby Cities</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+          {nearbyCities.map(c => (
+            <a class="card-hover p-4 no-underline text-inherit" href={`/locations/${c.stateSlug}/${c.slug}/`}>
+              <div class="text-sm font-bold text-navy-950">{c.city}</div>
+              <div class="text-xs text-gray-400">{c.state}</div>
+              <div class="text-xs text-gray-500 mt-1">{c.listingCount} provider{c.listingCount !== 1 ? 's' : ''}</div>
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
+    {!Content && (
+      <div class="mb-8">
+        <NewsletterSignup variant="compact" city={cityInfo.city} />
+      </div>
+    )}
+
+    {/* FAQ — accordion */}
+    <FAQAccordion faqs={[
+      {
+        question: `How much does a court reporter cost in ${cityInfo.city}?`,
+        answer: `Court reporting in ${cityInfo.city} typically costs ${config.jobValue || '$250-$1,500+'}, depending on duration, complexity, and turnaround requirements. Expedited transcripts and realtime feeds will cost more.`,
+      },
+      {
+        question: 'What should I look for in a court reporter?',
+        answer: "Look for RPR certification (Registered Professional Reporter) from NCRA — it's the industry gold standard. Also check reviews, ask about realtime capabilities, and confirm they can handle your jurisdiction's requirements.",
+      },
+      {
+        question: `How many court reporters are in ${cityInfo.city}?`,
+        answer: `There are currently ${listings.length} court reporting providers listed in ${cityInfo.city}, ${cityInfo.state} on ${config.brandName}.${claimed.length + featured.length > 0 ? ` Of those, ${claimed.length + featured.length} have claimed profiles with complete information and reviews.` : ''}`,
+      },
+      {
+        question: 'What does "Sponsored" mean on a listing?',
+        answer: `Sponsored providers pay for premium placement and appear at the top of search results. They have claimed profiles and typically respond faster to quote requests. All providers on ${config.brandName} — sponsored or not — are real businesses.`,
+      },
+    ]} />
+
+    <RelatedContent city={cityInfo.city} state={cityInfo.state} citySlug={cityInfo.slug} />
+  </div>
+
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(placeSchema)} />
+
+  {/* ═══ CITY PAGE FILTER/SORT SCRIPT ═══ */}
+  <script is:inline>
+    function initCityFilters() {
+      var container = document.getElementById('listing-filters');
+      if (!container || container.dataset.init) return;
+      container.dataset.init = 'true';
+
+      var pills = container.querySelectorAll('.city-filter-pill');
+      var sortSelect = document.getElementById('sort-select');
+      var countEl = container.querySelector('.city-results-count');
+
+      function applyFilters() {
+        var activeFilter = null;
+        pills.forEach(function(p) {
+          if (p.classList.contains('active') && p.dataset.filter !== 'all') {
+            activeFilter = p.dataset.filter;
+          }
+        });
+
+        var cards = document.querySelectorAll('[data-listing-card]');
+        var shown = 0;
+        cards.forEach(function(card) {
+          var visible = true;
+          if (activeFilter === 'has-reviews' && card.dataset.hasReviews !== 'true') visible = false;
+          if (activeFilter === 'rpr' && card.dataset.rpr !== 'true') visible = false;
+          if (activeFilter === 'rating-4' && parseFloat(card.dataset.rating) < 4) visible = false;
+
+          card.style.display = visible ? '' : 'none';
+          if (visible) shown++;
+        });
+        if (countEl) countEl.textContent = shown + ' provider' + (shown !== 1 ? 's' : '');
+      }
+
+      function applySort() {
+        var sortVal = sortSelect ? sortSelect.value : 'default';
+        // Sort within each grid separately
+        document.querySelectorAll('[data-listing-grid]').forEach(function(grid) {
+          var cards = Array.from(grid.querySelectorAll('[data-listing-card]'));
+          cards.sort(function(a, b) {
+            if (sortVal === 'rating-desc') return parseFloat(b.dataset.rating) - parseFloat(a.dataset.rating);
+            if (sortVal === 'reviews-desc') return parseInt(b.dataset.reviewCount) - parseInt(a.dataset.reviewCount);
+            if (sortVal === 'name-asc') return a.dataset.name.localeCompare(b.dataset.name);
+            return 0;
+          });
+          cards.forEach(function(card) { grid.appendChild(card); });
+        });
+      }
+
+      pills.forEach(function(pill) {
+        pill.addEventListener('click', function() {
+          pills.forEach(function(p) { p.classList.remove('active'); p.setAttribute('aria-pressed', 'false'); });
+          pill.classList.add('active');
+          pill.setAttribute('aria-pressed', 'true');
+          applyFilters();
+        });
+      });
+
+      if (sortSelect) {
+        sortSelect.addEventListener('change', function() {
+          applySort();
+          applyFilters();
+        });
+      }
+
+      // Re-apply sort/filter after live-patch updates data attributes
+      document.addEventListener('livepatch:complete', function() {
+        applySort();
+        applyFilters();
+      });
+    }
+
+    document.addEventListener('astro:page-load', initCityFilters);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initCityFilters);
+    } else {
+      initCityFilters();
+    }
+  </script>
+
+  {/* ═══ LIVE-PATCH: Overlay D1 claimed data onto static cards ═══ */}
+  <script is:inline>
+    function initLivePatch() {
+      var cards = document.querySelectorAll('[data-listing-card]');
+      if (!cards.length) return;
+
+      // Collect unique slugs
+      var slugs = [];
+      cards.forEach(function(card) {
+        var slug = card.dataset.providerSlug;
+        if (slug && slugs.indexOf(slug) === -1) slugs.push(slug);
+      });
+
+      // Fetch in parallel (limit to 6 concurrent)
+      var queue = slugs.slice();
+      var results = {};
+      var fetched = 0;
+      var total = slugs.length;
+
+      function onAllFetched() {
+        applyPatches();
+        document.dispatchEvent(new CustomEvent('livepatch:complete'));
+      }
+
+      function fetchNext() {
+        if (!queue.length) return;
+        var slug = queue.shift();
+        fetch('/api/listing/' + slug)
+          .then(function(r) { return r.ok ? r.json() : null; })
+          .then(function(d) { if (d) results[slug] = d; })
+          .catch(function() {})
+          .then(function() {
+            fetched++;
+            if (fetched >= total) onAllFetched();
+            else fetchNext();
+          });
+      }
+
+      if (total === 0) { onAllFetched(); }
+      var concurrent = Math.min(6, queue.length);
+      for (var i = 0; i < concurrent; i++) fetchNext();
+
+      function getInitials(name) {
+        return name.split(/\s+/).map(function(w) { return w[0]; }).join('').substring(0, 2).toUpperCase();
+      }
+
+      function _esc(s) {
+        if (!s) return '';
+        var d = document.createElement('div');
+        d.textContent = s;
+        return d.innerHTML;
+      }
+
+      var patchedCount = 0;
+      var totalToFetch = 0;
+
+      function applyPatches() {
+        cards.forEach(function(card) {
+          var slug = card.dataset.providerSlug;
+          var result = results[slug];
+          if (!result || !result.claimed) return;
+
+          var data = result.data || {};
+
+          // === UPGRADE UNCLAIMED → CLAIMED ===
+          if (card.classList.contains('city-unclaimed-card')) {
+            // Restyle the card: swap design system classes
+            card.classList.remove('city-unclaimed-card', 'bg-gray-50', 'border-dashed', 'border-gray-300');
+            card.classList.add('city-provider-card', 'card-hover');
+            card.style.background = '';
+            card.style.border = '';
+            card.style.borderStyle = '';
+
+            // Remove "Unclaimed" tag
+            var unclaimedTag = card.querySelector('.city-unclaimed-tag');
+            if (unclaimedTag) unclaimedTag.remove();
+
+            // Upgrade avatar
+            var avatar = card.querySelector('.city-avatar-unclaimed');
+            if (avatar) {
+              avatar.classList.remove('city-avatar-unclaimed', 'bg-slate-400');
+              avatar.classList.add('city-avatar-claimed', 'bg-primary-600');
+              if (data.name) avatar.textContent = getInitials(data.name);
+            }
+
+            // Upgrade name link
+            var nameLink = card.querySelector('.city-unclaimed-name-link');
+            if (nameLink) {
+              nameLink.classList.remove('city-unclaimed-name-link', 'text-gray-500', 'hover:text-gray-600');
+              nameLink.classList.add('city-provider-name-link', 'text-navy-950', 'hover:text-primary-600');
+              if (data.name) nameLink.textContent = data.name;
+            }
+
+            // Add verified badge
+            var nameDiv = card.querySelector('.text-\\[15px\\]');
+            if (nameDiv && !nameDiv.querySelector('.city-verified-badge')) {
+              var badge = document.createElement('span');
+              badge.className = 'city-verified-badge inline-flex items-center gap-0.5 bg-emerald-50 text-emerald-600 text-[11px] font-semibold px-1.5 py-0.5 rounded-[5px] whitespace-nowrap';
+              badge.innerHTML = '&#x2713;';
+              nameDiv.appendChild(badge);
+            }
+
+            // Fix description
+            var descEl = card.querySelector('.city-unclaimed-desc');
+            if (descEl) {
+              descEl.classList.remove('city-unclaimed-desc', 'text-gray-300', 'italic');
+              descEl.classList.add('city-provider-desc', 'text-gray-500');
+              descEl.style.fontStyle = 'normal';
+            }
+
+            // Fix tags
+            card.querySelectorAll('.city-tag-faded').forEach(function(tag) {
+              tag.classList.remove('city-tag-faded', 'text-gray-300');
+              tag.classList.add('city-tag-muted', 'text-gray-500');
+            });
+
+            // Fix phone — un-blur and show real phone
+            var phoneEl = card.querySelector('.city-phone-blurred');
+            if (phoneEl && data.phone) {
+              phoneEl.classList.remove('city-phone-blurred', 'text-gray-300', 'tracking-wider');
+              phoneEl.classList.add('city-provider-phone', 'text-navy-950', 'font-semibold');
+              phoneEl.textContent = '\u{1F4DE} ' + data.phone;
+            }
+
+            // Fix contact button
+            var unavailBtn = card.querySelector('.city-btn-unavailable');
+            if (unavailBtn) {
+              var quoteBtn = document.createElement('button');
+              quoteBtn.className = 'btn-action-secondary select-quote-btn';
+              quoteBtn.dataset.selected = 'false';
+              quoteBtn.dataset.providerName = data.name || card.dataset.providerName;
+              quoteBtn.dataset.providerEmail = data.email || card.dataset.providerEmail;
+              quoteBtn.dataset.providerSlug = slug;
+              quoteBtn.innerHTML = '<svg class="w-4 h-4 hidden check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span class="btn-label">+ Quote</span>';
+              unavailBtn.replaceWith(quoteBtn);
+            }
+          }
+
+          // === PATCH DATA ON ALL CLAIMED CARDS ===
+
+          // Patch name
+          if (data.name) {
+            var link = card.querySelector('.city-provider-name-link, .city-featured-name-link');
+            if (link) link.textContent = data.name;
+            card.dataset.providerName = data.name;
+            card.dataset.name = data.name;
+            // Update avatar initials
+            var av = card.querySelector('.city-provider-avatar, .city-featured-avatar');
+            if (av) av.textContent = getInitials(data.name);
+          }
+
+          // Patch description
+          if (data.description) {
+            var desc = card.querySelector('.city-provider-desc, .city-featured-desc');
+            if (desc) {
+              var text = data.description.length > 140 ? data.description.substring(0, 140) + '...' : data.description;
+              desc.textContent = text;
+            }
+          }
+
+          // Patch phone
+          if (data.phone) {
+            var ph = card.querySelector('.city-provider-phone, .city-featured-phone');
+            if (ph) ph.textContent = '\u{1F4DE} ' + data.phone;
+          }
+
+          // Patch services/certifications tags
+          if (data.services || data.certifications) {
+            var tagWrap = card.querySelector('.city-provider-tags, .city-featured-tags');
+            if (tagWrap) {
+              var allTags = [].concat(data.certifications || []).concat(data.services || []).slice(0, 4);
+              var isFeatured = card.classList.contains('city-featured-card');
+              tagWrap.innerHTML = allTags.map(function(t) {
+                return '<span class="' + (isFeatured ? 'city-tag bg-primary-50 text-primary-600 text-[11px] font-semibold px-2.5 py-1 rounded-md' : 'city-tag-muted bg-gray-100 text-gray-500 text-[11px] font-semibold px-2.5 py-1 rounded-md') + '">' + _esc(t) + '</span>';
+              }).join('');
+            }
+          }
+
+          // Update email for quote button
+          if (data.email) {
+            card.dataset.providerEmail = data.email;
+            var qBtn = card.querySelector('.select-quote-btn');
+            if (qBtn) qBtn.dataset.providerEmail = data.email;
+          }
+        });
+      }
+    }
+
+    document.addEventListener('astro:page-load', initLivePatch);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initLivePatch);
+    } else {
+      initLivePatch();
+    }
+  </script>
+</PageLayout>
+
+<style is:global>
+  /* Hero decorative circles (pseudo-elements — can't do in Tailwind) */
+  .city-hero::before {
+    content: ''; position: absolute; top: -100px; right: -50px;
+    width: 400px; height: 400px; border-radius: 50%;
+    background: rgba(59,130,246,0.12); pointer-events: none;
+  }
+  .city-hero::after {
+    content: ''; position: absolute; bottom: -150px; left: 30%;
+    width: 500px; height: 500px; border-radius: 50%;
+    background: rgba(37,99,235,0.08); pointer-events: none;
+  }
+
+  /* Breadcrumb color overrides inside hero */
+  .city-hero nav[aria-label="Breadcrumb"] { color: rgba(255,255,255,0.5); }
+  .city-hero nav[aria-label="Breadcrumb"] a { color: rgba(255,255,255,0.6); }
+  .city-hero nav[aria-label="Breadcrumb"] a:hover { color: #fff; }
+  .city-hero nav[aria-label="Breadcrumb"] span.text-gray-700 { color: rgba(255,255,255,0.8); }
+  .city-hero nav[aria-label="Breadcrumb"] span.text-gray-300 { color: rgba(255,255,255,0.3); }
+
+  /* Filter pill active state (toggled by JS) */
+  .city-filter-pill.active {
+    @apply bg-navy-950 text-white border-navy-950;
+  }
+</style>

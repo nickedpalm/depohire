@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "a-a-court-reporting-franklin",
+    "name": "A & A Court Reporting",
+    "city": "franklin",
+    "state": "TN",
+    "address": "2590 Tom Anderson Road, Franklin, TN 37064",
+    "lat": 35.925206,
+    "lng": -86.8689419,
+    "phone": "615-945-7839",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting services",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:23:14",
+    "sentiment": null
+  }
+]

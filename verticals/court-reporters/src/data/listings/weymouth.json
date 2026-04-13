@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "leavitt-reporting-inc-weymouth",
+    "name": "Leavitt Reporting, Inc.",
+    "city": "weymouth",
+    "state": "MA",
+    "address": "119 Broad Street, Weymouth, MA 02188",
+    "lat": 42.2165688,
+    "lng": -70.9612924,
+    "phone": "617-227-1883",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting in Weymouth.",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:22:52",
+    "sentiment": null
+  }
+]

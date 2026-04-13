@@ -1,0 +1,34 @@
+[
+  {
+    "slug": "meadowbrook-court-reporting-auburn-hills",
+    "name": "Meadowbrook Court Reporting",
+    "city": "auburn-hills",
+    "state": "MI",
+    "address": "",
+    "lat": 42.6875323,
+    "lng": -83.2341028,
+    "phone": "",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "none",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Realtime reporters, e-transcript, medical/technical depositions, videography, conference room in southeastern Michigan.",
+    "certifications": [],
+    "services": [
+      "realtime reporting",
+      "e-transcript",
+      "videography",
+      "depositions"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:24:53",
+    "sentiment": null
+  }
+]

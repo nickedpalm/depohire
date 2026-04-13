@@ -1,0 +1,29 @@
+[
+  {
+    "slug": "hp-reporting-fairacres",
+    "name": "HP Reporting",
+    "city": "fairacres",
+    "state": "NM",
+    "address": "PO Box 981, Fairacres, NM",
+    "lat": 32.3039821,
+    "lng": -106.8466728,
+    "phone": "(575) 571-5527",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting services based in Fairacres.",
+    "certifications": [],
+    "services": [],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:26:06",
+    "sentiment": null
+  }
+]

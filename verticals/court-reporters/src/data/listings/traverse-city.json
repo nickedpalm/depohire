@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "curtiss-reporting-traverse-city",
+    "name": "Curtiss Reporting",
+    "city": "traverse-city",
+    "state": "MI",
+    "address": "955 East 8th St, Ste. B, Traverse City, MI",
+    "lat": 44.7606481,
+    "lng": -85.6165976,
+    "phone": "231-941-8715",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Northern Michigan court reporting.",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:24:53",
+    "sentiment": null
+  }
+]

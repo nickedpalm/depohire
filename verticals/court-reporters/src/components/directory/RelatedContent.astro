@@ -1,0 +1,60 @@
+---
+import config from '~/config';
+import { getCollection } from 'astro:content';
+
+interface Props {
+  city?: string;
+  state?: string;
+  citySlug?: string;
+  currentSlug?: string;
+}
+
+const { city, state, citySlug, currentSlug } = Astro.props;
+
+// Get all blog posts for internal linking
+const allPosts = await getCollection('blog');
+
+// Score posts by relevance to current context
+const cityLower = (city || '').toLowerCase();
+const stateLower = (state || '').toLowerCase();
+const relatedPosts = allPosts
+  .filter(post => post.id !== currentSlug && !post.data.draft)
+  .map(post => {
+    let score = 0;
+    const titleLower = post.data.title.toLowerCase();
+    const descLower = (post.data.description || '').toLowerCase();
+    // City-specific match (highest value)
+    if (cityLower && (titleLower.includes(cityLower) || descLower.includes(cityLower))) score += 10;
+    // State match
+    if (stateLower && (titleLower.includes(stateLower) || descLower.includes(stateLower))) score += 5;
+    // Pillar content (always useful)
+    if (post.data.tags?.includes('pillar')) score += 3;
+    // Cost/hiring content (high intent)
+    if (titleLower.includes('cost') || titleLower.includes('how to') || titleLower.includes('hire')) score += 2;
+    return { post, score };
+  })
+  .sort((a, b) => b.score - a.score || Math.random() - 0.5)
+  .slice(0, 3)
+  .map(r => r.post);
+---
+{relatedPosts.length > 0 && (
+  <div class="mt-10">
+    <h2 class="text-xl font-bold text-gray-900 mb-4">
+      {city ? `${config.primaryKeyword.charAt(0).toUpperCase() + config.primaryKeyword.slice(1)} Resources` : 'Related Articles'}
+    </h2>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      {relatedPosts.map(post => (
+        <a href={`/blog/${post.id}/`} class="card p-4 no-underline group hover:border-primary-200">
+          <h3 class="font-semibold text-gray-900 group-hover:text-primary-600 text-sm">{post.data.title}</h3>
+          <p class="text-xs text-gray-500 mt-1 line-clamp-2">{post.data.description}</p>
+        </a>
+      ))}
+    </div>
+    {city && (
+      <p class="text-sm text-gray-500 mt-3">
+        Looking for more? Browse our <a href="/blog/" class="text-primary-600 hover:underline">full resource library</a>
+        or <a href="/states/all/" class="text-primary-600 hover:underline">find {config.primaryKeyword}s in other cities</a>.
+      </p>
+    )}
+  </div>
+)}

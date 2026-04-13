@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "henes-associates-reporting-service-appleton",
+    "name": "Henes & Associates Reporting Service",
+    "city": "appleton",
+    "state": "WI",
+    "address": "3405 Commerce Ct., Ste D, Appleton, WI",
+    "lat": 44.2613967,
+    "lng": -88.4069744,
+    "phone": "(920) 733-1835",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting services",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:25:07",
+    "sentiment": null
+  }
+]

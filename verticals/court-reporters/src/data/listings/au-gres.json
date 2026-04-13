@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "court-reporter-connection-inc-au-gres",
+    "name": "Court Reporter Connection, Inc.",
+    "city": "au-gres",
+    "state": "MI",
+    "address": "",
+    "lat": 44.04863,
+    "lng": -83.695816,
+    "phone": "989-255-5542",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Connects clients with court reporters in Michigan.",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:24:53",
+    "sentiment": null
+  }
+]

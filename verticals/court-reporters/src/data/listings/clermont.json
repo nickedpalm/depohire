@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "keystone-reporting-llc-clermont",
+    "name": "Keystone Reporting LLC",
+    "city": "clermont",
+    "state": "FL",
+    "address": "18108 W Apshawa Rd, Clermont, FL 34715",
+    "lat": 28.6101298,
+    "lng": -81.7803293,
+    "phone": "(352) 241-4991",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Court reporting company serving central Florida.",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:21:41",
+    "sentiment": null
+  }
+]

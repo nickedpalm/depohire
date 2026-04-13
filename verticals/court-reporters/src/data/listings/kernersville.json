@@ -1,0 +1,34 @@
+[
+  {
+    "slug": "chaplin-associates-inc-kernersville",
+    "name": "Chaplin & Associates, Inc.",
+    "city": "kernersville",
+    "state": "NC",
+    "address": "",
+    "lat": 36.1198589,
+    "lng": -80.0736533,
+    "phone": "+1240224390",
+    "website": "https://www.lexvisio.com/legal-practice-support/court-reporters/?cp=p&region=north-carolina",
+    "email": "",
+    "contact_form_url": "https://www.lexvisio.com/legal-practice-support/court-reporters/?cp=p&region=north-carolina",
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Provides court reporting and videography services including transcripts, case management, and video synchronization.",
+    "certifications": [],
+    "services": [
+      "court reporting",
+      "videotaped depositions",
+      "video-transcript synchronization",
+      "eTran"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:22:58",
+    "sentiment": null
+  }
+]

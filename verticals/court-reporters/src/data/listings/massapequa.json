@@ -1,0 +1,31 @@
+[
+  {
+    "slug": "sudmann-court-reporting-massapequa",
+    "name": "Sudmann Court Reporting",
+    "city": "massapequa",
+    "state": "NY",
+    "address": "137 North Queens Ave, Massapequa, NY 11758",
+    "lat": 40.6972635,
+    "lng": -73.4587955,
+    "phone": "516-225-6759",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Solo or small firm providing court reporting services.",
+    "certifications": [],
+    "services": [
+      "court reporting"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:21:21",
+    "sentiment": null
+  }
+]

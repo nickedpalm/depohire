@@ -1,0 +1,33 @@
+[
+  {
+    "slug": "alliance-court-reporting-carmel",
+    "name": "Alliance Court Reporting",
+    "city": "carmel",
+    "state": "IN",
+    "address": "13295 Illinois Street, Ste 218, Carmel, IN",
+    "lat": 39.9784186,
+    "lng": -86.1283681,
+    "phone": "317-875-3914",
+    "website": "",
+    "email": "",
+    "contact_form_url": null,
+    "contact_method": "phone",
+    "rating": 0,
+    "review_count": 0,
+    "description": "Machine court reporters specializing in depositions, medical/expert/technical; in-house conference rooms, legal videography, video conferencing.",
+    "certifications": [],
+    "services": [
+      "depositions",
+      "videography",
+      "video conferencing"
+    ],
+    "years_experience": null,
+    "coverage_area": "",
+    "equipment": [],
+    "claimed": false,
+    "featured": false,
+    "source": "perplexity",
+    "scraped_at": "2026-03-25 17:24:36",
+    "sentiment": null
+  }
+]
