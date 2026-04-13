@@ -2,6 +2,7 @@ from pathlib import Path
 import subprocess
 import httpx
 import pytest
+from unittest.mock import patch
 from scripts.doctor import (
     CheckResult,
     DoctorDeps,
@@ -15,6 +16,8 @@ from scripts.doctor import (
     check_local_tooling,
     discover_verticals,
     check_vertical_yaml,
+    check_domain_dns,
+    check_github_repo,
 )
 
 
@@ -357,3 +360,52 @@ def test_vertical_yaml_empty_file(tmp_path):
     r = check_vertical_yaml(deps, "e")
     assert r.status is Status.FAIL
     assert "empty" in r.message.lower() or "mapping" in r.message.lower()
+
+
+def test_domain_dns_resolves(tmp_path):
+    (tmp_path / "configs").mkdir()
+    (tmp_path / "configs" / "x.yaml").write_text("slug: x\ndomain: stenoscout.com\n")
+    deps = make_deps(project_root=tmp_path)
+    with patch("socket.gethostbyname", return_value="172.67.1.1"):
+        r = check_domain_dns(deps, "x")
+    assert r.status is Status.OK
+
+
+def test_domain_dns_nxdomain(tmp_path):
+    import socket
+    (tmp_path / "configs").mkdir()
+    (tmp_path / "configs" / "x.yaml").write_text("slug: x\ndomain: nonexistent-xyz-abc.invalid\n")
+    deps = make_deps(project_root=tmp_path)
+    with patch("socket.gethostbyname", side_effect=socket.gaierror("nxdomain")):
+        r = check_domain_dns(deps, "x")
+    assert r.status is Status.FAIL
+    assert "resolve" in r.message.lower() or "dns" in r.message.lower()
+
+
+def test_github_repo_exists(tmp_path):
+    (tmp_path / "configs").mkdir()
+    (tmp_path / "configs" / "x.yaml").write_text("slug: x\ndomain: x.com\n")
+    def handler(req):
+        assert req.url.path == "/repos/nickedpalm/x"
+        return httpx.Response(200, json={"full_name": "nickedpalm/x"})
+    deps = make_deps(
+        project_root=tmp_path,
+        env={"GITHUB_TOKEN": "gh-abc"},
+        http=mock_http(handler),
+    )
+    assert check_github_repo(deps, "x").status is Status.OK
+
+
+def test_github_repo_missing(tmp_path):
+    (tmp_path / "configs").mkdir()
+    (tmp_path / "configs" / "x.yaml").write_text("slug: x\ndomain: x.com\n")
+    def handler(req):
+        return httpx.Response(404)
+    deps = make_deps(
+        project_root=tmp_path,
+        env={"GITHUB_TOKEN": "gh-abc"},
+        http=mock_http(handler),
+    )
+    r = check_github_repo(deps, "x")
+    assert r.status is Status.FAIL
+    assert "not found" in r.message.lower() or "404" in r.message

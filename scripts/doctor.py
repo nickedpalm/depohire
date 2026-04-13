@@ -9,6 +9,7 @@ All checks are pure and dependency-injected for testability.
 from __future__ import annotations
 
 import re
+import socket
 import subprocess
 import sys
 from dataclasses import dataclass
@@ -270,3 +271,49 @@ def check_vertical_yaml(deps: DoctorDeps, slug: str) -> CheckResult:
             remediation="See docs/VERTICAL-PLAYBOOK.md §2 for the full yaml template.",
         )
     return CheckResult(Status.OK, f"{slug}:yaml", f"{len(config)} fields parsed", None)
+
+
+def _load_vertical_config(deps: DoctorDeps, slug: str) -> dict:
+    path = deps.project_root / "configs" / f"{slug}.yaml"
+    return yaml.safe_load(path.read_text()) or {}
+
+
+def check_domain_dns(deps: DoctorDeps, slug: str) -> CheckResult:
+    config = _load_vertical_config(deps, slug)
+    domain = config.get("domain", "")
+    if not domain:
+        return CheckResult(Status.FAIL, f"{slug}:dns", "no domain in config", None)
+    try:
+        ip = socket.gethostbyname(domain)
+    except socket.gaierror as e:
+        return CheckResult(
+            status=Status.FAIL,
+            name=f"{slug}:dns",
+            message=f"{domain} does not resolve: {e}",
+            remediation=f"In Cloudflare dashboard, add a CNAME for {domain} → <project>.pages.dev.",
+        )
+    return CheckResult(Status.OK, f"{slug}:dns", f"{domain} → {ip}", None)
+
+
+def check_github_repo(deps: DoctorDeps, slug: str) -> CheckResult:
+    token = deps.env.get("GITHUB_TOKEN", "")
+    if not token:
+        return CheckResult(Status.SKIP, f"{slug}:github", "GITHUB_TOKEN not set (checked separately)", None)
+    try:
+        r = deps.http.get(
+            f"https://api.github.com/repos/nickedpalm/{slug}",
+            headers={"Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json"},
+            timeout=10,
+        )
+    except httpx.HTTPError as e:
+        return CheckResult(Status.FAIL, f"{slug}:github", f"network error: {e}", None)
+    if r.status_code == 200:
+        return CheckResult(Status.OK, f"{slug}:github", f"nickedpalm/{slug} exists", None)
+    if r.status_code == 404:
+        return CheckResult(
+            status=Status.FAIL,
+            name=f"{slug}:github",
+            message=f"nickedpalm/{slug} not found",
+            remediation=f"gh repo create nickedpalm/{slug} --public --source=verticals/{slug} --push",
+        )
+    return CheckResult(Status.FAIL, f"{slug}:github", f"unexpected {r.status_code}", None)
