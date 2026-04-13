@@ -250,9 +250,17 @@ def discover_verticals(deps: DoctorDeps, only: str | None) -> list[str]:
 def check_vertical_yaml(deps: DoctorDeps, slug: str) -> CheckResult:
     path = deps.project_root / "configs" / f"{slug}.yaml"
     try:
-        config = yaml.safe_load(path.read_text())
+        raw = path.read_text()
+    except FileNotFoundError:
+        return CheckResult(Status.FAIL, f"{slug}:yaml", f"config file not found: {path}",
+                           f"Create configs/{slug}.yaml. See docs/VERTICAL-PLAYBOOK.md §2.")
+    try:
+        config = yaml.safe_load(raw)
     except yaml.YAMLError as e:
         return CheckResult(Status.FAIL, f"{slug}:yaml", f"parse error: {e}", "Validate YAML at yamlchecker.com.")
+    if not isinstance(config, dict):
+        return CheckResult(Status.FAIL, f"{slug}:yaml", "yaml is empty or not a mapping",
+                           "Top-level yaml must be a mapping of keys to values.")
     missing = [k for k in REQUIRED_YAML_FIELDS if not config.get(k)]
     if missing:
         return CheckResult(

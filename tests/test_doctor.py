@@ -340,3 +340,20 @@ def test_vertical_yaml_missing_field(tmp_path):
     r = check_vertical_yaml(deps, "x")
     assert r.status is Status.FAIL
     assert "name" in r.message
+
+
+def test_vertical_yaml_file_missing(tmp_path):
+    (tmp_path / "configs").mkdir()
+    deps = make_deps(project_root=tmp_path)
+    r = check_vertical_yaml(deps, "ghost")
+    assert r.status is Status.FAIL
+    assert "not found" in r.message.lower()
+
+
+def test_vertical_yaml_empty_file(tmp_path):
+    (tmp_path / "configs").mkdir()
+    (tmp_path / "configs" / "e.yaml").write_text("")
+    deps = make_deps(project_root=tmp_path)
+    r = check_vertical_yaml(deps, "e")
+    assert r.status is Status.FAIL
+    assert "empty" in r.message.lower() or "mapping" in r.message.lower()
