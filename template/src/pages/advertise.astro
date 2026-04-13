@@ -7,9 +7,16 @@ import citiesData from '~/data/cities.json';
 
 const totalCities = citiesData.length;
 
+// Pricing (USD) — sourced from configs/<slug>.yaml `pricing` block via factory.py
+const featuredMo = config.pricing?.featuredMonthlyUsd ?? 79;
+const featuredYr = config.pricing?.featuredAnnualUsd ?? featuredMo * 10;
+const featuredSavings = featuredMo * 12 - featuredYr;
+const cityProMo = config.pricing?.cityProMonthlyUsd ?? 149;
+const fmt = (n: number) => n.toLocaleString('en-US');
+
 const metadata = {
   title: 'Advertise',
-  description: `Get a sponsored listing in the #1 deposition videographer directory. Attorneys in ${totalCities}+ cities searching for videographers — put your business at the top.`,
+  description: `Get a featured listing in the #1 ${config.primaryKeyword} directory. Attorneys in ${totalCities}+ cities searching — put your business at the top. Plans from $${featuredMo}/mo.`,
 };
 ---
 <PageLayout metadata={metadata}>
@@ -33,10 +40,10 @@ const metadata = {
 
       <!-- Featured -->
       <div class="card p-6 border-2 border-primary">
-        <h3 class="text-xl font-bold text-default">Sponsored City Listing</h3>
+        <h3 class="text-xl font-bold text-default">Featured Listing</h3>
         <p class="text-sm text-muted mt-1">One job covers months of listing fees.</p>
         <div class="mt-4 mb-6">
-          <span class="text-4xl font-extrabold text-default">$79</span>
+          <span class="text-4xl font-extrabold text-default">${fmt(featuredMo)}</span>
           <span class="text-muted">/month</span>
         </div>
         <ul class="space-y-3 text-sm">
@@ -74,15 +81,15 @@ const metadata = {
       <!-- City Pro -->
       <div class="card p-6">
         <h3 class="text-xl font-bold text-default">City Pro</h3>
-        <p class="text-sm text-muted mt-1">Everything in Sponsored, plus editorial SEO + newsletter.</p>
+        <p class="text-sm text-muted mt-1">Everything in Featured, plus editorial SEO + newsletter.</p>
         <div class="mt-4 mb-6">
-          <span class="text-4xl font-extrabold text-default">$149</span>
+          <span class="text-4xl font-extrabold text-default">${fmt(cityProMo)}</span>
           <span class="text-muted">/month</span>
         </div>
         <ul class="space-y-3 text-sm">
           <li class="flex items-start gap-2">
             <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-            All Sponsored features
+            All Featured features
           </li>
           <li class="flex items-start gap-2">
             <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
@@ -132,11 +139,11 @@ const metadata = {
       <h2 class="text-2xl font-bold text-default mb-2">Ready? Pick your plan and check out instantly.</h2>
       <p class="text-muted mb-8">Secure payment via Stripe. Cancel anytime. Your listing goes live within 2–3 business days.</p>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg mx-auto">
-        <a href={config.stripeSponsoredLink} target="_blank" rel="noopener" class="btn-primary py-4 text-center no-underline text-lg">
-          Sponsored — $79/mo
+        <a href={config.stripeFeaturedMonthlyLink} target="_blank" rel="noopener" class="btn-primary py-4 text-center no-underline text-lg">
+          Featured &mdash; ${fmt(featuredMo)}/mo
         </a>
-        <a href={config.stripeCityProLink} target="_blank" rel="noopener" class="btn-primary py-4 text-center no-underline text-lg bg-green-700 hover:bg-green-600">
-          City Pro — $149/mo
+        <a href={config.stripeCityProMonthlyLink} target="_blank" rel="noopener" class="btn-primary py-4 text-center no-underline text-lg bg-green-700 hover:bg-green-600">
+          City Pro &mdash; ${fmt(cityProMo)}/mo
         </a>
       </div>
       <p class="text-xs text-muted mt-4">Questions? Email <a href={`mailto:${config.contactEmail}`} class="text-primary hover:underline">{config.contactEmail}</a></p>
@@ -147,9 +154,9 @@ const metadata = {
   <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
     <h2 class="text-3xl font-bold text-default">One job pays for months of listing fees.</h2>
     <p class="mt-4 text-lg text-muted max-w-2xl mx-auto">
-      The average deposition session pays $500–2,000. A Sponsored listing is $79/month. One booked job from {config.brandName} and you're profitable for the rest of the year.
+      The average engagement pays {config.jobValue}. A Featured listing is ${fmt(featuredMo)}/month — or ${fmt(featuredYr)}/year (save ${fmt(featuredSavings)}). One booked job from {config.brandName} and you're profitable for the rest of the year.
     </p>
-    <a href={config.stripeSponsoredLink} target="_blank" rel="noopener" class="btn-primary inline-block mt-6 no-underline">Get Sponsored — $79/mo &rarr;</a>
+    <a href={config.stripeFeaturedMonthlyLink} target="_blank" rel="noopener" class="btn-primary inline-block mt-6 no-underline">Get Featured &mdash; ${fmt(featuredMo)}/mo &rarr;</a>
   </section>
 
   <!-- FAQ -->
