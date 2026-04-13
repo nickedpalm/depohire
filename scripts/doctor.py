@@ -41,3 +41,25 @@ class DoctorDeps:
     run_cmd: Callable[[list[str]], subprocess.CompletedProcess]
     env: dict[str, str]
     project_root: Path
+
+
+REQUIRED_SHARED_ENV = [
+    "PERPLEXITY_API_KEY",
+    "ANTHROPIC_API_KEY",
+    "GOOGLE_MAPS_API_KEY",
+    "CLOUDFLARE_API_TOKEN",
+    "GITHUB_TOKEN",
+]
+
+
+def check_shared_env_presence(deps: DoctorDeps) -> CheckResult:
+    missing = [k for k in REQUIRED_SHARED_ENV if not deps.env.get(k)]
+    if not missing:
+        return CheckResult(Status.OK, "shared-env", "all 5 required keys present", None)
+    return CheckResult(
+        status=Status.FAIL,
+        name="shared-env",
+        message=f"missing or empty: {', '.join(missing)}",
+        remediation="Export each in your shell profile (~/.bashrc) or your .env loader. "
+                    "See docs/BOOTSTRAP.md for where to obtain each key.",
+    )
