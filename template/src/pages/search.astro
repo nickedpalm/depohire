@@ -1,5 +1,6 @@
 ---
 import PageLayout from '~/layouts/PageLayout.astro';
+import PageHero from '~/components/directory/PageHero.astro';
 import config from '~/config';
 import citiesData from '~/data/cities.json';
 import { getListingCountByCity, getAllListings } from '~/lib/listings';
@@ -30,21 +31,17 @@ const recentPosts = posts
 <PageLayout metadata={metadata}>
   <Fragment slot="announcement"><span></span></Fragment>
 
-  <!-- Hero -->
-  <div class="bg-gradient-to-br from-primary-600 to-primary-800 text-white py-10 sm:py-14">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-3">Find a Deposition Videographer</h1>
-      <p class="text-primary-100 text-lg sm:text-xl max-w-2xl mx-auto mb-6">
-        Search {totalProviders.toLocaleString()}+ curated providers across {totalCities} cities. Every listing includes credentials, services, and direct contact.
-      </p>
-      <div class="max-w-xl mx-auto">
-        <div id="search" class="min-h-[56px]"></div>
-      </div>
-      <p class="text-primary-200 text-sm mt-3">
-        Search by provider name, city, service, or keyword — or <a href="/states/all/" class="text-white underline hover:no-underline">browse by state</a>
-      </p>
+  <PageHero
+    title="Find a Deposition Videographer"
+    subtitle={`Search ${totalProviders.toLocaleString()}+ curated providers across ${totalCities} cities. Every listing includes credentials, services, and direct contact.`}
+  >
+    <div class="max-w-xl mt-6">
+      <div id="search" class="min-h-[56px]"></div>
     </div>
-  </div>
+    <p class="text-white/60 text-sm mt-3">
+      Search by provider name, city, service, or keyword — or <a href="/states/all/" class="text-white underline hover:no-underline">browse by state</a>
+    </p>
+  </PageHero>
 
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- Zip code redirect banner -->

@@ -236,7 +236,7 @@ const { title, activePage } = Astro.props;
     <div id="dash-app" class="dash-layout" style="display:none">
       <!-- Mobile top bar -->
       <div class="dash-mobile-bar">
-        <a href="/" class="dash-logo">Depo<span>Hire</span></a>
+        <a href="/" class="dash-logo"><img src="/logo-dark.png" alt="Dashboard" style="height:28px;width:auto;" /></a>
         <button class="dash-hamburger" id="dash-menu-toggle" aria-label="Open menu">
           <span></span><span></span><span></span>
         </button>
@@ -246,7 +246,7 @@ const { title, activePage } = Astro.props;
 
       <aside class="dash-sidebar" id="dash-sidebar">
         <button class="dash-sidebar-close" id="dash-sidebar-close" aria-label="Close menu">&times;</button>
-        <a href="/" class="dash-logo">Depo<span>Hire</span></a>
+        <a href="/" class="dash-logo"><img src="/logo-dark.png" alt="Dashboard" style="height:28px;width:auto;" /></a>
 
         <div class="dash-section">Dashboard</div>
         <a class={`dash-nav-item ${activePage === 'overview' ? 'active' : ''}`} href="/provider/dashboard/">

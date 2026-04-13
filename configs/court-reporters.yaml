@@ -67,9 +67,14 @@ extra_fields:
 
 # Brand
 brand_name: StenoScout
+primary_color: "#4f46e5"
 
-# Payments & integrations (placeholders — configure in Stripe/CF/GA when ready)
-stripe_sponsored_link: ""
-stripe_city_pro_link: ""
-turnstile_sitekey: ""
-google_analytics_id: ""
+# Payments & integrations
+stripe_featured_monthly_link: "https://buy.stripe.com/cNi3cu36W49q0yUfaNa3u06"
+stripe_featured_annual_link: "https://buy.stripe.com/dRm4gyePEbBSbdy1jXa3u07"
+stripe_city_pro_monthly_link: "https://buy.stripe.com/28EbJ0fTIfS895qe6Ja3u08"
+stripe_city_pro_annual_link: "https://buy.stripe.com/6oU9ASdLAbBS95q7Ila3u09"
+stripe_featured_product_id: "prod_UFN1337yq46Txc"
+stripe_city_pro_product_id: "prod_UFN1TfMROgL2W2"
+turnstile_sitekey: "0x4AAAAAACyf8viJgUXreScx"
+google_analytics_id: "G-M9342V5KWE"

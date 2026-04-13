@@ -24,6 +24,10 @@ export interface SiteConfig {
   cityPagePromptContext: string;
   contactEmail: string;
   stripeSponsoredLink: string;
+  stripeFeaturedMonthlyLink: string;
+  stripeFeaturedAnnualLink: string;
+  stripeCityProMonthlyLink: string;
+  stripeCityProAnnualLink: string;
   stripeCityProLink: string;
   turnsiteSitekey: string;
   googleAnalyticsId: string;
@@ -52,6 +56,10 @@ const config: SiteConfig = {
   cityPagePromptContext: d.cityPagePromptContext ?? '',
   contactEmail: d.contactEmail ?? `contact@${d.domain ?? 'example.com'}`,
   stripeSponsoredLink: d.stripeSponsoredLink ?? '',
+  stripeFeaturedMonthlyLink: d.stripeFeaturedMonthlyLink ?? '',
+  stripeFeaturedAnnualLink: d.stripeFeaturedAnnualLink ?? '',
+  stripeCityProMonthlyLink: d.stripeCityProMonthlyLink ?? '',
+  stripeCityProAnnualLink: d.stripeCityProAnnualLink ?? '',
   stripeCityProLink: d.stripeCityProLink ?? '',
   turnsiteSitekey: d.turnsiteSitekey ?? '',
   googleAnalyticsId: d.googleAnalyticsId ?? '',

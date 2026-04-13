@@ -1,6 +1,25 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
 import plugin from 'tailwindcss/plugin';
 import typographyPlugin from '@tailwindcss/typography';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
+
+// Load generated color theme (falls back to blue defaults)
+let colors;
+try {
+  const raw = readFileSync(resolve(process.cwd(), 'colors.json'), 'utf-8');
+  colors = JSON.parse(raw);
+} catch {
+  colors = {
+    primary: {
+      50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd',
+      400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8',
+      800: '#1e40af', 900: '#1e3a8a', 950: '#172554',
+    },
+    navy: { 800: '#1e3a5f', 900: '#2d2b55', 950: '#1a1a2e' },
+    shadow: { r: 37, g: 99, b: 235 },
+  };
+}
 
 export default {
   content: ['./src/**/*.{astro,html,js,jsx,json,md,mdx,svelte,ts,tsx,vue}'],
@@ -9,23 +28,9 @@ export default {
       colors: {
         primary: {
           DEFAULT: 'var(--aw-color-primary)',
-          50: '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a8a',
-          950: '#172554',
+          ...colors.primary,
         },
-        navy: {
-          800: '#1e3a5f',
-          900: '#2d2b55',
-          950: '#1a1a2e',
-        },
+        navy: colors.navy,
         surface: {
           page: '#f8fafc',
           muted: '#f0f2f5',
@@ -43,8 +48,8 @@ export default {
       },
       boxShadow: {
         'card': '0 1px 3px rgba(0,0,0,0.06)',
-        'card-hover': '0 8px 24px rgba(37,99,235,0.08)',
-        'card-elevated': '0 4px 20px rgba(37,99,235,0.1)',
+        'card-hover': `0 8px 24px rgba(${colors.shadow.r},${colors.shadow.g},${colors.shadow.b},0.08)`,
+        'card-elevated': `0 4px 20px rgba(${colors.shadow.r},${colors.shadow.g},${colors.shadow.b},0.1)`,
       },
       fontFamily: {
         sans: ['var(--aw-font-sans, ui-sans-serif)', ...defaultTheme.fontFamily.sans],

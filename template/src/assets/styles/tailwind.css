@@ -3,9 +3,6 @@
 @tailwind utilities;
 
 @layer utilities {
-  .hero-gradient {
-    background: linear-gradient(135deg, #0f1b2d 0%, #1a3352 40%, #1e3a5f 70%, #2a4a6b 100%);
-  }
   .bg-page {
     background-color: var(--aw-color-bg-page);
   }
@@ -129,6 +126,13 @@
     @apply overflow-x-auto -mx-4 px-4 my-6;
   }
 
+  /* Auto-wrap prose tables so they scroll instead of overflowing */
+  .prose table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
   /* ===== Design System: Buttons ===== */
   .btn-action {
     @apply inline-flex items-center justify-center gap-2 font-semibold
@@ -184,6 +188,6 @@
 
   /* ===== Design System: Hero ===== */
   .hero-gradient {
-    background: linear-gradient(135deg, #1a1a2e 0%, #1e3a5f 40%, #2563eb 100%);
+    background: linear-gradient(135deg, var(--hero-grad-start) 0%, var(--hero-grad-mid) 40%, var(--hero-grad-end) 100%);
   }
 }

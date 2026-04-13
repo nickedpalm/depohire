@@ -1,6 +1,6 @@
 ---
 import PageLayout from '~/layouts/PageLayout.astro';
-import Breadcrumbs from '~/components/directory/Breadcrumbs.astro';
+import PageHero from '~/components/directory/PageHero.astro';
 import config from '~/config';
 import { getCollection } from 'astro:content';
 
@@ -62,38 +62,35 @@ for (const post of allPosts) {
 <PageLayout metadata={metadata}>
   <Fragment slot="announcement"><span></span></Fragment>
 
-  <div class="hero-gradient text-white py-12 relative overflow-hidden">
-    <div class="absolute -top-20 -right-20 w-96 h-96 rounded-full bg-blue-500/10 blur-3xl" aria-hidden="true"></div>
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 relative z-10">
-      <Breadcrumbs crumbs={[{ label: 'Blog', href: '/blog/' }, { label: author.name }]} dark />
-
-      <div class="flex items-start gap-6 mt-4">
-        <div class="w-20 h-20 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center text-3xl font-bold text-white flex-shrink-0 shadow-lg">
-          {author.name.charAt(0)}
-        </div>
-        <div>
-          <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">{author.name}</h1>
-          <p class="text-blue-200 text-lg mt-1">{author.title} at {config.brandName}</p>
-          <p class="text-blue-100/70 mt-3 max-w-2xl leading-relaxed">{author.bio}</p>
-          <div class="flex items-center gap-4 mt-4">
-            {author.linkedin && (
-              <a href={author.linkedin} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-sm text-blue-200 hover:text-white transition-colors">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-                LinkedIn
-              </a>
-            )}
-            <span class="text-sm text-blue-300/60">{totalPosts} published articles</span>
-          </div>
+  <PageHero
+    title={author.name}
+    breadcrumbs={[{ label: 'Blog', href: '/blog/' }, { label: author.name }]}
+  >
+    <div class="flex items-start gap-6 mt-2">
+      <div class="w-20 h-20 rounded-full bg-gradient-to-br from-primary-400 to-primary-700 flex items-center justify-center text-3xl font-bold text-white flex-shrink-0 shadow-lg">
+        {author.name.charAt(0)}
+      </div>
+      <div>
+        <p class="text-primary-200 text-lg">{author.title} at {config.brandName}</p>
+        <p class="text-white/70 mt-3 max-w-2xl leading-relaxed">{author.bio}</p>
+        <div class="flex items-center gap-4 mt-4">
+          {author.linkedin && (
+            <a href={author.linkedin} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-sm text-primary-200 hover:text-white transition-colors">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+              LinkedIn
+            </a>
+          )}
+          <span class="text-sm text-primary-300/60">{totalPosts} published articles</span>
         </div>
       </div>
     </div>
-  </div>
+  </PageHero>
 
   <div class="max-w-4xl mx-auto px-4 sm:px-6 py-12">
     <h2 class="text-2xl font-bold text-gray-900 mb-2">Expertise</h2>
     <div class="flex flex-wrap gap-2 mb-10">
       {['Deposition Videography', 'CLVS Certification', 'Legal Video Costs', 'FRCP 30 Compliance', 'Litigation Support', 'Hiring Best Practices'].map(topic => (
-        <span class="px-3 py-1 bg-blue-50 text-blue-700 text-sm font-medium rounded-full border border-blue-100">{topic}</span>
+        <span class="px-3 py-1 bg-primary-50 text-primary-700 text-sm font-medium rounded-full border border-primary-100">{topic}</span>
       ))}
     </div>
 
@@ -102,16 +99,16 @@ for (const post of allPosts) {
     {Array.from(categories.entries()).map(([category, posts]) => (
       <div class="mb-10">
         <h3 class="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
-          <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+          <span class="w-1.5 h-1.5 rounded-full bg-primary-500"></span>
           {category}
           <span class="text-sm font-normal text-gray-400">({posts.length})</span>
         </h3>
         <div class="space-y-3">
           {posts.map(post => (
-            <a href={`/blog/${post.id}/`} class="block group p-4 rounded-lg border border-gray-100 hover:border-blue-200 hover:bg-blue-50/50 transition-all no-underline">
+            <a href={`/blog/${post.id}/`} class="block group p-4 rounded-lg border border-gray-100 hover:border-primary-200 hover:bg-primary-50/50 transition-all no-underline">
               <div class="flex items-start justify-between gap-4">
                 <div>
-                  <h4 class="font-semibold text-gray-900 group-hover:text-blue-700 transition-colors">{post.data.title}</h4>
+                  <h4 class="font-semibold text-gray-900 group-hover:text-primary-700 transition-colors">{post.data.title}</h4>
                   {post.data.description && (
                     <p class="text-sm text-gray-500 mt-1 line-clamp-1">{post.data.description}</p>
                   )}

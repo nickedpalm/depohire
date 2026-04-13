@@ -63,13 +63,45 @@ const seoProps: AstroSeoProps = merge(
     twitter: twitter,
   }
 );
+
+// Build OG title with template applied (AstroSeo doesn't apply titleTemplate to og:title)
+const ogTitle = seoProps.titleTemplate && seoProps.titleTemplate !== '%s'
+  ? seoProps.titleTemplate.replace('%s', seoProps.title || '')
+  : seoProps.title || '';
+
+// Strip openGraph from seoProps so AstroSeo doesn't emit duplicate og:title
+const { openGraph: ogProps, ...seoPropsWithoutOG } = seoProps;
+const adaptedOGImages = await adaptOpenGraphImages(ogProps, Astro.site);
 ---
 
-<AstroSeo {...{ ...seoProps, openGraph: await adaptOpenGraphImages(seoProps?.openGraph, Astro.site) }} />
-{/* Override OG title with native Astro binding to avoid &amp; double-encoding from @astrolib/seo's escape() + set:html */}
-<meta property="og:title" content={seoProps.titleTemplate && seoProps.titleTemplate !== '%s' ? seoProps.titleTemplate.replace('%s', seoProps.title || '') : seoProps.title || ''} />
-{!seoProps?.openGraph?.images?.length && (
-  <meta property="og:image" content={`${SITE.site}/og-image.png`} />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
+<AstroSeo {...seoPropsWithoutOG} />
+<meta property="og:title" content={ogTitle} />
+{ogProps?.type && <meta property="og:type" content={ogProps.type} />}
+{ogProps?.url && <meta property="og:url" content={ogProps.url} />}
+{ogProps?.site_name && <meta property="og:site_name" content={ogProps.site_name} />}
+{ogProps?.locale && <meta property="og:locale" content={ogProps.locale} />}
+{(ogProps?.description || seoProps?.description) && <meta property="og:description" content={ogProps?.description || seoProps.description || ''} />}
+{adaptedOGImages?.images?.length ? (
+  adaptedOGImages.images.map((img: any) => (
+    <>
+      <meta property="og:image" content={img.url} />
+      {img.width && <meta property="og:image:width" content={String(img.width)} />}
+      {img.height && <meta property="og:image:height" content={String(img.height)} />}
+      {img.alt && <meta property="og:image:alt" content={img.alt} />}
+    </>
+  ))
+) : (
+  <>
+    <meta property="og:image" content={`${SITE.site}/og-image.png`} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+  </>
+)}
+{ogProps?.article && (
+  <>
+    {ogProps.article.publishedTime && <meta property="article:published_time" content={ogProps.article.publishedTime} />}
+    {ogProps.article.modifiedTime && <meta property="article:modified_time" content={ogProps.article.modifiedTime} />}
+    {ogProps.article.authors?.map((author: string) => <meta property="article:author" content={author} />)}
+    {ogProps.article.tags?.map((tag: string) => <meta property="article:tag" content={tag} />)}
+  </>
 )}

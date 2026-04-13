@@ -13,7 +13,7 @@ const wrapperClass = isHero
   ? 'hero-gradient rounded-2xl p-8 sm:p-12 text-center text-white'
   : isCompact
   ? 'bg-gray-50 border border-gray-200 rounded-xl p-6 text-center'
-  : 'bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6 sm:p-8 text-center';
+  : 'bg-gradient-to-r from-primary-50 to-primary-100 border border-primary-200 rounded-xl p-6 sm:p-8 text-center';
 
 const headingClass = isHero
   ? 'text-2xl sm:text-3xl font-bold mb-3'
@@ -22,21 +22,21 @@ const headingClass = isHero
   : 'text-xl sm:text-2xl font-bold text-gray-900 mb-2';
 
 const subClass = isHero
-  ? 'text-blue-100 mb-8 max-w-lg mx-auto'
+  ? 'text-primary-100 mb-8 max-w-lg mx-auto'
   : isCompact
   ? 'text-sm text-gray-600 mb-4'
   : 'text-gray-600 mb-6 max-w-lg mx-auto';
 
 const inputClass = isHero
-  ? 'flex-1 px-4 py-3 rounded-lg text-gray-900 placeholder-gray-400 border-0 focus:ring-2 focus:ring-blue-300 outline-none'
-  : 'flex-1 px-4 py-2.5 rounded-lg text-gray-900 placeholder-gray-400 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm';
+  ? 'flex-1 px-4 py-3 rounded-lg text-gray-900 placeholder-gray-400 border-0 focus:ring-2 focus:ring-primary-300 outline-none'
+  : 'flex-1 px-4 py-2.5 rounded-lg text-gray-900 placeholder-gray-400 border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none text-sm';
 
 const btnClass = isHero
-  ? 'px-6 py-3 bg-white text-[#1e3a5f] font-semibold rounded-lg hover:bg-blue-50 transition-colors whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed'
-  : 'px-5 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed text-sm';
+  ? 'px-6 py-3 bg-white text-navy-950 font-semibold rounded-lg hover:bg-primary-50 transition-colors whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed'
+  : 'px-5 py-2.5 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed text-sm';
 
 const msgClass = isHero
-  ? 'text-xs text-blue-200 mt-3'
+  ? 'text-xs text-primary-200 mt-3'
   : 'text-xs text-gray-500 mt-3';
 
 const uid = `nl-${Math.random().toString(36).slice(2, 8)}`;

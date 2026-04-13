@@ -281,6 +281,30 @@
       "photographer": "William Duggan",
       "photographer_url": "https://unsplash.com/@dugganw",
       "unsplash_url": "https://unsplash.com/photos/cityscape-at-night-1SmpGvlKq2U"
+    },
+    "little-rock": {
+      "url": "https://images.unsplash.com/photo-1605212297995-dd77a9f4d509?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxMaXR0bGUlMjBSb2NrJTIwc2t5bGluZXxlbnwwfDB8fHwxNzc1NzM2MDE1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Mick Haupt",
+      "photographer_url": "https://unsplash.com/@rocinante_11",
+      "unsplash_url": "https://unsplash.com/photos/city-skyline-during-night-time-B8SemO8zp7I"
+    },
+    "salt-lake-city": {
+      "url": "https://images.unsplash.com/photo-1621603933126-6c216db10045?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxTYWx0JTIwTGFrZSUyMENpdHklMjBza3lsaW5lfGVufDB8MHx8fDE3NzU3MzYwOTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Brent Pace",
+      "photographer_url": "https://unsplash.com/@aloyisius65",
+      "unsplash_url": "https://unsplash.com/photos/city-skyline-across-green-mountain-during-daytime-iGpIf75390Q"
+    },
+    "birmingham": {
+      "url": "https://images.unsplash.com/photo-1499958060387-dbdb8d0994fb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxCaXJtaW5naGFtJTIwc2t5bGluZXxlbnwwfDB8fHwxNzc1NzM2MTY2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Luke Matthews",
+      "photographer_url": "https://unsplash.com/@lmtthws",
+      "unsplash_url": "https://unsplash.com/photos/concrete-building-and-houses-under-gray-sky-OBab2pm-xs4"
+    },
+    "des-moines": {
+      "url": "https://images.unsplash.com/photo-1666058322408-be43487b7b40?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4ODM5Mzh8MHwxfHNlYXJjaHwxfHxEZXMlMjBNb2luZXMlMjBza3lsaW5lfGVufDB8MHx8fDE3NzU3MzYyNDF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "photographer": "Britt Fowler",
+      "photographer_url": "https://unsplash.com/@brittfowler",
+      "unsplash_url": "https://unsplash.com/photos/a-city-skyline-at-sunset-Iy-L1OfvuzI"
     }
   },
   "articles": {

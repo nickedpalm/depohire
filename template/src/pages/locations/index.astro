@@ -1,6 +1,6 @@
 ---
 import PageLayout from '~/layouts/PageLayout.astro';
-import Breadcrumbs from '~/components/directory/Breadcrumbs.astro';
+import PageHero from '~/components/directory/PageHero.astro';
 import config from '~/config';
 import citiesData from '~/data/cities.json';
 import { getListingCountByCity, getAllListings } from '~/lib/listings';
@@ -53,23 +53,16 @@ const metadata = { title, description };
 <PageLayout metadata={metadata}>
   <Fragment slot="announcement"><span></span></Fragment>
 
-  {/* Hero */}
-  <div class="loc-hero hero-gradient">
-    <div class="loc-hero-inner">
-      <Breadcrumbs crumbs={[{ label: 'Locations' }]} />
-
-      <h1 class="loc-hero-title">All Deposition Videographer Locations</h1>
-      <p class="loc-hero-subtitle">
-        Browse {totalProviders.toLocaleString()} curated providers across {citiesWithProviders} cities in {totalStates} states.
-        Find certified deposition videographers near your next proceeding.
-      </p>
-      <div class="loc-hero-stats">
-        <div class="loc-hero-stat"><span class="loc-stat-num">{totalProviders.toLocaleString()}</span><span class="loc-stat-label">providers</span></div>
-        <div class="loc-hero-stat"><span class="loc-stat-num">{totalCities}</span><span class="loc-stat-label">cities</span></div>
-        <div class="loc-hero-stat"><span class="loc-stat-num">{totalStates}</span><span class="loc-stat-label">states</span></div>
-      </div>
-    </div>
-  </div>
+  <PageHero
+    title="All Deposition Videographer Locations"
+    subtitle={`Browse ${totalProviders.toLocaleString()} curated providers across ${citiesWithProviders} cities in ${totalStates} states. Find certified deposition videographers near your next proceeding.`}
+    breadcrumbs={[{ label: 'Locations' }]}
+    stats={[
+      { value: totalProviders, label: 'providers' },
+      { value: totalCities, label: 'cities' },
+      { value: totalStates, label: 'states' },
+    ]}
+  />
 
   {/* Search filter */}
   <div class="loc-filter-bar">
@@ -176,28 +169,6 @@ const metadata = { title, description };
 </PageLayout>
 
 <style is:global>
-  /* Hero */
-  .loc-hero {
-    color: #fff; padding: 48px 40px 52px; position: relative; overflow: hidden;
-  }
-  .loc-hero::before {
-    content: ''; position: absolute; top: -80px; right: -30px;
-    width: 400px; height: 400px; border-radius: 50%;
-    background: rgba(59,130,246,0.1); pointer-events: none;
-  }
-  .loc-hero-inner { max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
-  .loc-hero-inner nav { margin-bottom: 8px; }
-  .loc-hero-inner nav a { color: rgba(255,255,255,0.6); }
-  .loc-hero-inner nav a:hover { color: #fff; }
-  .loc-hero-inner nav span { color: rgba(255,255,255,0.8); }
-  .loc-hero-inner nav ol { color: rgba(255,255,255,0.5); }
-  .loc-hero-title { font-size: 36px; font-weight: 800; margin-bottom: 10px; }
-  .loc-hero-subtitle { font-size: 16px; color: rgba(255,255,255,0.7); max-width: 600px; line-height: 1.5; }
-  .loc-hero-stats { display: flex; gap: 40px; margin-top: 28px; }
-  .loc-hero-stat { display: flex; flex-direction: column; }
-  .loc-stat-num { font-size: 32px; font-weight: 800; color: #fff; }
-  .loc-stat-label { font-size: 13px; color: rgba(255,255,255,0.5); }
-
   /* Filter bar */
   .loc-filter-bar {
     max-width: 1200px; margin: 0 auto; padding: 24px 40px 8px;
@@ -271,10 +242,6 @@ const metadata = { title, description };
 
   /* Mobile */
   @media (max-width: 768px) {
-    .loc-hero { padding: 32px 20px; }
-    .loc-hero-title { font-size: 24px; }
-    .loc-hero-stats { gap: 24px; flex-wrap: wrap; }
-    .loc-stat-num { font-size: 24px; }
     .loc-filter-bar { padding: 16px 20px 8px; flex-wrap: wrap; }
     .loc-content { padding: 16px 20px 40px; }
     .loc-city-grid { grid-template-columns: repeat(2, 1fr); }

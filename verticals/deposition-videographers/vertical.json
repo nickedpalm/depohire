@@ -37,5 +37,11 @@
   "stripeCityProLink": "https://buy.stripe.com/6oUcN49vkeO495q9Qta3u00",
   "turnsiteSitekey": "0x4AAAAAACs3PKhmjD-LkBwo",
   "googleAnalyticsId": "G-0RRY5J28FH",
-  "foundedYear": 2026
+  "foundedYear": 2026,
+  "stripeFeaturedMonthlyLink": "https://buy.stripe.com/00w00iePE21i95q0fTa3u02",
+  "stripeFeaturedAnnualLink": "https://buy.stripe.com/28E14m8rg0Xe5Te3s5a3u03",
+  "stripeCityProMonthlyLink": "https://buy.stripe.com/4gM4gycHwaxOa9ufaNa3u04",
+  "stripeCityProAnnualLink": "https://buy.stripe.com/00w00i7nc35mchCfaNa3u05",
+  "stripeFeaturedProductId": "prod_UFN14yaDuP7E5H",
+  "stripeCityProProductId": "prod_UFN1S9QAQgXdAX"
 }

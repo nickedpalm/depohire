@@ -132,6 +132,22 @@ def cmd_create(args):
         manifest_path.write_text(txt)
         print(f"  Patched site.webmanifest")
 
+    # Generate color theme (colors.json)
+    try:
+        from scripts.generate_colors import write_colors_json
+        primary_color = config.get("primary_color", "#2563eb")
+        write_colors_json(primary_color, vertical_dir / "colors.json")
+    except Exception as e:
+        print(f"  Warning: Color generation failed: {e}")
+
+    # Generate brand assets (logo, favicons, OG image)
+    try:
+        from scripts.generate_assets import generate_assets
+        generate_assets(args.config)
+    except Exception as e:
+        print(f"  Warning: Asset generation failed: {e}")
+        print(f"  Run manually: python3 scripts/generate_assets.py --config {args.config}")
+
     # npm install
     print(f"  Running npm install...")
     result = subprocess.run(["npm", "install"], cwd=vertical_dir, capture_output=True, text=True)
@@ -217,7 +233,23 @@ def cmd_deploy(args):
         print(f"Error: Build output not found. Run 'factory.py build --vertical {args.vertical}' first.")
         sys.exit(1)
 
-    subprocess.run([str(SCRIPTS_DIR / "deploy.sh"), args.vertical])
+    # Derive CF Pages project name from the vertical's domain (e.g. depohire.com -> depohire).
+    # The custom domain CNAMEs to a specific project whose name is the domain stem, not the
+    # vertical slug. Defaulting to the slug silently publishes to an unused project.
+    project_name = args.vertical
+    config_path = CONFIGS_DIR / f"{args.vertical}.yaml"
+    if config_path.exists():
+        try:
+            import yaml
+            with open(config_path) as f:
+                cfg = yaml.safe_load(f) or {}
+            domain = cfg.get("domain", "")
+            if domain:
+                project_name = domain.split(".")[0]
+        except Exception as e:
+            print(f"Warning: could not read domain from {config_path}: {e}. Using vertical slug.")
+
+    subprocess.run([str(SCRIPTS_DIR / "deploy.sh"), args.vertical, project_name])
 
 
 # ── LIST ────────────────────────────────────────────────────────────────────

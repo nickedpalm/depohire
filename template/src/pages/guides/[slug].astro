@@ -37,11 +37,11 @@ const faqItems = [
   },
   {
     q: 'How current is the data?',
-    a: `This guide is updated for ${new Date().getFullYear()} using real pricing and provider data from our directory of 700+ deposition videographers across all 50 states.`,
+    a: `This guide is updated for ${new Date().getFullYear()} using real pricing and provider data from our directory of verified ${config.primaryKeyword}s across all 50 states.`,
   },
   {
     q: 'Will I receive spam?',
-    a: 'No. You will receive the guide download link and occasional updates about deposition videography (no more than once per month). You can unsubscribe at any time.',
+    a: `No. You will receive the guide download link and occasional updates about the ${config.industry} industry (no more than once per month). You can unsubscribe at any time.`,
   },
 ];
 
@@ -83,20 +83,20 @@ const jsonLd = {
           <h1 class="text-3xl sm:text-4xl lg:text-[44px] font-extrabold leading-tight tracking-tight">
             {guide.title}
           </h1>
-          <p class="mt-4 text-lg text-blue-100/80 leading-relaxed">
+          <p class="mt-4 text-lg text-primary-100/80 leading-relaxed">
             {guide.subtitle}
           </p>
           <ul class="mt-6 space-y-3">
             {guide.bullets.map((bullet) => (
               <li class="flex items-start gap-3">
-                <span class="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-blue-500/30 flex items-center justify-center text-xs text-blue-200">&#10003;</span>
-                <span class="text-blue-100">{bullet}</span>
+                <span class="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-primary-500/30 flex items-center justify-center text-xs text-primary-200">&#10003;</span>
+                <span class="text-primary-100">{bullet}</span>
               </li>
             ))}
           </ul>
-          <div class="mt-6 flex items-center gap-4 text-sm text-blue-200/70">
+          <div class="mt-6 flex items-center gap-4 text-sm text-primary-200/70">
             <span>Free for attorneys</span>
-            <span class="w-1 h-1 rounded-full bg-blue-400/50"></span>
+            <span class="w-1 h-1 rounded-full bg-primary-400/50"></span>
             <span>Updated {new Date().getFullYear()}</span>
           </div>
         </div>
@@ -115,7 +115,7 @@ const jsonLd = {
                 required
                 autocomplete="name"
                 placeholder="Jane Smith"
-                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 text-gray-900 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 text-gray-900 text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
               />
             </div>
             <div>
@@ -127,7 +127,7 @@ const jsonLd = {
                 required
                 autocomplete="email"
                 placeholder="jane@lawfirm.com"
-                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 text-gray-900 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 text-gray-900 text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
               />
             </div>
             <div>
@@ -135,7 +135,7 @@ const jsonLd = {
               <select
                 id="guide-city"
                 name="city"
-                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 text-gray-900 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white"
+                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 text-gray-900 text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none bg-white"
               >
                 <option value="">Select your city...</option>
                 {cityOptions.map(c => (
@@ -146,7 +146,7 @@ const jsonLd = {
             <div class="cf-turnstile" data-sitekey={config.turnsiteSitekey} data-size="compact"></div>
             <button
               type="submit"
-              class="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+              class="w-full px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
             >
               Download Free Guide
             </button>
@@ -168,11 +168,11 @@ const jsonLd = {
         <div class="relative bg-gray-50 rounded-2xl border border-gray-200 p-8 sm:p-10 overflow-hidden">
           <div class="space-y-4 text-gray-600 leading-relaxed">
             <p class="font-semibold text-gray-900">{guide.description}</p>
-            <p>This guide covers everything litigation teams need to know, with real data sourced from our directory of 700+ verified deposition videographers across the United States.</p>
+            <p>This guide covers everything you need to know, with real data sourced from our directory of verified {config.primaryKeyword}s across the United States.</p>
             <ul class="space-y-2">
               {guide.bullets.map((bullet) => (
                 <li class="flex items-start gap-2">
-                  <span class="text-blue-600 mt-0.5">&#8226;</span>
+                  <span class="text-primary-600 mt-0.5">&#8226;</span>
                   <span>{bullet}</span>
                 </li>
               ))}
@@ -214,11 +214,11 @@ const jsonLd = {
                 <span class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${gColors.bg} ${gColors.text} mb-2`}>
                   {g.category}
                 </span>
-                <h3 class="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors leading-snug mb-1">
+                <h3 class="text-lg font-bold text-gray-900 group-hover:text-primary-600 transition-colors leading-snug mb-1">
                   {g.title}
                 </h3>
                 <p class="text-sm text-gray-500">{g.subtitle}</p>
-                <span class="inline-flex items-center mt-3 text-sm text-blue-600 font-medium group-hover:underline">
+                <span class="inline-flex items-center mt-3 text-sm text-primary-600 font-medium group-hover:underline">
                   Download Free Guide &rarr;
                 </span>
               </a>
@@ -295,7 +295,7 @@ const jsonLd = {
                 <h2 class="text-xl font-bold text-gray-900 mb-2">Check Your Email</h2>
                 <p class="text-gray-600 mb-1">We just sent your free guide to:</p>
                 <p class="font-semibold text-gray-900 mb-4">${email.replace(/</g, '&lt;')}</p>
-                <p class="text-sm text-gray-500">Didn't get it? Check your spam folder, or <a href="mailto:${(window as any).__contactEmail || 'contact@example.com'}" class="text-blue-600 underline">contact us</a>.</p>
+                <p class="text-sm text-gray-500">Didn't get it? Check your spam folder, or <a href="mailto:${(window as any).__contactEmail || 'contact@example.com'}" class="text-primary-600 underline">contact us</a>.</p>
               </div>
             `;
           }

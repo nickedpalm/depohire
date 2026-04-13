@@ -1,5 +1,6 @@
 ---
 import PageLayout from '~/layouts/PageLayout.astro';
+import LightHero from '~/components/directory/LightHero.astro';
 import config from '~/config';
 import { getAllListings, getListingCountByCity } from '~/lib/listings';
 import citiesData from '~/data/cities.json';
@@ -37,18 +38,12 @@ const metadata = { title, description };
 <PageLayout metadata={metadata}>
   <Fragment slot="announcement"><span></span></Fragment>
 
-  <!-- Hero: The Problem -->
-  <section class="bg-gradient-to-br from-gray-900 to-gray-800 text-white py-14 sm:py-20">
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 text-center">
-      <p class="text-primary-300 text-sm font-semibold uppercase tracking-widest mb-4">About {config.brandName}</p>
-      <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight mb-5">
-        Hiring a deposition videographer shouldn't feel like a gamble.
-      </h1>
-      <p class="text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto">
-        You've got a deposition in two weeks. You need a videographer who shows up on time, knows FRCP 30(b)(5), and won't fumble the chain of custody on your exhibits. But you're stuck cold-calling strangers from a Google search.
-      </p>
-    </div>
-  </section>
+  <LightHero
+    title="Hiring a deposition videographer shouldn't feel like a gamble."
+    subtitle="You've got a deposition in two weeks. You need a videographer who shows up on time, knows FRCP 30(b)(5), and won't fumble the chain of custody on your exhibits. But you're stuck cold-calling strangers from a Google search."
+    tagline={`About ${config.brandName}`}
+    align="center"
+  />
 
   <!-- The Stakes -->
   <section class="py-12 sm:py-16">

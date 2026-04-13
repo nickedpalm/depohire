@@ -4,7 +4,8 @@ import MultiQuoteBar from '~/components/directory/MultiQuoteBar.astro';
 import StickyCTA from '~/components/directory/StickyCTA.astro';
 import LeafletMap from '~/components/directory/LeafletMap.astro';
 import RelatedContent from '~/components/directory/RelatedContent.astro';
-import Breadcrumbs from '~/components/directory/Breadcrumbs.astro';
+import PageHero from '~/components/directory/PageHero.astro';
+import FAQAccordion from '~/components/directory/FAQAccordion.astro';
 import NewsletterSignup from '~/components/directory/NewsletterSignup.astro';
 import config from '~/config';
 import citiesData from '~/data/cities.json';
@@ -54,13 +55,17 @@ const pins = listings.filter(l => l.lat && l.lat !== 0).map(l => ({ lat: l.lat, 
 const ratedListings = listings.filter(l => l.rating > 0);
 const avgRating = ratedListings.length > 0 ? (ratedListings.reduce((s, l) => s + l.rating, 0) / ratedListings.length).toFixed(1) : null;
 const totalReviews = listings.reduce((s, l) => s + (l.review_count || 0), 0);
-const certifiedCount = listings.filter(l => l.certifications?.some(c => c.toUpperCase().includes('CLVS'))).length;
+const certifiedCount = listings.filter(l => l.certifications?.some(c => c.toUpperCase().includes('RPR'))).length;
 const certPct = listings.length > 0 ? Math.round(certifiedCount / listings.length * 100) : 0;
 
 const currentYear = new Date().getFullYear();
 const currentMonth = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-const title = `${listings.length} Best Deposition Videographers in ${cityInfo.city}, ${cityInfo.state} (${currentYear})`;
-const metaDescription = `Compare ${listings.length} curated deposition videographers in ${cityInfo.city}, ${cityInfo.state}. ${certifiedCount > 0 ? `${certifiedCount} CLVS-certified. ` : ''}Read real reviews, check credentials, and request free quotes. Updated ${currentMonth}.`;
+const title = listings.length > 0
+  ? `${listings.length} Best Court Reporters in ${cityInfo.city}, ${cityInfo.state} (${currentYear})`
+  : `Find Court Reporters in ${cityInfo.city}, ${cityInfo.state} (${currentYear})`;
+const metaDescription = listings.length > 0
+  ? `Compare ${listings.length} curated court reporters in ${cityInfo.city}, ${cityInfo.state}. ${certifiedCount > 0 ? `${certifiedCount} RPR-certified. ` : ''}Read real reviews, check credentials, and request free quotes. Updated ${currentMonth}.`
+  : `Find court reporters in ${cityInfo.city}, ${cityInfo.state}. Browse nearby cities with verified providers, check credentials, and request free quotes. Updated ${currentMonth}.`;
 
 // Initials helper
 function getInitials(name: string): string {
@@ -96,7 +101,7 @@ const schema = {
 const placeSchema = {
   '@context': 'https://schema.org',
   '@type': 'Place',
-  name: `Deposition Videographers in ${cityInfo.city}, ${cityInfo.state}`,
+  name: `Court Reporters in ${cityInfo.city}, ${cityInfo.state}`,
   geo: {
     '@type': 'GeoCoordinates',
     latitude: cityInfo.lat,
@@ -123,18 +128,18 @@ const faqSchema = {
   mainEntity: [
     {
       '@type': 'Question',
-      name: `How much does a deposition videographer cost in ${cityInfo.city}?`,
-      acceptedAnswer: { '@type': 'Answer', text: `Deposition videography in ${cityInfo.city} typically costs ${config.jobValue || '$500-$1,500'} per session, depending on duration, complexity, number of cameras, and turnaround requirements. Same-day delivery and multi-camera setups will cost more.` },
+      name: `How much does a court reporter cost in ${cityInfo.city}?`,
+      acceptedAnswer: { '@type': 'Answer', text: `Court reporting in ${cityInfo.city} typically costs ${config.jobValue || '$250-$1,500+'}, depending on duration, complexity, realtime requirements, and turnaround time. Expedited transcripts and realtime feeds will cost more.` },
     },
     {
       '@type': 'Question',
-      name: `What should I look for in a deposition videographer?`,
-      acceptedAnswer: { '@type': 'Answer', text: `Look for CLVS certification (Certified Legal Video Specialist) from NCRA — it's the industry gold standard. Also check reviews, ask about backup equipment, and confirm they can deliver synchronized video.` },
+      name: `What should I look for in a court reporter?`,
+      acceptedAnswer: { '@type': 'Answer', text: `Look for RPR certification (Registered Professional Reporter) from NCRA — it's the industry gold standard. Also check reviews, ask about realtime capabilities, and confirm they can handle your jurisdiction's requirements.` },
     },
     {
       '@type': 'Question',
-      name: `How many deposition videographers are in ${cityInfo.city}?`,
-      acceptedAnswer: { '@type': 'Answer', text: `There are currently ${listings.length} deposition videography providers listed in ${cityInfo.city}, ${cityInfo.state} on ${config.brandName}.${claimed.length + featured.length > 0 ? ` Of those, ${claimed.length + featured.length} have claimed profiles with complete information and reviews.` : ''}` },
+      name: `How many court reporters are in ${cityInfo.city}?`,
+      acceptedAnswer: { '@type': 'Answer', text: `There are currently ${listings.length} court reporting providers listed in ${cityInfo.city}, ${cityInfo.state} on ${config.brandName}.${claimed.length + featured.length > 0 ? ` Of those, ${claimed.length + featured.length} have claimed profiles with complete information and reviews.` : ''}` },
     },
     {
       '@type': 'Question',
@@ -154,27 +159,26 @@ const metadata = {
 <PageLayout metadata={metadata}>
   <Fragment slot="announcement"><span></span></Fragment>
 
-  {/* ═══ HERO ═══ */}
-  <div class="city-hero hero-gradient text-white py-7 sm:py-7 md:py-12 px-4 sm:px-6 md:px-10 relative overflow-hidden">
-    <div class="max-w-[1200px] mx-auto relative z-10">
-      <Breadcrumbs crumbs={[
-        { label: cityInfo.stateName || cityInfo.state, href: `/states/${cityInfo.stateSlug}/` },
-        { label: cityInfo.city },
-      ]} />
-      <h1 class="text-2xl sm:text-[28px] md:text-4xl font-extrabold mb-2.5">{`Deposition Videographers in ${cityInfo.city}, ${cityInfo.state}`}</h1>
-      <p class="text-base text-white/70 max-w-[550px] leading-relaxed">Compare curated deposition videographers, check certifications, read reviews, and request quotes — all in one place.</p>
-      <div class="flex gap-5 md:gap-8 mt-6 flex-wrap">
-        <div class="flex items-baseline gap-1.5"><span class="text-[22px] sm:text-[24px] md:text-[28px] font-extrabold">{listings.length}</span><span class="text-[13px] text-white/60">providers</span></div>
-        {avgRating && <div class="flex items-baseline gap-1.5"><span class="text-[22px] sm:text-[24px] md:text-[28px] font-extrabold">{avgRating}</span><span class="text-[13px] text-white/60">avg rating</span></div>}
-        {totalReviews > 0 && <div class="flex items-baseline gap-1.5"><span class="text-[22px] sm:text-[24px] md:text-[28px] font-extrabold">{totalReviews}</span><span class="text-[13px] text-white/60">reviews</span></div>}
-      </div>
-      <div class="flex gap-3 md:gap-5 mt-5 flex-wrap">
-        <div class="flex items-center gap-1.5 text-xs text-white/50 font-medium"><span class="text-sm">&#x2713;</span> Researched credentials</div>
-        <div class="flex items-center gap-1.5 text-xs text-white/50 font-medium"><span class="text-sm">&#x2713;</span> Free quotes, no obligation</div>
-        <div class="flex items-center gap-1.5 text-xs text-white/50 font-medium"><span class="text-sm">&#x2713;</span> Updated {currentMonth}</div>
-      </div>
+  <PageHero
+    title={`Court Reporters in ${cityInfo.city}, ${cityInfo.state}`}
+    subtitle="Compare curated court reporters, check certifications, read reviews, and request quotes — all in one place."
+    breadcrumbs={[
+      { label: cityInfo.stateName || cityInfo.state, href: `/states/${cityInfo.stateSlug}/` },
+      { label: cityInfo.city },
+    ]}
+    stats={[
+      { value: listings.length, label: 'providers' },
+      ...(avgRating ? [{ value: avgRating, label: 'avg rating' }] : []),
+      ...(totalReviews > 0 ? [{ value: totalReviews, label: 'reviews' }] : []),
+    ]}
+    size="compact"
+  >
+    <div class="flex gap-3 md:gap-5 mt-5 flex-wrap">
+      <div class="flex items-center gap-1.5 text-xs text-white/50 font-medium"><span class="text-sm">&#x2713;</span> Researched credentials</div>
+      <div class="flex items-center gap-1.5 text-xs text-white/50 font-medium"><span class="text-sm">&#x2713;</span> Free quotes, no obligation</div>
+      <div class="flex items-center gap-1.5 text-xs text-white/50 font-medium"><span class="text-sm">&#x2713;</span> Updated {currentMonth}</div>
     </div>
-  </div>
+  </PageHero>
 
   {/* ═══ CONTENT ═══ */}
   <div class="max-w-[1200px] mx-auto px-4 sm:px-6 md:px-10 py-5 sm:py-6 md:py-8 pb-10">
@@ -190,7 +194,7 @@ const metadata = {
     {(() => {
       const topProviders = listings.filter(l => l.rating >= 4 && l.review_count > 0).slice(0, 3);
       return topProviders.length > 0 ? (
-        <div class="mb-6 bg-gradient-to-r from-primary-50 to-blue-50 rounded-2xl border border-primary-100 p-5">
+        <div class="mb-6 bg-gradient-to-r from-primary-50 to-primary-100 rounded-2xl border border-primary-100 p-5">
           <h2 class="text-sm font-bold text-primary-800 mb-3">Top-Rated in {cityInfo.city}</h2>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {topProviders.map((p, i) => (
@@ -207,12 +211,12 @@ const metadata = {
       ) : null;
     })()}
 
-    {/* Filters */}
-    <div class="flex items-center gap-2 md:gap-3 mb-6 flex-wrap" id="listing-filters">
+    {/* Filters — only show when there are listings */}
+    {listings.length > 0 && <div class="flex items-center gap-2 md:gap-3 mb-6 flex-wrap" id="listing-filters">
       <span class="city-results-count text-[13px] text-gray-400 font-medium">{listings.length} providers</span>
       <button class="city-filter-pill filter-pill active" data-filter="all">All</button>
       <button class="city-filter-pill filter-pill" data-filter="has-reviews">Has Reviews</button>
-      <button class="city-filter-pill filter-pill" data-filter="clvs">CLVS Certified</button>
+      <button class="city-filter-pill filter-pill" data-filter="rpr">RPR Certified</button>
       <button class="city-filter-pill filter-pill" data-filter="rating-4">4+ Stars</button>
       <select class="ml-auto md:ml-auto max-md:ml-0 max-md:w-full px-3.5 py-2.5 rounded-lg text-[13px] font-medium bg-white border-[1.5px] border-gray-200 text-gray-700 cursor-pointer font-[inherit] min-h-[44px]" id="sort-select">
         <option value="default">Sort: Recommended</option>
@@ -220,7 +224,7 @@ const metadata = {
         <option value="reviews-desc">Most Reviews</option>
         <option value="name-asc">Name (A-Z)</option>
       </select>
-    </div>
+    </div>}
 
     {listings.length > 0 ? (
       <div data-pagefind-body>
@@ -235,12 +239,12 @@ const metadata = {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-9">
               {featured.map(listing => {
                 const initials = getInitials(listing.name);
-                const hasCLVS = listing.certifications?.some(c => c.toUpperCase().includes('CLVS'));
+                const hasRPR = listing.certifications?.some(c => c.toUpperCase().includes('RPR'));
                 const stars = starString(listing.rating);
                 const desc = listing.description && listing.description.length > 180 ? listing.description.slice(0, 180) + '...' : listing.description;
                 const tags = [...(listing.certifications || []), ...(listing.services || [])].slice(0, 4);
                 return (
-                  <div class="card-featured city-featured-card overflow-hidden relative" data-listing-card data-has-reviews={listing.review_count > 0 ? 'true' : 'false'} data-clvs={hasCLVS ? 'true' : 'false'} data-rating={String(listing.rating || 0)} data-review-count={String(listing.review_count || 0)} data-name={listing.name} data-provider-name={listing.name} data-provider-email={listing.email || ''} data-provider-slug={listing.slug}>
+                  <div class="card-featured city-featured-card overflow-hidden relative" data-listing-card data-has-reviews={listing.review_count > 0 ? 'true' : 'false'} data-rpr={hasRPR ? 'true' : 'false'} data-rating={String(listing.rating || 0)} data-review-count={String(listing.review_count || 0)} data-name={listing.name} data-provider-name={listing.name} data-provider-email={listing.email || ''} data-provider-slug={listing.slug}>
                     <div class="bg-gradient-to-br from-primary-600 to-primary-700 text-white text-[11px] font-bold tracking-wide px-4 py-1.5 flex items-center gap-1.5" title="This provider pays for premium placement">&#x26A1; SPONSORED {listing.review_count > 0 ? `\u00B7 ${listing.rating} stars from ${listing.review_count} reviews` : ''}</div>
                     <div class="p-5">
                       <div class="flex items-start gap-4">
@@ -248,7 +252,7 @@ const metadata = {
                         <div class="flex-1">
                           <div class="text-[17px] font-bold mb-0.5 flex items-center gap-2 flex-wrap">
                             <a href={`/listing/${listing.slug}/`} class="city-featured-name-link text-navy-950 no-underline hover:text-primary-600">{listing.name}</a>
-                            {hasCLVS && <span class="city-verified-badge inline-flex items-center gap-0.5 bg-emerald-50 text-emerald-600 text-[11px] font-semibold px-1.5 py-0.5 rounded-[5px] whitespace-nowrap">&#x2713; CLVS</span>}
+                            {hasRPR && <span class="city-verified-badge inline-flex items-center gap-0.5 bg-emerald-50 text-emerald-600 text-[11px] font-semibold px-1.5 py-0.5 rounded-[5px] whitespace-nowrap">&#x2713; RPR</span>}
                           </div>
                           <div class="text-[13px] text-gray-500">{listing.city}, {listing.state}{listing.coverage_area ? ` \u00B7 ${listing.coverage_area}` : ''}</div>
                           {listing.review_count > 0 && (
@@ -299,18 +303,18 @@ const metadata = {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 mb-9" data-listing-grid>
               {claimed.map(listing => {
                 const initials = getInitials(listing.name);
-                const hasCLVS = listing.certifications?.some(c => c.toUpperCase().includes('CLVS'));
+                const hasRPR = listing.certifications?.some(c => c.toUpperCase().includes('RPR'));
                 const stars = starString(listing.rating);
                 const desc = listing.description && listing.description.length > 140 ? listing.description.slice(0, 140) + '...' : listing.description;
                 const tags = [...(listing.certifications || []), ...(listing.services || [])].slice(0, 3);
                 return (
-                  <div class="card-hover city-provider-card p-5" data-listing-card data-has-reviews={listing.review_count > 0 ? 'true' : 'false'} data-clvs={hasCLVS ? 'true' : 'false'} data-rating={String(listing.rating || 0)} data-review-count={String(listing.review_count || 0)} data-name={listing.name} data-provider-name={listing.name} data-provider-email={listing.email || ''} data-provider-slug={listing.slug}>
+                  <div class="card-hover city-provider-card p-5" data-listing-card data-has-reviews={listing.review_count > 0 ? 'true' : 'false'} data-rpr={hasRPR ? 'true' : 'false'} data-rating={String(listing.rating || 0)} data-review-count={String(listing.review_count || 0)} data-name={listing.name} data-provider-name={listing.name} data-provider-email={listing.email || ''} data-provider-slug={listing.slug}>
                     <div class="flex items-start gap-3.5">
                       <div class="city-provider-avatar city-avatar-claimed w-[46px] h-[46px] rounded-xl flex items-center justify-center text-base font-bold text-white flex-shrink-0 bg-primary-600">{initials}</div>
                       <div class="flex-1 min-w-0">
                         <div class="text-[15px] font-bold mb-0.5 flex items-center gap-1.5 flex-wrap">
                           <a href={`/listing/${listing.slug}/`} class="city-provider-name-link text-navy-950 no-underline hover:text-primary-600">{listing.name}</a>
-                          {hasCLVS && <span class="city-verified-badge inline-flex items-center gap-0.5 bg-emerald-50 text-emerald-600 text-[11px] font-semibold px-1.5 py-0.5 rounded-[5px] whitespace-nowrap">&#x2713;</span>}
+                          {hasRPR && <span class="city-verified-badge inline-flex items-center gap-0.5 bg-emerald-50 text-emerald-600 text-[11px] font-semibold px-1.5 py-0.5 rounded-[5px] whitespace-nowrap">&#x2713;</span>}
                         </div>
                         <div class="text-xs text-gray-500">{listing.city}, {listing.state}</div>
                         {listing.review_count > 0 && (
@@ -347,9 +351,9 @@ const metadata = {
         )}
 
         {/* Mid-page CTA */}
-        <div class="bg-gradient-to-br from-primary-50 to-indigo-100 border border-primary-200 rounded-2xl px-8 py-7 mb-9 flex items-center justify-between flex-wrap gap-4 max-md:flex-col max-md:text-center">
+        <div class="bg-gradient-to-br from-primary-50 to-primary-100 border border-primary-200 rounded-2xl px-8 py-7 mb-9 flex items-center justify-between flex-wrap gap-4 max-md:flex-col max-md:text-center">
           <div>
-            <h3 class="text-[17px] font-bold text-primary-800 mb-1">Are you a deposition videographer in {cityInfo.city}?</h3>
+            <h3 class="text-[17px] font-bold text-primary-800 mb-1">Are you a court reporter in {cityInfo.city}?</h3>
             <p class="text-sm text-primary-500">Claim your free listing or get Sponsored placement to appear above other providers.</p>
           </div>
           <a href="/advertise/" class="btn-action-primary">List Your Business &rarr;</a>
@@ -365,12 +369,12 @@ const metadata = {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 mb-9" data-listing-grid>
               {unclaimed.map(listing => {
                 const initials = getInitials(listing.name);
-                const hasCLVS = listing.certifications?.some(c => c.toUpperCase().includes('CLVS'));
+                const hasRPR = listing.certifications?.some(c => c.toUpperCase().includes('RPR'));
                 const stars = starString(listing.rating);
                 const desc = listing.description && listing.description.length > 140 ? listing.description.slice(0, 140) + '...' : listing.description;
                 const tags = [...(listing.certifications || []), ...(listing.services || [])].slice(0, 2);
                 return (
-                  <div class="bg-gray-50 rounded-card p-5 border border-dashed border-gray-300 city-unclaimed-card relative" data-listing-card data-has-reviews={listing.review_count > 0 ? 'true' : 'false'} data-clvs={hasCLVS ? 'true' : 'false'} data-rating={String(listing.rating || 0)} data-review-count={String(listing.review_count || 0)} data-name={listing.name} data-provider-name={listing.name} data-provider-email={listing.email || ''} data-provider-slug={listing.slug}>
+                  <div class="bg-gray-50 rounded-card p-5 border border-dashed border-gray-300 city-unclaimed-card relative" data-listing-card data-has-reviews={listing.review_count > 0 ? 'true' : 'false'} data-rpr={hasRPR ? 'true' : 'false'} data-rating={String(listing.rating || 0)} data-review-count={String(listing.review_count || 0)} data-name={listing.name} data-provider-name={listing.name} data-provider-email={listing.email || ''} data-provider-slug={listing.slug}>
                     <span class="city-unclaimed-tag absolute top-3 right-3 text-[10px] font-semibold text-gray-400 bg-gray-100 px-2 py-0.5 rounded">Unclaimed</span>
                     <div class="flex items-start gap-3.5">
                       <div class="city-provider-avatar city-avatar-unclaimed w-[46px] h-[46px] rounded-xl flex items-center justify-center text-base font-bold text-white flex-shrink-0 bg-slate-400">{initials}</div>
@@ -426,7 +430,7 @@ const metadata = {
       </div>
     ) : (
       <div class="card-base text-center py-16 px-6">
-        <div class="text-4xl mb-4">&#x1F4F9;</div>
+        <div class="text-4xl mb-4">&#x1F4CB;</div>
         <h3 class="text-xl font-semibold text-default mb-2">No {config.primaryKeyword}s listed in {cityInfo.city} yet</h3>
         <p class="text-muted text-sm max-w-md mx-auto mb-6">
           We're actively expanding our directory. In the meantime, try browsing nearby cities or check back soon as new providers are added regularly.
@@ -442,8 +446,10 @@ const metadata = {
       </div>
     )}
 
-    <StickyCTA />
-    <MultiQuoteBar />
+    {listings.length > 0 && (
+      <StickyCTA />
+      <MultiQuoteBar />
+    )}
 
     {/* How It Works */}
     <div class="bg-white rounded-2xl border border-gray-200 px-4 sm:px-6 md:px-8 py-6 md:py-7 mb-9 mt-5">
@@ -460,44 +466,80 @@ const metadata = {
           <p class="text-[13px] text-gray-500 leading-snug">Select up to 5 providers and send your case details. Free, no obligation.</p>
         </div>
         <div class="text-center">
-          <div class="w-12 h-12 bg-primary-50 rounded-xl flex items-center justify-center text-[22px] mx-auto mb-3">&#x1F4F9;</div>
-          <h3 class="text-sm font-bold mb-1">Book Your Videographer</h3>
+          <div class="w-12 h-12 bg-primary-50 rounded-xl flex items-center justify-center text-[22px] mx-auto mb-3">&#x2696;&#xFE0F;</div>
+          <h3 class="text-sm font-bold mb-1">Book Your Court Reporter</h3>
           <p class="text-[13px] text-gray-500 leading-snug">Compare quotes, check availability, and book directly with the provider.</p>
         </div>
       </div>
     </div>
 
+    {/* ═══ CONTENT + SIDEBAR ═══ */}
     {Content && (
-      <div class="prose prose-lg max-w-none mt-8 mb-8">
-        <Content />
+      <div class="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8 mt-8 mb-9">
+        {/* Main content */}
+        <div class="prose prose-lg max-w-none">
+          <Content />
+        </div>
+
+        {/* Sidebar */}
+        <aside class="space-y-5 lg:sticky lg:top-24 lg:self-start">
+          {/* Quick Facts */}
+          <div class="card-base p-5">
+            <h3 class="text-sm font-bold text-navy-950 mb-3">Quick Facts</h3>
+            <div class="space-y-2.5">
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-gray-500">Providers</span>
+                <span class="font-bold text-navy-950">{listings.length}</span>
+              </div>
+              {avgRating && (
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-gray-500">Avg. Rating</span>
+                  <span class="font-bold text-navy-950">{avgRating} <span class="text-amber-500">&#9733;</span></span>
+                </div>
+              )}
+              {certifiedCount > 0 && (
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-gray-500">RPR Certified</span>
+                  <span class="font-bold text-navy-950">{certifiedCount} ({certPct}%)</span>
+                </div>
+              )}
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-gray-500">Price Range</span>
+                <span class="font-bold text-navy-950">{config.jobValue || '$250–$1,500+'}</span>
+              </div>
+              {totalReviews > 0 && (
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-gray-500">Total Reviews</span>
+                  <span class="font-bold text-navy-950">{totalReviews}</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Nearby Cities (sidebar) */}
+          {nearbyCities.length > 0 && (
+            <div class="card-base p-5">
+              <h3 class="text-sm font-bold text-navy-950 mb-3">Nearby Cities</h3>
+              <div class="space-y-2">
+                {nearbyCities.map(c => (
+                  <a class="flex items-center justify-between text-sm no-underline hover:text-primary-600 py-1" href={`/locations/${c.stateSlug}/${c.slug}/`}>
+                    <span class="font-medium text-gray-700">{c.city}, {c.state}</span>
+                    <span class="text-xs text-gray-400">{c.listingCount}</span>
+                  </a>
+                ))}
+              </div>
+              <a href={`/states/${cityInfo.stateSlug}/`} class="text-xs text-primary-600 font-medium mt-3 inline-block no-underline hover:underline">View all in {cityInfo.stateName || cityInfo.state} &rarr;</a>
+            </div>
+          )}
+
+          {/* Newsletter (sidebar) */}
+          <NewsletterSignup variant="compact" city={cityInfo.city} />
+        </aside>
       </div>
     )}
 
-    {/* FAQ */}
-    <div class="mb-9">
-      <h2 class="text-lg font-bold mb-4">Frequently Asked Questions</h2>
-      <div class="card-base p-5 mb-2.5">
-        <div class="text-sm font-semibold text-navy-950 mb-2">How much does a deposition videographer cost in {cityInfo.city}?</div>
-        <div class="text-[13px] text-gray-500 leading-relaxed">Deposition videography in {cityInfo.city} typically costs {config.jobValue || '$500-$1,500'} per session, depending on duration, complexity, number of cameras, and turnaround requirements. Same-day delivery and multi-camera setups will cost more.</div>
-      </div>
-      <div class="card-base p-5 mb-2.5">
-        <div class="text-sm font-semibold text-navy-950 mb-2">What should I look for in a deposition videographer?</div>
-        <div class="text-[13px] text-gray-500 leading-relaxed">Look for CLVS certification (Certified Legal Video Specialist) from NCRA — it's the industry gold standard. Also check reviews, ask about backup equipment, and confirm they can deliver synchronized video.</div>
-      </div>
-      <div class="card-base p-5 mb-2.5">
-        <div class="text-sm font-semibold text-navy-950 mb-2">How many deposition videographers are in {cityInfo.city}?</div>
-        <div class="text-[13px] text-gray-500 leading-relaxed">There are currently {listings.length} deposition videography providers listed in {cityInfo.city}, {cityInfo.state} on {config.brandName}.{claimed.length + featured.length > 0 ? ` Of those, ${claimed.length + featured.length} have claimed profiles with complete information and reviews.` : ''}</div>
-      </div>
-      <div class="card-base p-5 mb-2.5">
-        <div class="text-sm font-semibold text-navy-950 mb-2">What does "Sponsored" mean on a listing?</div>
-        <div class="text-[13px] text-gray-500 leading-relaxed">Sponsored providers pay for premium placement and appear at the top of search results. They have claimed profiles and typically respond faster to quote requests. All providers on {config.brandName} — sponsored or not — are real businesses.</div>
-      </div>
-    </div>
-
-    <RelatedContent city={cityInfo.city} state={cityInfo.state} citySlug={cityInfo.slug} />
-
-    {/* Nearby Cities */}
-    {nearbyCities.length > 0 && (
+    {/* Fallback: if no Content, render nearby/newsletter inline */}
+    {!Content && nearbyCities.length > 0 && (
       <div class="mb-9">
         <h2 class="text-lg font-bold mb-4">Nearby Cities</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
@@ -511,14 +553,36 @@ const metadata = {
         </div>
       </div>
     )}
-    {/* Newsletter */}
-    <div class="mb-8">
-      <NewsletterSignup variant="compact" city={cityInfo.city} />
-    </div>
+    {!Content && (
+      <div class="mb-8">
+        <NewsletterSignup variant="compact" city={cityInfo.city} />
+      </div>
+    )}
+
+    {/* FAQ — accordion */}
+    <FAQAccordion faqs={[
+      {
+        question: `How much does a court reporter cost in ${cityInfo.city}?`,
+        answer: `Court reporting in ${cityInfo.city} typically costs ${config.jobValue || '$250-$1,500+'}, depending on duration, complexity, and turnaround requirements. Expedited transcripts and realtime feeds will cost more.`,
+      },
+      {
+        question: 'What should I look for in a court reporter?',
+        answer: "Look for RPR certification (Registered Professional Reporter) from NCRA — it's the industry gold standard. Also check reviews, ask about realtime capabilities, and confirm they can handle your jurisdiction's requirements.",
+      },
+      {
+        question: `How many court reporters are in ${cityInfo.city}?`,
+        answer: `There are currently ${listings.length} court reporting providers listed in ${cityInfo.city}, ${cityInfo.state} on ${config.brandName}.${claimed.length + featured.length > 0 ? ` Of those, ${claimed.length + featured.length} have claimed profiles with complete information and reviews.` : ''}`,
+      },
+      {
+        question: 'What does "Sponsored" mean on a listing?',
+        answer: `Sponsored providers pay for premium placement and appear at the top of search results. They have claimed profiles and typically respond faster to quote requests. All providers on ${config.brandName} — sponsored or not — are real businesses.`,
+      },
+    ]} />
+
+    <RelatedContent city={cityInfo.city} state={cityInfo.state} citySlug={cityInfo.slug} />
   </div>
 
   <script type="application/ld+json" set:html={JSON.stringify(schema)} />
-  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   <script type="application/ld+json" set:html={JSON.stringify(placeSchema)} />
 
   {/* ═══ CITY PAGE FILTER/SORT SCRIPT ═══ */}
@@ -545,7 +609,7 @@ const metadata = {
         cards.forEach(function(card) {
           var visible = true;
           if (activeFilter === 'has-reviews' && card.dataset.hasReviews !== 'true') visible = false;
-          if (activeFilter === 'clvs' && card.dataset.clvs !== 'true') visible = false;
+          if (activeFilter === 'rpr' && card.dataset.rpr !== 'true') visible = false;
           if (activeFilter === 'rating-4' && parseFloat(card.dataset.rating) < 4) visible = false;
 
           card.style.display = visible ? '' : 'none';

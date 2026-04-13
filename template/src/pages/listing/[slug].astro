@@ -19,27 +19,34 @@ export async function getStaticPaths() {
   }));
 }
 
+function titleCase(str: string) { return str.replace(/\b\w/g, (c: string) => c.toUpperCase()); }
+
 const { listing } = Astro.props;
 const citySlug = listing.city.toLowerCase().replace(/\s+/g, '-');
 const cityInfo = citiesData.find(c => c.slug === citySlug || c.city === listing.city);
-const cityLabel = `${cityInfo?.city || listing.city}, ${listing.state}`;
+const cityName = cityInfo?.city || titleCase(listing.city);
+const cityLabel = `${cityName}, ${listing.state}`;
+// Derive state slug for breadcrumbs when cityInfo is missing
+const stateInfo = citiesData.find(c => c.state === listing.state);
+const stateSlug = cityInfo?.stateSlug || stateInfo?.stateSlug || 'all';
+const stateName = cityInfo?.stateName || stateInfo?.stateName || listing.state;
 const suffix = ` | ${cityLabel} | ${config.brandName}`;
 const maxNameLen = 60 - suffix.length;
 const truncatedName = listing.name.length > maxNameLen ? listing.name.slice(0, maxNameLen - 1).trim() + '…' : listing.name;
 const title = `${truncatedName}${suffix}`;
 const description = listing.description
-  ? `${listing.name} — deposition videographer in ${cityInfo?.city || listing.city}, ${listing.state}. ${listing.description.slice(0, 120)}${listing.description.length > 120 ? '...' : ''}`
-  : `${listing.name} is a deposition videographer in ${cityInfo?.city || listing.city}, ${listing.state}.${listing.certifications?.length ? ` Certifications: ${listing.certifications.join(', ')}.` : ''}${listing.rating ? ` Rated ${listing.rating}/5.` : ''} Request a free quote on ${config.brandName}.`;
+  ? `${listing.name} — deposition videographer in ${cityName}, ${listing.state}. ${listing.description.slice(0, 120)}${listing.description.length > 120 ? '...' : ''}`
+  : `${listing.name} is a deposition videographer in ${cityName}, ${listing.state}.${listing.certifications?.length ? ` Certifications: ${listing.certifications.join(', ')}.` : ''}${listing.rating ? ` Rated ${listing.rating}/5.` : ''} Request a free quote on ${config.brandName}.`;
 
 const schema = {
   '@context': 'https://schema.org',
   '@type': 'LocalBusiness',
   name: listing.name,
-  description: listing.description || `${listing.name} is a deposition videographer serving ${cityInfo?.city || listing.city}, ${listing.state}.${listing.services?.length ? ' Services: ' + listing.services.join(', ') + '.' : ''}`,
+  description: listing.description || `${listing.name} is a deposition videographer serving ${cityName}, ${listing.state}.${listing.services?.length ? ' Services: ' + listing.services.join(', ') + '.' : ''}`,
   address: {
     '@type': 'PostalAddress',
     streetAddress: listing.address,
-    addressLocality: cityInfo?.city,
+    addressLocality: cityName,
     addressRegion: listing.state,
   },
   telephone: listing.phone,
@@ -52,7 +59,7 @@ const schema = {
   },
   areaServed: {
     '@type': 'City',
-    name: cityInfo?.city || listing.city,
+    name: cityName,
   },
   ...(config.jobValue ? { priceRange: config.jobValue } : {}),
   ...(listing.certifications?.length ? {
@@ -96,15 +103,15 @@ const metadata = {
   <div class="bg-surface-page min-h-screen">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8" data-pagefind-body>
       <Breadcrumbs crumbs={[
-        { label: cityInfo?.stateName || listing.state, href: `/states/${cityInfo?.stateSlug || 'all'}/` },
-        { label: cityInfo?.city || listing.city, href: `/locations/${cityInfo?.stateSlug || 'all'}/${cityInfo?.slug || citySlug}/` },
+        { label: stateName, href: `/states/${stateSlug}/` },
+        { label: cityName, href: `/locations/${stateSlug}/${cityInfo?.slug || citySlug}/` },
         { label: listing.name },
       ]} />
 
       <ListingDetail listing={listing} />
 
       <div class="mt-4">
-        <ContactForm listingName={listing.name} listingEmail={listing.email} listingSlug={listing.slug} city={cityInfo?.city || listing.city} />
+        <ContactForm listingName={listing.name} listingEmail={listing.email} listingSlug={listing.slug} city={cityName} />
       </div>
 
       <div class="mt-4">
@@ -115,10 +122,10 @@ const metadata = {
         <AdSlot placement="listing-bottom" city={cityInfo?.city} state={listing.state} />
       </div>
 
-      <RelatedContent city={cityInfo?.city || listing.city} state={listing.state} currentSlug={listing.slug} />
+      <RelatedContent city={cityName} state={listing.state} currentSlug={listing.slug} />
 
       <div class="mt-6">
-        <NewsletterSignup variant="compact" city={cityInfo?.city || listing.city} />
+        <NewsletterSignup variant="compact" city={cityName} />
       </div>
     </div>
   </div>
