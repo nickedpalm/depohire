@@ -10,12 +10,14 @@ from __future__ import annotations
 
 import re
 import subprocess
+import sys
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 from typing import Callable
 
 import httpx
+import yaml
 
 
 class Status(Enum):
@@ -229,3 +231,34 @@ def check_local_tooling(deps: DoctorDeps) -> CheckResult:
         remediation="Install missing tools: node≥20 (nvm install 20), wrangler (npm i -g wrangler), "
                     "python≥3.11 (system package manager).",
     )
+
+
+REQUIRED_YAML_FIELDS = ["name", "slug", "domain", "brand_name", "primary_keyword"]
+
+
+def discover_verticals(deps: DoctorDeps, only: str | None) -> list[str]:
+    configs_dir = deps.project_root / "configs"
+    slugs = sorted(p.stem for p in configs_dir.glob("*.yaml"))
+    if only is None:
+        return slugs
+    if only not in slugs:
+        print(f"error: no config for vertical '{only}'. Found: {slugs}", file=sys.stderr)
+        raise SystemExit(2)
+    return [only]
+
+
+def check_vertical_yaml(deps: DoctorDeps, slug: str) -> CheckResult:
+    path = deps.project_root / "configs" / f"{slug}.yaml"
+    try:
+        config = yaml.safe_load(path.read_text())
+    except yaml.YAMLError as e:
+        return CheckResult(Status.FAIL, f"{slug}:yaml", f"parse error: {e}", "Validate YAML at yamlchecker.com.")
+    missing = [k for k in REQUIRED_YAML_FIELDS if not config.get(k)]
+    if missing:
+        return CheckResult(
+            status=Status.FAIL,
+            name=f"{slug}:yaml",
+            message=f"missing required fields: {', '.join(missing)}",
+            remediation="See docs/VERTICAL-PLAYBOOK.md §2 for the full yaml template.",
+        )
+    return CheckResult(Status.OK, f"{slug}:yaml", f"{len(config)} fields parsed", None)

@@ -1,6 +1,7 @@
 from pathlib import Path
 import subprocess
 import httpx
+import pytest
 from scripts.doctor import (
     CheckResult,
     DoctorDeps,
@@ -12,6 +13,8 @@ from scripts.doctor import (
     check_perplexity_key,
     check_google_places_key,
     check_local_tooling,
+    discover_verticals,
+    check_vertical_yaml,
 )
 
 
@@ -293,3 +296,47 @@ def test_local_tooling_wrangler_missing():
     r = check_local_tooling(deps)
     assert r.status is Status.FAIL
     assert "wrangler" in r.message.lower()
+
+
+def test_discover_verticals_finds_all(tmp_path):
+    (tmp_path / "configs").mkdir()
+    (tmp_path / "configs" / "a.yaml").write_text("slug: a\n")
+    (tmp_path / "configs" / "b.yaml").write_text("slug: b\n")
+    (tmp_path / "configs" / "voice-guide.md").write_text("# ignored")
+    deps = make_deps(project_root=tmp_path)
+    assert sorted(discover_verticals(deps, None)) == ["a", "b"]
+
+
+def test_discover_verticals_filters_to_one(tmp_path):
+    (tmp_path / "configs").mkdir()
+    (tmp_path / "configs" / "a.yaml").write_text("slug: a\n")
+    (tmp_path / "configs" / "b.yaml").write_text("slug: b\n")
+    deps = make_deps(project_root=tmp_path)
+    assert discover_verticals(deps, "a") == ["a"]
+
+
+def test_discover_verticals_missing_slug_raises(tmp_path):
+    (tmp_path / "configs").mkdir()
+    (tmp_path / "configs" / "a.yaml").write_text("slug: a\n")
+    deps = make_deps(project_root=tmp_path)
+    with pytest.raises(SystemExit):
+        discover_verticals(deps, "nope")
+
+
+def test_vertical_yaml_valid(tmp_path):
+    (tmp_path / "configs").mkdir()
+    (tmp_path / "configs" / "x.yaml").write_text(
+        "name: X\nslug: x\ndomain: x.com\nbrand_name: X\nprimary_keyword: x\n"
+    )
+    deps = make_deps(project_root=tmp_path)
+    r = check_vertical_yaml(deps, "x")
+    assert r.status is Status.OK
+
+
+def test_vertical_yaml_missing_field(tmp_path):
+    (tmp_path / "configs").mkdir()
+    (tmp_path / "configs" / "x.yaml").write_text("slug: x\n")
+    deps = make_deps(project_root=tmp_path)
+    r = check_vertical_yaml(deps, "x")
+    assert r.status is Status.FAIL
+    assert "name" in r.message
