@@ -722,3 +722,14 @@ def test_run_google_places_gated_by_optional(tmp_path, capsys):
     # With --optional
     run_with_deps(deps, verticals=None, include_optional=True)
     assert len(places_calls) == 1, "Google Places should be probed once when --optional is set"
+
+
+def test_factory_doctor_subcommand_exists():
+    result = subprocess.run(
+        ["python3", "factory.py", "doctor", "--help"],
+        capture_output=True, text=True,
+        cwd="/home/nick/tools/directory-factory-doctor",
+    )
+    assert result.returncode == 0, f"stderr: {result.stderr}"
+    assert "--vertical" in result.stdout
+    assert "--optional" in result.stdout
