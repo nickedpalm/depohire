@@ -90,7 +90,7 @@ function providerEmailHtml(p: { name: string; email: string }, attorney: { name:
     </table>
 
     <div style="margin-top:24px">
-      <a href="mailto:${escUrl(attorney.email)}?subject=Re:%20Deposition%20Videography%20Quote%20Request&body=Hi%20${escUrl(attorney.name)},%0A%0AThank%20you%20for%20your%20interest.%20"
+      <a href="mailto:${escUrl(attorney.email)}?subject=Re:%20Quote%20Request%20via%20${encodeURIComponent(site.name)}&body=Hi%20${escUrl(attorney.name)},%0A%0AThank%20you%20for%20your%20interest.%20"
          style="display:inline-block;background:#2563eb;color:#fff;padding:14px 28px;border-radius:8px;text-decoration:none;font-weight:600;font-size:15px">
         Reply to ${esc(attorney.name)}
       </a>
@@ -214,12 +214,23 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
 
   const providers: { name: string; email: string; slug: string }[] = payload.providers || [];
   const attorney = {
-    name: payload.attorney_name || '',
-    email: payload.attorney_email || '',
+    name: (payload.attorney_name || '').trim(),
+    email: (payload.attorney_email || '').trim(),
     phone: payload.attorney_phone || '',
     caseDetails: payload.case_details || '',
     city: payload.city || '',
   };
+
+  // Validate required fields
+  if (!attorney.name || !attorney.email) {
+    return jsonResp({ error: 'Name and email are required.' }, 400);
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(attorney.email)) {
+    return jsonResp({ error: 'Please provide a valid email address.' }, 400);
+  }
+  if (!providers.length) {
+    return jsonResp({ error: 'At least one provider must be selected.' }, 400);
+  }
 
   // Rate limiting: max 5 leads per email per hour, max 20 per IP per hour
   if (env.LEADS_DB && (attorney.email || ip)) {

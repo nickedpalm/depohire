@@ -4,7 +4,7 @@
  * Body: { email: string, listing_slug?: string }
  */
 import type { Env } from '../../_types';
-import { generateToken, jsonResponse, optionsResponse, getSiteConfig } from '../../_auth';
+import { generateToken, generateShortCode, jsonResponse, optionsResponse, getSiteConfig } from '../../_auth';
 
 export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   const origin = request.headers.get('Origin') || undefined;
@@ -31,9 +31,9 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     return jsonResponse({ error: 'Too many requests. Check your email for an existing link.' }, 429, origin);
   }
 
-  const token = generateToken();
+  const token = generateShortCode(12);
   const now = new Date().toISOString();
-  const expiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString(); // 15 min
+  const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(); // 24 hours
 
   const listingSlug = (payload.listing_slug || '').trim() || null;
   if (listingSlug && !/^[a-z0-9][a-z0-9-]*$/.test(listingSlug)) {
@@ -50,7 +50,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   const domain = site.domain;
   const siteName = site.name;
   const tagline = site.tagline;
-  const verifyUrl = `https://${domain}/api/auth/verify?token=${token}`;
+  const verifyUrl = `https://${domain}/provider/verify/${token}`;
 
   const emailBody = `
 <!DOCTYPE html>
@@ -63,7 +63,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   <div style="padding:32px">
     <h2 style="color:#1a1a1a;font-size:18px;margin:0 0 12px">Log in to your dashboard</h2>
     <p style="color:#6b7280;font-size:15px;line-height:1.6;margin:0 0 24px">
-      Click the button below to access your provider dashboard on ${siteName}. This link expires in 15 minutes.
+      Click the button below to access your provider dashboard on ${siteName}. This link expires in 24 hours.
     </p>
     <a href="${verifyUrl}"
        style="display:inline-block;background:#2563eb;color:#fff;padding:14px 32px;border-radius:8px;text-decoration:none;font-weight:600;font-size:15px">

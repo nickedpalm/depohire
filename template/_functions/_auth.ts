@@ -10,6 +10,14 @@ export function generateToken(): string {
   return Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
 }
 
+/** Short alphanumeric code for user-facing URLs (less suspicious to Chrome Safe Browsing) */
+export function generateShortCode(length = 8): string {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+  const bytes = new Uint8Array(length);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes, b => chars[b % chars.length]).join('');
+}
+
 /**
  * Build allowed origins list from SITE_DOMAIN env var.
  * Always allows localhost for development.
