@@ -4,6 +4,8 @@ import Turnstile from '~/components/common/Turnstile.astro';
 import NewsletterSignup from '~/components/directory/NewsletterSignup.astro';
 import config from '~/config';
 import citiesData from '~/data/cities.json';
+import guidesData from '~/data/guides.json';
+import { getCollection } from 'astro:content';
 import { getListingCountByCity, getListingCountByState, getAllListings } from '~/lib/listings';
 
 const cityCounts = getListingCountByCity();
@@ -18,7 +20,12 @@ const citiesWithCounts = citiesData
   .map(c => ({ ...c, listingCount: cityCounts[c.slug] || 0 }))
   .sort((a, b) => b.listingCount - a.listingCount || b.population - a.population);
 
-const topCities = citiesWithCounts.slice(0, 12);
+const topCities = citiesWithCounts.slice(0, 48);
+
+// All blog posts for homepage crawl discovery (direct links, not just /blog/ root)
+const allBlogPosts = (await getCollection('blog'))
+  .filter(p => !p.data.draft)
+  .sort((a, b) => (b.data.pubDate?.valueOf() || 0) - (a.data.pubDate?.valueOf() || 0));
 
 // Aggregate states
 const stateMap = new Map<string, { stateSlug: string; stateName: string; state: string; cityCount: number; listingCount: number }>();
@@ -65,7 +72,7 @@ const schema = [
   {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: config.name,
+    name: config.brandName,
     url: config.siteUrl,
     description: config.description,
     potentialAction: {
@@ -434,6 +441,55 @@ const metadata = {
             </a>
           ))}
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Free Guides -->
+  <section class="py-20 bg-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12 animate-on-scroll">
+        <p class="text-sm font-semibold uppercase tracking-widest text-primary-600 mb-2">Free Resources</p>
+        <h2 class="text-3xl sm:text-4xl font-bold text-slate-900">Free Guides</h2>
+        <p class="text-slate-500 text-sm mt-2 max-w-xl mx-auto">Data-driven guides from our editorial team.</p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {guidesData.map((guide) => (
+          <a href={`/guides/${guide.slug}/`}
+             class="block bg-slate-50 hover:bg-primary-50 border border-slate-200 hover:border-primary-300 rounded-2xl p-6 no-underline transition-all animate-on-scroll">
+            <span class="inline-block text-xs font-semibold uppercase tracking-wider text-primary-600 mb-2">{guide.category}</span>
+            <h3 class="font-bold text-slate-900 mb-2 leading-snug">{guide.title}</h3>
+            <p class="text-sm text-slate-500 leading-relaxed">{guide.subtitle}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Latest Articles -->
+  <section class="py-20 bg-slate-50">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12 animate-on-scroll">
+        <p class="text-sm font-semibold uppercase tracking-widest text-primary-600 mb-2">Editorial</p>
+        <h2 class="text-3xl sm:text-4xl font-bold text-slate-900">Latest Articles & Analysis</h2>
+        <p class="text-slate-500 text-sm mt-2 max-w-xl mx-auto">In-depth reporting from our editorial team.</p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {allBlogPosts.map((post) => (
+          <a href={`/blog/${post.id}/`}
+             class="block bg-white hover:bg-primary-50 border border-slate-200 hover:border-primary-300 rounded-xl p-5 no-underline transition-all animate-on-scroll">
+            <h3 class="font-semibold text-slate-900 text-sm leading-snug">{post.data.title}</h3>
+            {post.data.description && (
+              <p class="text-xs text-slate-500 mt-2 leading-relaxed line-clamp-2">{post.data.description}</p>
+            )}
+          </a>
+        ))}
+      </div>
+      <div class="text-center mt-8">
+        <a href="/blog/" class="inline-flex items-center gap-2 text-primary-600 hover:text-primary-500 font-semibold text-sm transition-colors">
+          View all articles
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+        </a>
       </div>
     </div>
   </section>
