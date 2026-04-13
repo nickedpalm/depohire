@@ -24,6 +24,7 @@ from scripts.doctor import (
     check_pipeline_db,
     check_listmonk,
     check_stripe,
+    run_with_deps,
 )
 
 
@@ -627,3 +628,97 @@ def test_stripe_invalid():
         return httpx.Response(401)
     deps = make_deps(env={"STRIPE_SECRET_KEY": "sk_bad"}, http=mock_http(handler))
     assert check_stripe(deps).status is Status.FAIL
+
+
+def test_run_returns_zero_when_all_pass(tmp_path, capsys):
+    def handler(req):
+        if req.url.path == "/client/v4/user/tokens/verify":
+            return httpx.Response(200, json={"success": True, "result": {"status": "active"}})
+        if req.url.path == "/user":
+            return httpx.Response(200, json={"login": "nickedpalm"})
+        if req.url.path == "/v1/messages":
+            return httpx.Response(200, json={"id": "msg_1", "content": [{"type": "text", "text": "ok"}]})
+        if req.url.host == "api.perplexity.ai":
+            return httpx.Response(200, json={"choices": [{"message": {"content": "hi"}}]})
+        if "places.googleapis.com" in req.url.host:
+            return httpx.Response(200, json={"places": []})
+        return httpx.Response(404)
+
+    def run_cmd(cmd):
+        versions = {
+            "node": "v20.11.1\n", "python3": "Python 3.11.7\n",
+            "npm": "10.2.4\n", "wrangler": "wrangler 3.78.0\n",
+        }
+        return subprocess.CompletedProcess(cmd, 0, stdout=versions.get(cmd[0], ""), stderr="")
+
+    # No configs directory → discover_verticals returns empty list
+    (tmp_path / "configs").mkdir()
+    deps = DoctorDeps(
+        http=mock_http(handler),
+        run_cmd=run_cmd,
+        env={
+            "PERPLEXITY_API_KEY": "p", "ANTHROPIC_API_KEY": "a",
+            "GOOGLE_MAPS_API_KEY": "g", "CLOUDFLARE_API_TOKEN": "c",
+            "GITHUB_TOKEN": "gh",
+        },
+        project_root=tmp_path,
+    )
+    rc = run_with_deps(deps, verticals=None, include_optional=False)
+    out = capsys.readouterr().out
+    assert rc == 0
+    assert "shared-env" in out
+
+
+def test_run_returns_one_on_failure(tmp_path, capsys):
+    def handler(req):
+        return httpx.Response(401)  # everything fails
+    deps = DoctorDeps(
+        http=mock_http(handler),
+        run_cmd=lambda c: subprocess.CompletedProcess(c, 127, stdout="", stderr=""),
+        env={},  # all env missing → shared-env check fails
+        project_root=tmp_path,
+    )
+    (tmp_path / "configs").mkdir()
+    rc = run_with_deps(deps, verticals=None, include_optional=False)
+    assert rc == 1
+
+
+def test_run_google_places_gated_by_optional(tmp_path, capsys):
+    """Google Places live probe should NOT run unless --optional is passed."""
+    places_calls = []
+
+    def handler(req):
+        if "places.googleapis.com" in req.url.host:
+            places_calls.append(req)
+            return httpx.Response(200, json={"places": []})
+        if req.url.path == "/client/v4/user/tokens/verify":
+            return httpx.Response(200, json={"success": True, "result": {"status": "active"}})
+        if req.url.path == "/user":
+            return httpx.Response(200, json={"login": "nickedpalm"})
+        if req.url.path == "/v1/messages":
+            return httpx.Response(200, json={"id": "msg_1", "content": [{"type": "text", "text": "ok"}]})
+        if req.url.host == "api.perplexity.ai":
+            return httpx.Response(200, json={"choices": [{"message": {"content": "hi"}}]})
+        return httpx.Response(404)
+
+    def run_cmd(cmd):
+        versions = {"node": "v20.0.0\n", "python3": "Python 3.11.0\n", "npm": "10.0.0\n", "wrangler": "wrangler 3.0.0\n"}
+        return subprocess.CompletedProcess(cmd, 0, stdout=versions.get(cmd[0], ""), stderr="")
+
+    (tmp_path / "configs").mkdir()
+    deps = DoctorDeps(
+        http=mock_http(handler),
+        run_cmd=run_cmd,
+        env={
+            "PERPLEXITY_API_KEY": "p", "ANTHROPIC_API_KEY": "a",
+            "GOOGLE_MAPS_API_KEY": "g", "CLOUDFLARE_API_TOKEN": "c",
+            "GITHUB_TOKEN": "gh",
+        },
+        project_root=tmp_path,
+    )
+    # Without --optional
+    run_with_deps(deps, verticals=None, include_optional=False)
+    assert len(places_calls) == 0, "Google Places must not be probed without --optional"
+    # With --optional
+    run_with_deps(deps, verticals=None, include_optional=True)
+    assert len(places_calls) == 1, "Google Places should be probed once when --optional is set"

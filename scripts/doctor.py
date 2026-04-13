@@ -8,6 +8,7 @@ All checks are pure and dependency-injected for testability.
 
 from __future__ import annotations
 
+import os
 import re
 import socket
 import sqlite3
@@ -484,3 +485,86 @@ def check_stripe(deps: DoctorDeps) -> CheckResult:
         message=f"{r.status_code}: {r.text[:80]}",
         remediation="Regenerate at dashboard.stripe.com → Developers → API keys.",
     )
+
+
+COLOR = {
+    Status.OK: "\033[32m",
+    Status.FAIL: "\033[31m",
+    Status.WARN: "\033[33m",
+    Status.SKIP: "\033[2m",
+}
+RESET = "\033[0m"
+
+
+def _fmt(r: CheckResult) -> str:
+    color = COLOR[r.status] if os.isatty(1) else ""
+    reset = RESET if os.isatty(1) else ""
+    label = {Status.OK: "OK  ", Status.FAIL: "FAIL", Status.WARN: "WARN", Status.SKIP: "SKIP"}[r.status]
+    line = f"{color}{label}{reset}  {r.name:<32} {r.message}"
+    if r.remediation and r.status in {Status.FAIL, Status.WARN}:
+        line += f"\n      → {r.remediation}"
+    return line
+
+
+def run_with_deps(deps: DoctorDeps, verticals: list[str] | None, include_optional: bool) -> int:
+    results: list[CheckResult] = []
+
+    # Shared env presence
+    results.append(check_shared_env_presence(deps))
+
+    # Live API checks (only if key present; skip probe otherwise — env presence already reported)
+    if deps.env.get("CLOUDFLARE_API_TOKEN"):
+        results.append(check_cloudflare_token(deps))
+    if deps.env.get("GITHUB_TOKEN"):
+        results.append(check_github_token(deps))
+    if deps.env.get("ANTHROPIC_API_KEY"):
+        results.append(check_anthropic_key(deps))
+    if deps.env.get("PERPLEXITY_API_KEY"):
+        results.append(check_perplexity_key(deps))
+    # NOTE: Google Places is intentionally gated to --optional to minimize
+    # API calls against Google (see CLAUDE.md "Google API caution" note).
+
+    # Local tooling
+    results.append(check_local_tooling(deps))
+
+    # Per-vertical checks
+    only = verticals[0] if verticals else None
+    slugs = discover_verticals(deps, only)
+    for slug in slugs:
+        results.append(check_vertical_yaml(deps, slug))
+        results.append(check_domain_dns(deps, slug))
+        results.append(check_github_repo(deps, slug))
+        results.append(check_cf_pages_project(deps, slug))
+        results.append(check_d1_database(deps, slug))
+        results.append(check_pipeline_db(deps, slug))
+
+    # Optional checks (including Google Places live probe)
+    if include_optional:
+        if deps.env.get("GOOGLE_MAPS_API_KEY"):
+            results.append(check_google_places_key(deps))
+        results.append(check_listmonk(deps))
+        results.append(check_stripe(deps))
+
+    # Print report
+    print("\n=== Directory Factory Doctor ===\n")
+    for r in results:
+        print(_fmt(r))
+    ok = sum(1 for r in results if r.status is Status.OK)
+    fail = sum(1 for r in results if r.status is Status.FAIL)
+    warn = sum(1 for r in results if r.status is Status.WARN)
+    skip = sum(1 for r in results if r.status is Status.SKIP)
+    print(f"\n{ok} OK · {fail} FAIL · {warn} WARN · {skip} SKIP\n")
+    return 1 if fail > 0 else 0
+
+
+def run(verticals: list[str] | None, include_optional: bool) -> int:
+    deps = DoctorDeps(
+        http=httpx.Client(),
+        run_cmd=lambda cmd: subprocess.run(cmd, capture_output=True, text=True),
+        env=dict(os.environ),
+        project_root=Path(__file__).parent.parent,
+    )
+    try:
+        return run_with_deps(deps, verticals, include_optional)
+    finally:
+        deps.http.close()
