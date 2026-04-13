@@ -1,17 +1,50 @@
-node_modules/
-dist/
-.astro/
-*.db
-.env
-.DS_Store
-verticals/*/node_modules/
-verticals/*/dist/
-verticals/*/.astro/
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+env/
 
+# Node / Astro / Wrangler (build artifacts)
+node_modules/
+.astro/
+.wrangler/
+dist/
+build/
+template/node_modules/
+template/.astro/
+template/.wrangler/
+verticals/*/node_modules/
+verticals/*/.astro/
+verticals/*/dist/
+verticals/*/public/vendor/*/node_modules/
+verticals/*/public/vendor/*/.astro/
+.deploy-hashes/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# SQLite / generated data
+*.db
+verticals/*/pipeline.db
+template/public/data/
+
+# Brand-factory outputs (regenerate with: python brand_factory.py)
+brand_assets/
+brand_gallery.html
+
+# Misc
 scripts/run_enrich.sh
 dist-functions-patch/
-
-.venv/
-.wrangler/
