@@ -212,9 +212,10 @@ def check_local_tooling(deps: DoctorDeps) -> CheckResult:
         if result.returncode != 0:
             problems.append(f"{name} not found (run `{cmd[0]} --version` to confirm)")
             continue
-        m = pattern.search(result.stdout)
+        combined_output = result.stdout + (result.stderr or "")
+        m = pattern.search(combined_output)
         if not m:
-            problems.append(f"{name} version unparsable: {result.stdout.strip()[:40]}")
+            problems.append(f"{name} version unparsable: {combined_output.strip()[:40]}")
             continue
         got = tuple(int(x) for x in m.groups())
         if got < minimum:
