@@ -317,3 +317,57 @@ def check_github_repo(deps: DoctorDeps, slug: str) -> CheckResult:
             remediation=f"gh repo create nickedpalm/{slug} --public --source=verticals/{slug} --push",
         )
     return CheckResult(Status.FAIL, f"{slug}:github", f"unexpected {r.status_code}", None)
+
+
+def _cf_account_id(deps: DoctorDeps) -> str | None:
+    token = deps.env.get("CLOUDFLARE_API_TOKEN", "")
+    if not token:
+        return None
+    r = deps.http.get(
+        "https://api.cloudflare.com/client/v4/accounts",
+        headers={"Authorization": f"Bearer {token}"},
+        timeout=10,
+    )
+    if r.status_code != 200:
+        return None
+    results = r.json().get("result") or []
+    return results[0]["id"] if results else None
+
+
+def check_cf_pages_project(deps: DoctorDeps, slug: str) -> CheckResult:
+    token = deps.env.get("CLOUDFLARE_API_TOKEN", "")
+    if not token:
+        return CheckResult(Status.SKIP, f"{slug}:cf-pages", "CLOUDFLARE_API_TOKEN not set", None)
+    account_id = _cf_account_id(deps)
+    if not account_id:
+        return CheckResult(Status.FAIL, f"{slug}:cf-pages", "could not resolve CF account", None)
+    try:
+        r = deps.http.get(
+            f"https://api.cloudflare.com/client/v4/accounts/{account_id}/pages/projects/{slug}",
+            headers={"Authorization": f"Bearer {token}"},
+            timeout=10,
+        )
+    except httpx.HTTPError as e:
+        return CheckResult(Status.FAIL, f"{slug}:cf-pages", f"network error: {e}", None)
+    if r.status_code == 404:
+        return CheckResult(
+            status=Status.FAIL,
+            name=f"{slug}:cf-pages",
+            message=f"Pages project '{slug}' not found",
+            remediation=f"Create at dash.cloudflare.com → Pages → Create project, name it '{slug}'.",
+        )
+    if r.status_code != 200:
+        return CheckResult(Status.FAIL, f"{slug}:cf-pages", f"unexpected {r.status_code}", None)
+    project = r.json().get("result") or {}
+    latest = (project.get("latest_deployment") or {}).get("latest_stage") or {}
+    status = latest.get("status", "unknown")
+    if status == "success":
+        return CheckResult(Status.OK, f"{slug}:cf-pages", f"last deploy: success", None)
+    if status in {"failure", "canceled"}:
+        return CheckResult(
+            status=Status.WARN,
+            name=f"{slug}:cf-pages",
+            message=f"last deploy: {status}",
+            remediation="Check build logs at dash.cloudflare.com → Pages → {slug} → Deployments.",
+        )
+    return CheckResult(Status.WARN, f"{slug}:cf-pages", f"last deploy: {status}", None)

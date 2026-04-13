@@ -18,6 +18,7 @@ from scripts.doctor import (
     check_vertical_yaml,
     check_domain_dns,
     check_github_repo,
+    check_cf_pages_project,
 )
 
 
@@ -409,3 +410,66 @@ def test_github_repo_missing(tmp_path):
     r = check_github_repo(deps, "x")
     assert r.status is Status.FAIL
     assert "not found" in r.message.lower() or "404" in r.message
+
+
+def test_cf_pages_project_healthy(tmp_path):
+    (tmp_path / "configs").mkdir()
+    (tmp_path / "configs" / "x.yaml").write_text("slug: x\ndomain: x.com\n")
+
+    def handler(req):
+        if req.url.path == "/client/v4/accounts":
+            return httpx.Response(200, json={"success": True, "result": [{"id": "acc-1"}]})
+        if req.url.path == "/client/v4/accounts/acc-1/pages/projects/x":
+            return httpx.Response(200, json={"success": True, "result": {
+                "name": "x",
+                "latest_deployment": {"latest_stage": {"name": "deploy", "status": "success"}},
+            }})
+        return httpx.Response(404)
+
+    deps = make_deps(
+        project_root=tmp_path,
+        env={"CLOUDFLARE_API_TOKEN": "cf-abc"},
+        http=mock_http(handler),
+    )
+    assert check_cf_pages_project(deps, "x").status is Status.OK
+
+
+def test_cf_pages_project_missing(tmp_path):
+    (tmp_path / "configs").mkdir()
+    (tmp_path / "configs" / "x.yaml").write_text("slug: x\ndomain: x.com\n")
+
+    def handler(req):
+        if req.url.path == "/client/v4/accounts":
+            return httpx.Response(200, json={"success": True, "result": [{"id": "acc-1"}]})
+        return httpx.Response(404, json={"success": False})
+
+    deps = make_deps(
+        project_root=tmp_path,
+        env={"CLOUDFLARE_API_TOKEN": "cf-abc"},
+        http=mock_http(handler),
+    )
+    r = check_cf_pages_project(deps, "x")
+    assert r.status is Status.FAIL
+    assert "not found" in r.message.lower() or "404" in r.message
+
+
+def test_cf_pages_project_last_deploy_failed(tmp_path):
+    (tmp_path / "configs").mkdir()
+    (tmp_path / "configs" / "x.yaml").write_text("slug: x\ndomain: x.com\n")
+
+    def handler(req):
+        if req.url.path == "/client/v4/accounts":
+            return httpx.Response(200, json={"success": True, "result": [{"id": "acc-1"}]})
+        return httpx.Response(200, json={"success": True, "result": {
+            "name": "x",
+            "latest_deployment": {"latest_stage": {"name": "deploy", "status": "failure"}},
+        }})
+
+    deps = make_deps(
+        project_root=tmp_path,
+        env={"CLOUDFLARE_API_TOKEN": "cf-abc"},
+        http=mock_http(handler),
+    )
+    r = check_cf_pages_project(deps, "x")
+    assert r.status is Status.WARN
+    assert "failure" in r.message.lower()
